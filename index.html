@@ -119,6 +119,12 @@ img.ii{width:1.3em;height:1.3em;vertical-align:-.28em;image-rendering:pixelated;
 label.fl{display:block;text-align:center;cursor:pointer}
 label.fl input{display:none}
 .dsc{font-size:12px;margin:6px 0;border:2px dashed #b8a8c8;border-radius:10px;padding:6px 8px}
+#kbub.sl,#kbub.sr{transform:translate(0,-50%)}
+#kbub.sl:after,#kbub.sr:after,#kbub.sl:before,#kbub.sr:before{left:auto;bottom:auto;top:var(--tailY,50%)}
+#kbub.sl:after{right:-11px;margin:-8px 0 0;border:8px solid transparent;border-left:10px solid #3a2f45;border-right:0}
+#kbub.sl:before{right:-6px;margin:-5px 0 0;border:5px solid transparent;border-left:7px solid #fff;border-right:0}
+#kbub.sr:after{left:-11px;margin:-8px 0 0;border:8px solid transparent;border-right:10px solid #3a2f45;border-left:0}
+#kbub.sr:before{left:-6px;margin:-5px 0 0;border:5px solid transparent;border-right:7px solid #fff;border-left:0}
 .dsc summary{font-weight:900;cursor:pointer}
 .dsc p{font-size:12px!important;line-height:1.6;margin:6px 0 0!important}
 #kmodal.on{align-items:flex-start}
@@ -204,28 +210,29 @@ const SPR=(()=>{
   umi: mk([
     ".........K","........KB",".......KBB","......KBBB",".....KBBBB","....KBWBBB","...KBWBBBB","..KBBBBBBB","..KBBBBBBB",".KBBBBBBBB",".KBBBBBBBB",".KBBBBBBBB","FKBBBBBBBB","FFKBBBBBBB",".FKbBBBBBB","..KbbBBBBB","...KbbbBBB","....KKKKKK","......KSK.","......KSK.","......KSK.",".....KOOK."],
     {S:'#f6d2b8',O:'#e0405a',B:'#8fd0ff',b:'#5fb0e8',W:'#e6f6ff',F:'#4a90d0'},
-    {ew:2,eyes:[[3,10],[15,10]],mouth:[9,14],blush:[[3,13],[15,13]],quirk:'lips'}),
+    {ew:2,eyes:[[3,10],[15,10]],mouth:[9,14],blush:[[3,13],[15,13]],quirk:'lips',plus:'lips'}),
   mori: mk([
     "......KKKK","....KKRRRR","...KRRWWRR","..KRRWWRRR",".KRRRRRRRW",".KRRRRRRWW","KRRWWRRRRR","KRRWWRRRRR","KKKKKKKKKK","..KBBBBBBB","..KBBBBBBB",".KBBBBBBBB",".KBBBBBBBB","KBKBBBBBBB","KBKBBBBBBB",".K.KbBBBBB","...KbbBBBB","....KKKKKK","......KSK.","......KSK.","......KSK.",".....KOOK."],
     {S:'#f6d2b8',O:'#e0405a',R:'#e05a5a',W:'#fff4e0',B:'#f3e3c3',b:'#d9c29a'},
-    {ew:2,eyes:[[5,11],[13,11]],mouth:[9,15],blush:[[3,14],[15,14]],nose:[9,13],quirk:'kuma_hige'},{keepW:true}),
+    {ew:2,eyes:[[5,11],[13,11]],mouth:[9,15],blush:[[3,14],[15,14]],nose:[9,13],quirk:'kuma_hige',plus:'kuma'},{keepW:true}),
   hana: mk([
     "........PP",".....PP.PP","....PPPPYY","....PPPPYY",".....PP.PP","........GG","....KKKKKK","..KKBBBBBB",".KBWBBBBBB",".KBBBBBBBB","KBBBBBBBBB","KBBBBBBBBB","KBBBBBBBBB","LKBBBBBBBB",".LKbBBBBBB","..KbBBBBBB","...KbbBBBB","....KKKKKK","......KSK.","......KSK.","......KSK.",".....KOOK."],
     {S:'#f6d2b8',O:'#e0405a',P:'#ff8fb8',Y:'#ffd84d',G:'#5bb85b',B:'#ffd3e2',b:'#f5b0c8',W:'#ffffff',L:'#5bb85b'},
-    {ew:2,eyes:[[5,10],[13,10]],mouth:[9,14],blush:[[3,12],[15,12]],nose:[9,12],quirk:'matsuge'}),
+    {ew:2,eyes:[[5,10],[13,10]],mouth:[9,14],blush:[[3,12],[15,12]],nose:[9,12],quirk:'matsuge',plus:'lash'}),
   okashi: mk([
     ".........R","........RR",".....KKKKK","...KKWWWWW","..KWWWWWWW",".KWWWWWWWW",".KWWWWWWWW","KWWBWWWBWW","KBBBBWBBBB","KBBBBBBBBB","KBBBBBBBBB","KBBBBBBBBB","KBBBBBBBBB","KKKKKKKKKK",".KCcCcCcCc",".KCcCcCcCc","..KCcCcCcC","...KKKKKKK","......KSK.","......KSK.","......KSK.",".....KOOK."],
     {S:'#f6d2b8',O:'#e0405a',R:'#e0405a',W:'#fffaf0',B:'#ffd36b',b:'#e8b04a',C:'#ff9cc2',c:'#ffc4dc'},
-    {ew:2,eyes:[[5,9],[13,9]],mouth:[9,11],blush:[[3,11],[15,11]],quirk:'deppa'},{keepW:true}),
+    {ew:2,eyes:[[5,9],[13,9]],mouth:[9,11],blush:[[3,11],[15,11]],quirk:'deppa',plus:'deppa'},{keepW:true}),
   };
 })();
 // ctx に (ox,oy) から描く。expr: normal/happy/sleep/sad/eat
+// v1.8 デザイン調整：ほっぺ2ピクセル・鼻を少し濃く・赤ちゃんと子どもの目に光。face.plus でキャラごとのくせを強調
 function drawSprite(g,s,ox,oy,expr='normal',blush=true){
   s.rows.forEach((r,y)=>{for(let x=0;x<r.length;x++){const c=r[x];if(c!=='.'){g.fillStyle=s.pal[c];g.fillRect(ox+x,oy+y,1,1)}}});
   const f=s.face; if(!f) return;
   const P=(x,y,c)=>{g.fillStyle=c;g.fillRect(ox+x,oy+y,1,1)};
-  const E='#2a2238', mid=s.w/2;
-  if(blush) f.blush.forEach(([x,y])=>{P(x,y,'#ff9db0');if(f.ew===2)P(x+1,y,'#ff9db0')});
+  const E='#2a2238', W='#ffffff', mid=s.w/2, q=f.quirk||'', plus=f.plus||'';
+  if(blush) f.blush.forEach(([x,y])=>{const a=f.ew===2?x:(x<mid?x-1:x); P(a,y,'#ff8fa6');P(a+1,y,'#ff8fa6')});
   // 目：ふだんは、たれたじと目
   f.eyes.forEach(([x,y])=>{
     const left=x<mid, w=f.ew;
@@ -233,30 +240,38 @@ function drawSprite(g,s,ox,oy,expr='normal',blush=true){
     else if(expr==='sleep'){ for(let i=-1;i<=w;i++)P(x+i,y+1,E); if(w===2)P(left?x-1:x+2,y+2,E) }
     else if(expr==='sad'){ P(x,y+1,E); if(w===2){P(x+1,y+1,E);P(left?x+1:x,y-1,E);P(left?x+2:x-1,y-2,E)} }
     else { // じと目
-      if(w===2){ for(let i=-1;i<=2;i++)P(x+i,y,E); P(left?x-1:x+2,y+1,E); P(x,y+1,E);P(x+1,y+1,E); P(left?x+1:x,y+1,'#ffffff') }
-      else { P(x-1,y,E);P(x,y,E);P(x+1,y,E);P(x,y+1,E); P(left?x-1:x+1,y+1,E) }
+      if(w===2){ for(let i=-1;i<=2;i++)P(x+i,y,E); P(left?x-1:x+2,y+1,E); P(x,y+1,E);P(x+1,y+1,E); P(left?x+1:x,y+1,W) }
+      else { P(x-1,y,E);P(x,y,E);P(x+1,y,E);P(x,y+1,E); P(left?x-1:x+1,y+1,E); P(left?x+1:x-1,y+1,W) }
     }
   });
-  const q=f.quirk||'';
-  if(q.includes('kuma')) f.eyes.forEach(([x,y])=>{P(x,y+2,'#a58ac8');P(x+1,y+2,'#a58ac8')});
-  if(q.includes('matsuge')&&expr!=='sleep') f.eyes.forEach(([x,y])=>{const l=x<mid;P(l?x-2:x+3,y-1,E);P(l?x-1:x+2,y-1,E);P(x,y-1,E)});
-  if(f.nose){const [nx,ny]=f.nose;P(nx,ny,'#e8707a');if(f.ew===2||s.w%2===0)P(nx+1,ny,'#e8707a')}
+  if(q.includes('kuma')) f.eyes.forEach(([x,y])=>{P(x,y+2,'#8f72bf');P(x+1,y+2,'#8f72bf');if(plus==='kuma')P(x<mid?x-1:x+2,y+2,'#b9a2dc')});
+  if(q.includes('matsuge')&&expr!=='sleep') f.eyes.forEach(([x,y])=>{const l=x<mid;P(l?x-2:x+3,y-1,E);P(l?x-1:x+2,y-1,E);P(x,y-1,E);if(plus==='lash')P(l?x-3:x+4,y-2,E)});
+  if(f.nose){const [nx,ny]=f.nose;P(nx,ny,'#e0606e');if(f.ew===2||s.w%2===0)P(nx+1,ny,'#e0606e')}
   // 口
   const [mx,my]=f.mouth, two=f.ew===2||s.w%2===0;
   if(q==='lips'){
-    const L='#ff6f8f';
+    const L='#ff6f8f', Lh='#ffb3c4';
     if(expr==='eat'){g.fillStyle=L;g.fillRect(ox+mx-1,oy+my-1,4,4);g.fillStyle='#8a2040';g.fillRect(ox+mx,oy+my,2,2)}
     else if(expr==='sleep'){g.fillStyle=L;g.fillRect(ox+mx-1,oy+my,4,2);P(mx+3,my+2,'#bfe8ff')}
-    else {g.fillStyle=L;g.fillRect(ox+mx-1,oy+my,4,2);P(mx-1,my,E);P(mx+2,my,E);g.fillStyle=E;g.fillRect(ox+mx,oy+my+1,2,1); if(expr==='happy'){P(mx-2,my-1,L);P(mx+3,my-1,L)}}
+    else if(plus==='lips'){ // ぶあついたらこ唇
+      g.fillStyle=L;g.fillRect(ox+mx-1,oy+my,4,1);g.fillRect(ox+mx-2,oy+my+1,6,1);g.fillRect(ox+mx-1,oy+my+2,4,1);
+      P(mx-1,my,Lh);P(mx,my+1,E);P(mx+1,my+1,E);P(mx-2,my+1,E);P(mx+3,my+1,E);
+      if(expr==='happy'){P(mx-3,my,L);P(mx+4,my,L)}
+    }
+    else {g.fillStyle=L;g.fillRect(ox+mx-1,oy+my,4,2);P(mx-1,my,E);P(mx+2,my,E);g.fillStyle=E;g.fillRect(ox+mx,oy+my+1,2,1);P(mx,my,Lh); if(expr==='happy'){P(mx-2,my-1,L);P(mx+3,my-1,L)}}
   } else if(expr==='eat'){g.fillStyle='#c0505a';g.fillRect(ox+mx,oy+my,2,2)}
   else if(expr==='happy'){P(mx-1,my,E);P(mx,my+1,E);P(mx+1,my+1,E);P(mx+2,my,E);P(mx+3,my-1,E)}
   else if(expr==='sad'){P(mx-1,my+1,E);P(mx,my,E);P(mx+1,my,E);P(mx+2,my+1,E)}
   else if(expr==='sleep'){P(mx,my,E);P(mx+1,my,E);P(mx+1,my+1,'#bfe8ff');P(mx+1,my+2,'#bfe8ff')}
   else { P(mx-1,my,E); if(two)P(mx,my,E); P(mx+(two?1:0),my,E); P(mx+(two?2:1),my-1,E) } // への字ぎみの口
-  if(q==='deppa'&&expr!=='sleep'&&expr!=='eat'){P(mx,my+1,'#ffffff');P(mx+1,my+1,'#ffffff');P(mx,my+2,E);P(mx+1,my+2,E)}
+  if(q==='deppa'&&expr!=='sleep'&&expr!=='eat'){
+    P(mx,my+1,W);P(mx+1,my+1,W);P(mx-1,my+1,E);P(mx+2,my+1,E);
+    if(plus==='deppa'){P(mx,my+2,'#f3ede4');P(mx+1,my+2,'#e8e2d8');P(mx,my+3,E);P(mx+1,my+3,E)} // 出っ歯（中間案）
+    else {P(mx,my+2,E);P(mx+1,my+2,E)}
+  }
   if(q.includes('hige')){const c='#5a3a32';[-2,-1,2,3].forEach(d=>P(mx+d,my-1,c));P(mx-3,my,c);P(mx+4,my,c)}
   if(q==='hair'){P(Math.floor(mid),-1,E);P(Math.floor(mid)+1,-2,E);P(Math.floor(mid),-3,E)}
-  if(q==='hanamizu'&&expr!=='happy'){P(f.nose[0],f.nose[1]+1,'#9fd8ff');P(f.nose[0],f.nose[1]+2,'#9fd8ff')}
+  if(q==='hanamizu'&&expr!=='happy'){P(f.nose[0],f.nose[1]+1,'#7ccaf5');P(f.nose[0],f.nose[1]+2,'#7ccaf5')}
 }
 
 // ===== 料理のドット絵（12x12） =====
@@ -564,7 +579,7 @@ ANA.init();
 
 // ================= こども（たんけん育成） =================
 const K=(()=>{
-  const KEY='pokohouse_v1', cv=$('kcv'), g=cv.getContext('2d');
+  const KEY='pokohouse_v1', cv=$('kcv'), g=cv.getContext('2d',{willReadFrequently:true});
   const OUT='#3a2f45', MIN=60000;
   const now=()=>Date.now()+(S?S.skew:0);
   // ---- データ ----
@@ -649,12 +664,22 @@ const K=(()=>{
     g.fillStyle='#5ab4e6';g.fillRect(50,30,14,18);
     for(let i=0;i<4;i++)P(51+((frame+i*5)%12),33+i*4,'#cdeeff');
     if(S&&S.decor&&S.decor.kai&&!(S.hideDecor||{}).kai){P(48,44,'#ffb3c8');P(49,44,'#ffd0dc');P(48,45,'#ff9ab8');P(49,45,'#ffb3c8');P(50,45,'#ffd0dc')}
-    if(p==='night'){g.fillStyle='rgba(20,15,60,.35)';g.fillRect(0,0,64,48)}
+    if(p==='night'){g.fillStyle='rgba(20,15,60,.22)';g.fillRect(0,0,64,48)}
     if(p==='evening'){g.fillStyle='rgba(255,140,80,.12)';g.fillRect(0,0,64,48)}
   }
   function pet(expr){
-    const key=S.stage==='adult'?S.form:S.stage, sp=SPR[key], bob=frame%4<2?0:1;
-    drawSprite(g,sp,Math.round(x-sp.w/2),47-sp.h-bob,expr,true);
+    const key=S.stage==='adult'?S.form:S.stage, sp=SPR[key], bob=frame%4<2?0:1, ox=Math.round(x-sp.w/2);
+    footShadow(sp,ox,bob);
+    drawSprite(g,sp,ox,47-sp.h-bob,expr,true);
+  }
+  // 足元の影：地面の色を1回だけ読み取って少し暗くする（跳ねると小さくなる）
+  function footShadow(sp,ox,bob){
+    try{
+      const w=Math.max(6,sp.w-6-(bob?2:0)), x0=ox+Math.round((sp.w-w)/2), tx=-Math.round(camX), ty=cv.height-48;
+      const d=g.getImageData(x0+tx,46+ty,w,2).data;
+      for(let r=0;r<2;r++)for(let i=r;i<w-r;i++){const k=(r*w+i)*4; if(!d[k+3])continue;
+        g.fillStyle=`rgb(${d[k]*.78|0},${d[k+1]*.78|0},${d[k+2]*.82|0})`; g.fillRect(x0+i,46+r,1,1)}
+    }catch(e){}
   }
   function seed(){
     const sp=SPR.seed, w=S.taps>0&&frame%2?1:0, ox=34-6+w, oy=46-sp.h;
@@ -700,7 +725,7 @@ const K=(()=>{
       for(let X=0;X<64;X++)for(let Y=31;Y<48;Y++)if((X*5+Y*11)%17===0)P(X,Y,'#8a6e48');
       [[8,40],[50,44],[28,35]].forEach(([a,b])=>{g.fillStyle='#7a7a8a';g.fillRect(a-2,b,4,2);g.fillRect(a-1,b-1,2,1)});
     }
-    if(pr==='night'){g.fillStyle='rgba(20,15,60,.35)';g.fillRect(0,0,64,48)}
+    if(pr==='night'){g.fillStyle='rgba(20,15,60,.22)';g.fillRect(0,0,64,48)}
     if(pr==='evening'){g.fillStyle='rgba(255,140,80,.12)';g.fillRect(0,0,64,48)}
   }
   function exInit(){ if(!EX) EX={marks:[],spark:null,nextSpark:now()+8000,run:false}; }
@@ -713,11 +738,11 @@ const K=(()=>{
     // もうすぐ見つかるものを地面に置く
     E.ev.forEach(v=>{ if(!v.got&&v.t-t<8000&&!EX.marks.some(m=>m.v===v)) EX.marks.push({v,x:8+Math.floor(Math.random()*48)}); });
     // 光るおまけ
-    if(!EX.spark&&!PLACES[E.p].walk&&(E.sparkN||0)<3&&t>EX.nextSpark){EX.spark={x:8+Math.floor(Math.random()*48),until:t+12000};say('何か光ってる！ 光っている所をタップしてみよう');speak(lineOf('spark'))}
+    if(!EX.spark&&!PLACES[E.p].walk&&(E.sparkN||0)<3&&t>EX.nextSpark){const L=Math.round(camX)+6,Rr=Math.round(camX)+cv.width-6;const lo=x-16-L, hi=Rr-(x+16); let sx; if(lo<0&&hi<0) sx=x-L>Rr-x?L:Rr; else if(lo>=hi) sx=L+Math.floor(Math.random()*(lo+1)); else sx=x+16+Math.floor(Math.random()*(hi+1));EX.spark={x:sx,until:t+20000};say('何か光ってる！ 光っている所をタップしてみよう');speak(lineOf('spark'))}
     if(EX.spark&&t>EX.spark.until&&!EX.run){EX.spark=null;EX.nextSpark=t+15000+Math.random()*15000}
     // 行き先
     let tx=null;
-    if(EX.run&&EX.spark) tx=EX.spark.x; else if(EX.marks.length) tx=EX.marks[0].x;
+    if(EX.run&&EX.spark) tx=EX.spark.x; else if(EX.spark){tx=x;face=EX.spark.x>x?1:-1} else if(EX.marks.length) tx=EX.marks[0].x;
     if(tx===null){ if(EX.wander==null||Math.abs(EX.wander-x)<1||Math.random()<.02) EX.wander=10+Math.floor(Math.random()*44); tx=EX.wander; }
     if(!busy&&Math.abs(tx-x)>=1){ const sp=EX.run?2:1; face=tx>x?1:-1; x+=face*Math.min(sp,Math.abs(tx-x)); }
     // 拾う
@@ -733,13 +758,32 @@ const K=(()=>{
   function drawStage(){
     const E=S.explore; stageBg(E.p);
     EX&&EX.marks.forEach(m=>{const on=frame%4<2;P(m.x,44,'#ffd84d');if(on){P(m.x-1,44,'#fff6a0');P(m.x+1,44,'#fff6a0');P(m.x,43,'#fff6a0');P(m.x,45,'#fff6a0')}});
-    if(EX&&EX.spark){const sx=EX.spark.x,on=frame%2;P(sx,42,'#ff5f97');P(sx-1,42,on?'#ffb3d0':'#ff5f97');P(sx+1,42,on?'#ffb3d0':'#ff5f97');P(sx,41,'#ffb3d0');P(sx,43,'#ffb3d0');if(on){P(sx-2,42,'#fff');P(sx+2,42,'#fff');P(sx,40,'#fff');P(sx,44,'#fff')}}
     pet(busy||(EX&&EX.run?'happy':'normal'));
+    if(EX&&EX.spark)drawSpark(EX.spark.x);
+  }
+  function drawSpark(sx){
+    const ph=frame%6, big=ph<3, Y='#ffe24d', W='#ffffff', O='#ff9a3c';
+    // 地面の光だまり
+    g.fillStyle='rgba(255,240,120,'+(big?.45:.25)+')';g.fillRect(sx-3,45,7,1);g.fillRect(sx-2,46,5,1);
+    // 立ちのぼる光の柱
+    g.fillStyle='rgba(255,250,190,'+(big?.5:.25)+')';g.fillRect(sx,30,1,14);
+    // 大きな星（またたく）
+    const cy=40, r=big?4:3;
+    for(let i=-r;i<=r;i++){P(sx+i,cy,Y);P(sx,cy+i,Y)}
+    P(sx-1,cy-1,Y);P(sx+1,cy-1,Y);P(sx-1,cy+1,Y);P(sx+1,cy+1,Y);
+    P(sx-r,cy,O);P(sx+r,cy,O);P(sx,cy-r,O);P(sx,cy+r,O);
+    P(sx,cy,W);P(sx-1,cy,W);P(sx+1,cy,W);P(sx,cy-1,W);P(sx,cy+1,W);
+    // まわりのキラキラ
+    const sp=[[-5,-4],[5,-3],[-4,3],[4,4],[0,-7]];
+    sp.forEach(([a,b],i)=>{if((frame+i)%3===0)P(sx+a,cy+b,W)});
+    // 上で揺れる矢印
+    const ay=27+(frame%4<2?0:1);
+    g.fillStyle='#ff5f97';g.fillRect(sx-2,ay,5,1);g.fillRect(sx-1,ay+1,3,1);P(sx,ay+2,'#ff5f97');
   }
   function exTap(e){
     if(!EX||!EX.spark)return;
     const gx=Math.round(camX)+e.offsetX/cv.clientWidth*cv.width;
-    if(Math.abs(gx-EX.spark.x)<8){EX.run=true;EX.spark.until=now()+20000;say('{n}がダッシュ！')}
+    if(Math.abs(gx-EX.spark.x)<10){EX.run=true;EX.spark.until=now()+20000;say('{n}がダッシュ！')}
   }
   function fit(){
     const box=cv.parentElement, w=box.clientWidth, h=box.clientHeight; if(!w||!h)return;
@@ -753,7 +797,7 @@ const K=(()=>{
     g.setTransform(1,0,0,1,0,0); g.fillStyle=sky; g.fillRect(0,0,cv.width,off+1);
     if(pr==='night'){for(let i=0;i<off*0.4;i++)P((i*23+7)%64,(i*11+3)%off,'#fff')}
     else{g.fillStyle='#fff';const cx=(40+(frame>>5))%80-10;g.fillRect(cx,Math.floor(off*0.4),8,2);g.fillRect(cx+2,Math.floor(off*0.4)-1,4,1)}
-    if(pr==='night'){g.fillStyle='rgba(20,15,60,.35)';g.fillRect(0,0,64,off)}
+    if(pr==='night'){g.fillStyle='rgba(20,15,60,.22)';g.fillRect(0,0,64,off)}
     if(pr==='evening'){g.fillStyle='rgba(255,140,80,.12)';g.fillRect(0,0,64,off)}
   }
   function draw(){
@@ -916,10 +960,32 @@ const K=(()=>{
   function placeBub(){
     const el=$('kbub'); if(!el.classList.contains('on'))return;
     const sp=SPR[ckey()]||SPR.baby, cw=cv.clientWidth, ch=cv.clientHeight; if(!cw)return;
-    const sx=(x-Math.round(camX))/cv.width*cw, sy=(47-sp.h-2+(cv.height-48))/cv.height*ch;
-    const w=el.offsetWidth, lx=Math.max(w/2+4,Math.min(cw-w/2-4,sx));
-    el.style.left=lx+'px'; el.style.top=Math.max(el.offsetHeight+6,sy)+'px';
-    el.style.setProperty('--tail',Math.max(14,Math.min(w-14,sx-lx+w/2))+'px');
+    const sc=cw/cv.width, scy=ch/cv.height, sx=(x-Math.round(camX))*sc, M=4, T=12;
+    const headTop=(47-sp.h+(cv.height-48)-(sp.face&&sp.face.quirk==='hair'?3:0))*scy;
+    const above=()=>{ // 頭の上（入らなければ画面の上端に寄せる）
+      el.classList.remove('sl','sr'); el.style.maxWidth='';
+      const w=el.offsetWidth,h=el.offsetHeight,lx=Math.max(w/2+M,Math.min(cw-w/2-M,sx));
+      el.style.left=lx+'px'; el.style.top=Math.max(h+M,Math.min(ch-M,headTop-T-2))+'px';
+      el.style.setProperty('--tail',Math.max(14,Math.min(w-14,sx-lx+w/2))+'px');
+      return h<=ch-2*M;
+    };
+    const side=()=>{ // 頭の上に入らないときだけ、広い方の横に出す
+      const half=sp.w/2*sc, lr=sx-half, rr=cw-(sx+half), right=rr>=lr, room=Math.max(lr,rr)-T-M;
+      if(room<72) return above(); // 横もせまいときは画面内の上に出す
+      el.classList.remove('sl','sr'); el.classList.add(right?'sr':'sl'); el.style.maxWidth=Math.floor(room)+'px';
+      const w=el.offsetWidth,h=el.offsetHeight;
+      let left=right?sx+half+T:sx-half-T-w; left=Math.max(M,Math.min(cw-w-M,left));
+      const cy=Math.max(h/2+M,Math.min(ch-h/2-M,headTop+h/2+2));
+      el.style.left=left+'px'; el.style.top=cy+'px';
+      el.style.setProperty('--tailY',Math.max(10,Math.min(h-10,headTop+4*scy-(cy-h/2)))+'px');
+      return h<=ch-2*M;
+    };
+    // 長いセリフで画面に入りきらないときは、文字を少しずつ小さくする
+    for(const fs of ['','13px','11px']){
+      el.style.fontSize=fs; el.classList.remove('sl','sr'); el.style.maxWidth='';
+      const fitsAbove=headTop-T-2-el.offsetHeight>=M;
+      if(fitsAbove?above():side()) return;
+    }
   }
   function bubTick(){
     const t=Date.now();
