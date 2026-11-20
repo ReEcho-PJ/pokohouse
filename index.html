@@ -24,6 +24,14 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;display:block}
 button{font-family:inherit;cursor:pointer}
 .ov{position:absolute;inset:0;display:none;z-index:20;background:rgba(30,20,45,.55);overflow-y:auto;padding:20px 16px}
 .ov.on{display:flex;align-items:center;justify-content:center}
+.savefail{position:absolute;left:8px;right:8px;top:8px;max-height:45%;overflow-y:auto;z-index:25;display:none;background:#fff3f3;border:3px solid #c0304a;color:#7a1830;font-size:13px;font-weight:700;padding:8px 10px;border-radius:10px;box-shadow:3px 3px 0 rgba(58,47,69,.35);line-height:1.5}
+.savefail.on{display:block}
+.rotnote{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:#2e2438;color:#fff;text-align:center;padding:20px;font-size:16px;font-weight:700;line-height:1.6}
+.rotnote b{font-size:22px}
+@media (orientation:landscape) and (max-height:540px) and (hover:none){.rotnote{display:flex}}
+.savefail button{margin-top:6px;font:inherit;font-size:13px;padding:5px 10px;border:2px solid #3a2f45;border-radius:8px;background:#ffd84d;color:#2e2438}
+#klock{z-index:40}
+.rcv{border:2px solid #3a2f45;border-radius:10px;padding:8px;margin:8px 0;text-align:left;font-size:13px;background:#fbf8ff}
 .toast{position:absolute;left:50%;top:12px;transform:translateX(-50%);background:#3a2f45;color:#fff;font-size:14px;padding:7px 14px;border-radius:99px;opacity:0;transition:opacity .3s;z-index:30;white-space:nowrap}
 .toast.on{opacity:1}
 .fx{position:absolute;font-size:24px;pointer-events:none;animation:float 1.3s ease-out forwards;z-index:6}
@@ -68,8 +76,8 @@ button{font-family:inherit;cursor:pointer}
 img.pix{image-rendering:pixelated;image-rendering:crisp-edges}
 .item em img.pix{width:34px;height:34px}
 .got img.pix{width:84px;height:84px}
-.mapg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}
-.mt{aspect-ratio:1;border:3px solid #3a2f45;background:#8fd17a;font-size:26px;border-radius:8px;box-shadow:0 3px 0 #3a2f45;background-image:radial-gradient(#6fb85f 20%,transparent 22%);background-size:10px 10px}
+.mapg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:8px 0}
+.mt{min-width:0;padding:0;overflow:hidden;aspect-ratio:1;border:3px solid #3a2f45;background:#8fd17a;font-size:26px;border-radius:8px;box-shadow:0 3px 0 #3a2f45;background-image:radial-gradient(#6fb85f 20%,transparent 22%);background-size:10px 10px}
 .mt.open{background:#fff8ec}
 .mt.got{background:#ffe8a0;opacity:.75}
 .board{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:8px 0}
@@ -80,7 +88,7 @@ img.pix{image-rendering:pixelated;image-rendering:crisp-edges}
 .sq.tgt{opacity:1;box-shadow:0 0 0 3px #ff5f97;animation:hint .6s ease-in-out infinite}
 .sq .no{position:absolute;left:3px;top:1px;font-size:11px;color:#6a5a78}
 .sq img.me{width:80%;height:80%}
-.mapg.p3{grid-template-columns:repeat(3,1fr)}
+.mapg.p3{grid-template-columns:repeat(3,minmax(0,1fr))}
 .mmsg{font-size:14px;color:#2e2438;min-height:2.4em}
 .got{font-size:30px;letter-spacing:4px;margin:8px 0}
 .foot{display:flex;justify-content:space-between;gap:6px;width:92%;max-width:360px;margin:12px auto 10px}
@@ -164,21 +172,27 @@ label.fl input{display:none}
   <div class="ov" id="ksetup"><div class="kcard">
     <h2>🌱 ふしぎな種を拾った！</h2>
     <p>生まれてくる子に<br>名前をつけてください</p>
+    <p id="ksnote" style="display:none;font-size:12px;color:#7a1830"></p>
     <input id="kname" maxlength="6" placeholder="ぽこ">
     <button class="pbtn" id="kstart">育てる！</button>
     <button class="pbtn gray" id="kmovein">📦 おひっこしコードで続きから</button>
   </div></div>
   <div class="ov" id="kmodal"><div class="kcard" id="kmbody"></div></div>
-  <div class="ov" id="kconfirm"><div class="kcard"><h2>最初からやり直す？</h2><p>今の子とはお別れになります</p>
+  <div class="ov" id="kconfirm"><div class="kcard"><h2>最初からやり直す？</h2><p>今の子とはお別れになります</p><p style="font-size:12px">消す前に「設定 → ぽこのおひっこし → ファイルに保存する」でバックアップを残しておくと安心です</p>
     <button class="pbtn" id="kcy">最初から</button><button class="pbtn gray" id="kcn">やめる</button></div></div>
+  <div class="savefail" id="ksavefail"></div>
+  <div class="rotnote" id="krot" aria-live="polite"><b>📱 スマホを縦にしてね</b><span>横向きだと、ぽこが見えません。<br>縦向きにすると、そのまま続きから遊べます。</span></div>
+  <div class="ov" id="klock"><div class="kcard" id="klockbody"></div></div>
   <div class="toast" id="ktoast"></div>
 </div>
 
 
 <script>
+const TEST_BUILD=false;   // 正式版は false。テスト用サイトだけ true にする（早送り・?debug を使えるのはテスト版だけ）
+
 // ================= 共通 =================
 const $=id=>document.getElementById(id);
-const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const clamp=(v,a=0,b=100)=>Math.max(a,Math.min(b,v));
 function toast(id,m){const t=$(id);t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1900)}
@@ -273,6 +287,10 @@ function drawSprite(g,s,ox,oy,expr='normal',blush=true){
   if(q==='hair'){P(Math.floor(mid),-1,E);P(Math.floor(mid)+1,-2,E);P(Math.floor(mid),-3,E)}
   if(q==='hanamizu'&&expr!=='happy'){P(f.nose[0],f.nose[1]+1,'#7ccaf5');P(f.nose[0],f.nose[1]+2,'#7ccaf5')}
 }
+
+// 知らない姿のときの代わりの絵（データは書き換えない）
+const SPR_Q=(()=>{const rows=['...KKKKKK...','..KWWWWWWK..','.KWWKKKKWWK.','KWWKWWWWKWWK','KWWWWWWWKWWK','KWWWWWWKWWWK','KWWWWWKWWWWK','KWWWWWKWWWWK','KWWWWWWWWWWK','.KWWWWKWWWK.','..KWWWWWWK..','...KKKKKK...'];
+  return {w:12,h:12,rows,pal:{K:'#3a2f45',W:'#ffffff'}}})();
 
 // ===== 料理のドット絵（12x12） =====
 const DISH_SPR={
@@ -516,7 +534,7 @@ const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'
 function kfx(box,e,n=1,top=40){ for(let i=0;i<n;i++){const d=document.createElement('div');d.className='fx';
   if(e.startsWith('dish:')) d.innerHTML=`<img class="pix" src="${dishPix(e.slice(5))}">`; else d.innerHTML=pixify(e);
   d.style.left=(32+Math.random()*30)+'%';d.style.top=(top+Math.random()*14)+'%';d.style.animationDelay=(i*.12)+'s';box.appendChild(d);setTimeout(()=>d.remove(),1700+i*120)} }
-function ktoast(m){const t=$('ktoast');t.innerHTML=pixify(esc(m));t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1900)}
+let _toastT=0;function ktoast(m){const t=$('ktoast');t.innerHTML=pixify(esc(m));t.classList.add('on');clearTimeout(_toastT);_toastT=setTimeout(()=>t.classList.remove('on'),Math.max(1900,Math.min(6000,String(m).length*90)))}
 // ===== プレイ分析（Google Analytics 4）=====
 // ▼ GA4の測定ID（「G-」で始まる文字）をここに入れてください。例： const GA_MEASUREMENT_ID='G-ABC123XYZ';
 //   空のままなら、分析は一切動かず、何も送信しません。
@@ -525,9 +543,9 @@ const ANA=(()=>{
   const CK='pokohouse_consent';            // 同意の記録（セーブデータとは別の場所）
   let consent=null, loaded=false;
   try{consent=localStorage.getItem(CK)}catch(e){}
-  // テスト用：URLに ?debug&ga=G-XXXX を付けたときだけ、仮のIDで動かせる
+  // テスト用：テスト版（TEST_BUILD）で URLに ?debug&ga=G-XXXX を付けたときだけ、仮のIDで動かせる
   let ID=GA_MEASUREMENT_ID;
-  try{const q=new URLSearchParams(location.search);if(q.has('debug')&&q.get('ga'))ID=q.get('ga')}catch(e){}
+  try{const q=new URLSearchParams(location.search);if(TEST_BUILD&&q.has('debug')&&q.get('ga'))ID=q.get('ga')}catch(e){}
   const configured=()=>/^G-[A-Z0-9]{4,20}$/i.test(ID||'');
   const enabled=()=>configured()&&consent==='granted';
   function load(){
@@ -583,17 +601,25 @@ const K=(()=>{
   const OUT='#3a2f45', MIN=60000;
   const now=()=>Date.now()+(S?S.skew:0);
   // ---- データ ----
-  const IT={
+  const IT_RAW={
     kinomi:{e:'🍒',n:'木の実'}, ringo:{e:'🍎',n:'りんご'}, kinoko:{e:'🍄',n:'きのこ'}, sakana:{e:'🐟',n:'魚'},
     oosakana:{e:'🐠',n:'大きな魚'}, mitsu:{e:'🍯',n:'はちみつ'}, komugi:{e:'🌾',n:'小麦'}, hoshi:{e:'⭐',n:'星のかけら'},
     hana:{e:'🌼',n:'お花',d:1}, hane:{e:'🪶',n:'羽根',d:1}, kai:{e:'🐚',n:'貝がら',d:1}, ishi:{e:'💎',n:'きらきら石',d:1},
     kutsu:{e:'👢',n:'長ぐつ',d:1}, takara:{e:'🎁',n:'宝箱',d:1}};
+  // 知らないアイテム（新しい版のデータなど）は消さずに「？？？」で表示する
+  const IT_UNKNOWN={e:'❓',n:'？？？',unknown:true};
+  const hasIT=k=>Object.prototype.hasOwnProperty.call(IT_RAW,k);
+  const IT=new Proxy(IT_RAW,{get:(t,k)=>hasIT(k)?t[k]:(typeof k==='string'&&/^[a-z0-9_]{1,30}$/.test(k)?IT_UNKNOWN:undefined)});
+  const fnm=k=>(FORMS[k]||{nm:'？？？'}).nm;
   const PLACES={
     mori:{e:'🌳',n:'森',need:0,min:5,t:[['kinomi',5],['ringo',3],['kinoko',3],['hana',1],['hane',1]]},
     umi:{e:'🏖️',n:'海',need:10,min:10,t:[['sakana',5],['kai',2],['oosakana',1],['kinomi',1]]},
     sanpo:{e:'🐾',n:'お散歩',need:0,min:2,walk:true,t:[['kinomi',4],['ringo',2],['hana',2],['kinoko',1],['hane',1]]},
     yama:{e:'⛰️',n:'山',need:30,min:15,t:[['kinoko',3],['mitsu',3],['komugi',4],['ishi',1]]}
 };
+  // このバージョンで知らない場所：IDはそのまま、表示だけ「？？？」。報酬は勝手に作らない
+  const PLACE_UNKNOWN={e:'❓',n:'？？？',need:0,min:0,t:[],unknown:true};
+  const PL=p=>PLACES[p]||PLACE_UNKNOWN;
   const R={ // 2つの組み合わせ → りょうり
     'kinomi+kinomi':{k:'juice',e:'🧃',n:'木の実ジュース',g:1,a:2,tag:'fruit'},
     'kinomi+ringo':{k:'salad',e:'🥗',n:'フルーツサラダ',g:2,a:3,tag:'fruit'},
@@ -616,7 +642,9 @@ const K=(()=>{
     'oosakana+oosakana':{k:'don',e:'🍚',n:'大漁丼',g:5,a:10,tag:'fish'},
     'hoshi+hoshi':{k:'parfait',e:'🍨',n:'流れ星パフェ',g:5,a:20,tag:'sweet'}};
   const FUSHIGI={k:'fushigi',e:'🫕',n:'ふしぎな料理',g:1,a:1,tag:null};
-  const DISH={}; Object.values(R).concat([FUSHIGI]).forEach(d=>DISH[d.k]=d);
+  const DISH_RAW={}; Object.values(R).concat([FUSHIGI]).forEach(d=>DISH_RAW[d.k]=d);
+  const hasDISH=k=>Object.prototype.hasOwnProperty.call(DISH_RAW,k);
+  const DISH=new Proxy(DISH_RAW,{get:(t,k)=>hasDISH(k)?t[k]:(typeof k==='string'&&/^[a-z0-9_]{1,30}$/.test(k)?{k,e:'❓',n:'？？？',g:0,a:0,tag:null,unknown:true}:undefined)});
   const FORMS={
     baby:{rx:4,ry:3.5,col:'#fff1d6',deco:'sprout',nm:'赤ちゃん'},
     child:{rx:5.5,ry:5,col:'#fff1d6',deco:'leaves',nm:'子ども'},
@@ -668,7 +696,7 @@ const K=(()=>{
     if(p==='evening'){g.fillStyle='rgba(255,140,80,.12)';g.fillRect(0,0,64,48)}
   }
   function pet(expr){
-    const key=S.stage==='adult'?S.form:S.stage, sp=SPR[key], bob=frame%4<2?0:1, ox=Math.round(x-sp.w/2);
+    const key=S.stage==='adult'?S.form:S.stage, sp=SPR[key]||SPR_Q, bob=frame%4<2?0:1, ox=Math.round(x-sp.w/2);
     footShadow(sp,ox,bob);
     drawSprite(g,sp,ox,47-sp.h-bob,expr,true);
   }
@@ -738,8 +766,8 @@ const K=(()=>{
     // もうすぐ見つかるものを地面に置く
     E.ev.forEach(v=>{ if(!v.got&&v.t-t<8000&&!EX.marks.some(m=>m.v===v)) EX.marks.push({v,x:8+Math.floor(Math.random()*48)}); });
     // 光るおまけ
-    if(!EX.spark&&!PLACES[E.p].walk&&(E.sparkN||0)<3&&t>EX.nextSpark){const L=Math.round(camX)+6,Rr=Math.round(camX)+cv.width-6;const lo=x-16-L, hi=Rr-(x+16); let sx; if(lo<0&&hi<0) sx=x-L>Rr-x?L:Rr; else if(lo>=hi) sx=L+Math.floor(Math.random()*(lo+1)); else sx=x+16+Math.floor(Math.random()*(hi+1));EX.spark={x:sx,until:t+20000};say('何か光ってる！ 光っている所をタップしてみよう');speak(lineOf('spark'))}
-    if(EX.spark&&t>EX.spark.until&&!EX.run){EX.spark=null;EX.nextSpark=t+15000+Math.random()*15000}
+    if(!EX.spark&&!PL(E.p).walk&&!PL(E.p).unknown&&(E.sparkN||0)<3&&t>EX.nextSpark){const L=Math.round(camX)+6,Rr=Math.round(camX)+cv.width-6;const lo=x-16-L, hi=Rr-(x+16); let sx; if(lo<0&&hi<0) sx=x-L>Rr-x?L:Rr; else if(lo>=hi) sx=L+Math.floor(Math.random()*(lo+1)); else sx=x+16+Math.floor(Math.random()*(hi+1));EX.spark={x:sx,until:t+20000};say('何か光ってる！ 光っている所をタップしてみよう');speak(lineOf('spark'))}
+    if(EX.spark&&t>EX.spark.until&&!EX.run){EX.spark=null;EX.nextSpark=t+15000+Math.random()*15000;if(($('kmsg').textContent||'').includes('光っている所をタップ'))say('光が消えちゃった。また光るかも？')}
     // 行き先
     let tx=null;
     if(EX.run&&EX.spark) tx=EX.spark.x; else if(EX.spark){tx=x;face=EX.spark.x>x?1:-1} else if(EX.marks.length) tx=EX.marks[0].x;
@@ -751,12 +779,12 @@ const K=(()=>{
       busy='happy';setTimeout(()=>busy=null,900);kfx($('kov'),it.e,1,40);SND.sfx.pick();setTimeout(()=>SND.cry(ckey()),250);say(`{n}は${it.e}${it.n}を見つけた！`);speak(lineOf('find'),'happy');save();
     }
     if(EX.run&&EX.spark&&Math.abs(EX.spark.x-x)<1){
-      const k=wpick(PLACES[E.p].t);(E.bonus=E.bonus||[]).push(k);E.sparkN=(E.sparkN||0)+1;EX.spark=null;EX.run=false;EX.nextSpark=t+20000+Math.random()*15000;
+      const k=wpick(PL(E.p).t);(E.bonus=E.bonus||[]).push(k);E.sparkN=(E.sparkN||0)+1;EX.spark=null;EX.run=false;EX.nextSpark=t+20000+Math.random()*15000;
       busy='happy';setTimeout(()=>busy=null,900);kfx($('kov'),IT[k].e,2,40);SND.sfx.pick();setTimeout(()=>SND.cry(ckey()),250);say(`{n}が${IT[k].e}${IT[k].n}を拾った！（おまけ）`);save();
     }
   }
   function drawStage(){
-    const E=S.explore; stageBg(E.p);
+    const E=S.explore; stageBg(PLACES[E.p]?E.p:'mori');   // 知らない場所は表示だけ森で代用（データは変えない）
     EX&&EX.marks.forEach(m=>{const on=frame%4<2;P(m.x,44,'#ffd84d');if(on){P(m.x-1,44,'#fff6a0');P(m.x+1,44,'#fff6a0');P(m.x,43,'#fff6a0');P(m.x,45,'#fff6a0')}});
     pet(busy||(EX&&EX.run?'happy':'normal'));
     if(EX&&EX.spark)drawSpark(EX.spark.x);
@@ -817,7 +845,8 @@ const K=(()=>{
   }
 
   // ---- 状態 ----
-  const save=()=>store.set(KEY,S);
+  const save=()=>{if(LOCK||!S)return false;let txt;try{txt=JSON.stringify(S)}catch(e){setSaveFail(true);return false}
+    const r=writeMain(txt); if(r.why==='conflict'||r.why==='lock')return false; setSaveFail(!r.ok); return r.ok};
   const showMsg=t=>{$('kmsg').innerHTML=pixify(esc(t.replaceAll('{n}',S?S.name:'ぽこ'))).replace(/\n/g,'<br>')};
   const say=t=>{msgLock=Date.now()+20000; showMsg(t)};
   const cnt=(o,k)=>o[k]||0;
@@ -826,26 +855,26 @@ const K=(()=>{
   function ui(){
     if(!S)return;
     $('kname2').textContent=S.name;
-    $('kstage').textContent=S.stage==='seed'?'（種）':`（${FORMS[S.stage==='adult'?S.form:S.stage].nm}）`;
+    $('kstage').textContent=S.stage==='seed'?'（種）':`（${fnm(S.stage==='adult'?S.form:S.stage)}）`;
     const gk=Math.round(clamp(S.genki,0,5)); $('kgenki').textContent='元気 '+'♥'.repeat(gk)+'♡'.repeat(5-gk);
     const nx=GOALS.find(g=>S.aff<g[0]);
     $('kaff').style.width=(nx?Math.min(100,S.aff/nx[0]*100):100)+'%'; $('kaffn').textContent=S.aff;
     if(S.explore){const E=S.explore,m=Math.max(0,Math.ceil((E.end-now())/MIN)),got=(E.ev||[]).filter(v=>v.got).map(v=>IT[v.k].e).concat((E.bonus||[]).map(k=>IT[k].e)).join('');
-      $('knext').innerHTML=pixify(`${PLACES[E.p].walk?'お散歩中':'探検中：'+PLACES[E.p].n} あと${m}分　拾った物 ${got||'まだなし'}`)}
+      $('knext').innerHTML=pixify(`${PL(E.p).walk?'お散歩中':'探検中：'+PL(E.p).n} あと${m}分　拾った物 ${got||'まだなし'}`)}
     else $('knext').textContent=nx?`次の目標：なかよし${nx[0]}で${nx[1]}`:'すべて解放しました！';
     const ds=Object.keys(S.decor), pos=[[24,70],[50,62],[6,90],[72,90],[40,92],[66,72]];
     $('kdecor').innerHTML='';
     document.querySelectorAll('#kbtns button').forEach(b=>b.classList.toggle('hint',!!b.dataset.k&&b.dataset.k===({1:'cook',2:'feed',3:'explore'})[S.tut]));
-    {const eb=document.querySelector('#kbtns [data-k=explore]'), onMap=S.explore&&!PLACES[S.explore.p].walk&&!(S.explore.map&&S.explore.map.done);
+    {const eb=document.querySelector('#kbtns [data-k=explore]'), onMap=S.explore&&!PL(S.explore.p).walk&&!PL(S.explore.p).unknown&&!(S.explore.map&&S.explore.map.done);
      const want=onMap?'sugoroku':'explore'; if(eb.dataset.cur!==want){eb.dataset.cur=want;eb.innerHTML=`<em><img class="pix bi" src="${ICON(want)}"></em>${onMap?'すごろく':'探検'}`;} if(onMap)eb.classList.add('hint');}
     $('kzz').textContent=S.sleep&&present()?(frame%4<2?'Z z':'z Z'):'';
   }
   function addAff(n){
-    const b=S.aff; S.aff+=n;
-    Object.values(PLACES).forEach(p=>{if(p.need>0&&b<p.need&&S.aff>=p.need)setTimeout(()=>{say(`新しい場所「${p.n}」に行けるようになった！`);ktoast(`${p.e} ${p.n} 解放！`)},1600)});
+    const b=S.aff; S.aff+=n; if(!Array.isArray(S.unlocked))S.unlocked=[];
+    Object.entries(PLACES).forEach(([k,p])=>{if(p.need>0&&b<p.need&&S.aff>=p.need&&!S.unlocked.includes(k)){S.unlocked.push(k);setTimeout(()=>{say(`新しい場所「${p.n}」に行けるようになった！`);ktoast(`${p.e} ${p.n} 解放！`)},1600)}});
     if(S.stage==='baby'&&S.aff>=15)grow('child');
     else if(S.stage==='child'&&S.aff>=60){
-      const t=S.tags;let best='fruit';Object.keys(t).forEach(k=>{if(t[k]>(t[best]||0))best=k});S.form=TAG2FORM[best];grow('adult')}
+      const t=S.tags;let best='fruit';Object.keys(t).forEach(k=>{if(TAG2FORM[k]&&t[k]>(t[best]||0))best=k});S.form=TAG2FORM[best];S.adultAt=now();ensureIntegrity(S);grow('adult')}
   }
   function grow(st){
     S.stage=st; let n=0; SND.sfx.fanfare(); ANA.track('grow',{stage:st,form:st==='adult'?S.form:'none'});
@@ -860,13 +889,15 @@ const K=(()=>{
   }
   function wpick(t){const sum=t.reduce((a,b)=>a+b[1],0);let r=Math.random()*sum;for(const [k,w] of t){if((r-=w)<0)return k}return t[0][0]}
   function backHome(){
-    const E=S.explore, pl=PLACES[E.p];
-    const got=(E.ev&&E.ev.length?E.ev.map(v=>v.k):Array.from({length:3},()=>wpick(pl.t))).concat(E.bonus||[]);
-    got.forEach(k=>IT[k].d?add(S.decor,k):add(S.inv,k));
+    const E=S.explore, pl=PL(E.p);
+    const got=(E.ev&&E.ev.length?E.ev.map(v=>v.k):(pl.t.length?Array.from({length:3},()=>wpick(pl.t)):[])).concat(E.bonus||[]);
+    let held=0;
+    got.forEach(k=>{ if(hasIT(k)) IT[k].d?add(S.decor,k):add(S.inv,k); else { if(!Array.isArray(S.hold))S.hold=[]; S.hold.push(k); held++; } });
     ANA.track('explore_end',{place:E.p,items:got.length});
-    S.explore=null; S.lucky=false; S.justBack=true; EX=null; x=34; save(); SND.sfx.ding(); setTimeout(()=>speak(lineOf('back'),'happy'),400);
+    S.explore=null; S.lucky=false; S.justBack=true; EX=null; x=34; save();
+    say('おかえり！');   // 探検中の案内（光・おまけ・ダッシュ・あと○分など）は、帰ったら残さない SND.sfx.ding(); setTimeout(()=>speak(lineOf('back'),'happy'),400);
     modal(`<h2>${pl.e} ただいま！</h2><p>${esc(S.name)}が${pl.n}から帰ってきた！</p><div class="got">${got.map(k=>IT[k].e).join('')}</div>
-      <p>${[...new Set(got)].map(k=>IT[k].n).join('、')}を拾ってきた${(E.bonus||[]).length?`<br>（すごろくや光るおまけで拾った ${E.bonus.length}個 込み）`:''}<br>「なでる」とおまけをくれるかも？</p><button class="pbtn" onclick="K.close()">やったね！</button>`);
+      <p>${[...new Set(got)].map(k=>IT[k].n).join('、')}を拾ってきた${(E.bonus||[]).length?`<br>（すごろくや光るおまけで拾った ${E.bonus.length}個 込み）`:''}${held?`<br>（このバージョンで使えない物 ${held}個は、なくさないように保管しました）`:''}<br>「なでる」とおまけをくれるかも？</p><button class="pbtn" onclick="K.close()">やったね！</button>`);
   }
 
   // ---- モーダル ----
@@ -875,7 +906,7 @@ const K=(()=>{
   function close(){$('kmodal').classList.remove('on');clearInterval(fishTimer);fishTimer=null;ui();draw()}
 
   // ---- こうどう ----
-  const ckey=()=>S.stage==='adult'?S.form:S.stage;
+  const ckey=()=>!S?'baby':S.stage==='adult'?S.form:S.stage;
   // ---- ぽこのセリフ ----
   // 1つのセリフは文字列か {t:'セリフ', st:['baby'], form:['umi'], pers:['amaenbo'], odd:true}
   //   st   … 成長段階（seed/baby/child/adult）でしぼる
@@ -929,6 +960,7 @@ const K=(()=>{
   };
   let lastLine='';
   function lineOf(cat){
+    if(!S)return '';
     const st=S.stage, fm=S.stage==='adult'?S.form:null, ps=S.pers||null;
     const ok=x=>typeof x==='string'||((!x.st||x.st.includes(st))&&(!x.form||x.form.includes(fm))&&(!x.pers||x.pers.includes(ps)));
     let pool=(LINES[cat]||LINES.idle).filter(ok).map(x=>typeof x==='string'?{t:x}:x);
@@ -942,7 +974,7 @@ const K=(()=>{
   }
   // ---- 吹き出し（ぽこの声はここ。説明は下の枠） ----
   let bubShown=0, bubUntil=0, bubPending=null, nextIdle=Date.now()+15000;
-  const DEBUG=location.search.includes('debug');
+  const DEBUG=TEST_BUILD&&location.search.includes('debug');
   const idleGap=()=>DEBUG?(4000+Math.random()*2000):(S&&S.explore?(20000+Math.random()*20000):(45000+Math.random()*45000));
   const modalOpen=()=>['kmodal','ksetup','kconfirm'].some(id=>$(id).classList.contains('on'));
   function showBub(text,expr){
@@ -1000,7 +1032,7 @@ const K=(()=>{
     nextIdle=t+idleGap();
     if(!S||S.stage==='seed'||busy||modalOpen()||t<bubUntil) return;
     let cat='idle';
-    if(S.explore) cat=PLACES[S.explore.p].walk?'sanpo':S.explore.p;
+    if(S.explore) cat=PL(S.explore.p).walk?'sanpo':PL(S.explore.p).unknown?'idle':S.explore.p;
     else if(S.sleep) cat='zzz';
     else if(S.genki<1.5&&Math.random()<.6) cat='tired';
     else if(S.aff>=40&&Math.random()<.25) cat='love';
@@ -1010,12 +1042,12 @@ const K=(()=>{
 
 
   function act(k){
-    tick(); if(!S)return;
+    if(LOCK)return; tick(); if(!S)return;
     if(S.stage==='seed'){say('まずは種をタップしてみよう');return}
     const sleepNG=()=>{say('{n}は寝ています。「寝る」でもう一度押すと起きます');};
-    const away=()=>{const m=Math.ceil((S.explore.end-now())/MIN),pl=PLACES[S.explore.p];say(pl.walk?`{n}はお散歩中… あと${m}分`:`{n}は${pl.n}を探検中… あと${m}分`)};
+    const away=()=>{const m=Math.ceil((S.explore.end-now())/MIN),pl=PL(S.explore.p);say(pl.walk?`{n}はお散歩中… あと${m}分`:`{n}は${pl.n}を探検中… あと${m}分`)};
     if(k==='cook')return cookUI();
-    if(S.explore){ if(k==='explore'&&!PLACES[S.explore.p].walk) return mapUI(); return away(); }
+    if(S.explore){ if(k==='explore'&&!PL(S.explore.p).walk&&!PL(S.explore.p).unknown) return mapUI(); return away(); }
     if(k==='walk'){ if(S.sleep)return sleepNG();
       ANA.track('walk_start');const st=now(),pl=PLACES.sanpo; S.explore={p:'sanpo',start:st,end:st+pl.min*MIN,bonus:[],ev:[{t:st+60000,k:wpick(pl.t)}]};S.justBack=false;EX=null;x=4;save();ui();
       say('{n}はお散歩に出かけた！ 2分で帰ってきます');setTimeout(()=>speak(lineOf('walk')),600);return }
@@ -1034,7 +1066,7 @@ const K=(()=>{
   }
   function exploreUI(){
     if(S.genki<1){say('元気が足りない… 料理を食べさせてあげよう');return}
-    const html=Object.entries(PLACES).filter(([k,p])=>!p.walk).map(([k,p])=>{const lock=S.aff<p.need;
+    const html=Object.entries(PLACES).filter(([k,p])=>!p.walk).map(([k,p])=>{const lock=S.aff<p.need&&!(S.unlocked||[]).includes(k);
       return `<button class="place" ${lock?'disabled':''} data-p="${k}"><em>${lock?'🔒':p.e}</em><span>${p.n}（${p.min}分）<small>${lock?`なかよし${p.need}で解放`:p.t.slice(0,3).map(([i])=>IT[i].e).join(' ')+' など'}</small></span></button>`}).join('');
     modal(`<h2>🗺️ どこへ行く？</h2><p>元気を♥1つ使います${S.lucky?'<br>🍀 ラッキー！ いつもよりたくさん拾える':''}</p>${html}<button class="pbtn gray" onclick="K.close()">やめる</button>`);
     $('kmbody').querySelectorAll('.place').forEach(b=>b.onclick=()=>{const p=PLACES[b.dataset.p];
@@ -1061,7 +1093,7 @@ const K=(()=>{
     render();
   }
   function feedUI(){
-    const ds=Object.keys(S.dishes);
+    const ds=Object.keys(S.dishes).filter(hasDISH);   // 知らない料理はあげられない（データは残す）
     if(!ds.length){say('料理がありません。まずは「料理」で作ってみよう');return}
     modal(`<h2>🍽️ どれをあげる？</h2><div class="items">${ds.map(k=>`<button class="item" data-d="${k}"><em><img class="pix" src="${dishPix(k)}"></em>${DISH[k].n}<br>×${S.dishes[k]}</button>`).join('')}</div><button class="pbtn gray" onclick="K.close()">やめる</button>`);
     $('kmbody').querySelectorAll('.item').forEach(b=>b.onclick=()=>{
@@ -1112,17 +1144,17 @@ const K=(()=>{
     mid.push({t:'short'},{t:'short'},{t:'treasure'},{t:'puzzle'},{t:'puzzle'},{t:'event'},{t:'event'});
     return {sq:[{t:'start'}].concat(shuffle(mid),[{t:'goal'}]),pos:0,rolls:6,done:false,seen:[0]};
   }
-  const sqIcon=q=>q.t==='item'?IT[q.k].e:SQ[q.t].e;
+  const sqIcon=q=>q.t==='item'?IT[q.k].e:(SQ[q.t]||{e:'❓'}).e;
   let charImg=null;
   function charPic(e='happy'){const sp=SPR[ckey()]||SPR.baby,c=document.createElement('canvas');c.width=sp.w+2;c.height=sp.h+2;drawSprite(c.getContext('2d'),sp,1,1,e);return c.toDataURL()}
   const talkRow=(text,e)=>`<div class="talk"><img class="pix face" src="${charPic(e)}"><div class="tb">${esc(text)}</div></div>`;
   function mapUI(){
-    const E=S.explore; if(!E.map||!E.map.sq) E.map=makeMap(PLACES[E.p]);
+    const E=S.explore; if(PL(E.p).unknown){close();say('この場所のすごろくは、このバージョンでは遊べません');return} if(!E.map||!E.map.sq) E.map=makeMap(PLACES[E.p]);
     const M=E.map, order=[0,1,2,3,7,6,5,4,8,9,10,11,15,14,13,12];
-    let target=null, busyM=false, msg='サイコロを振ってね', talk=M.done?'楽しかった！':'サイコロ、振ってみて！', fe='normal'; charImg=charPic();
+    let target=null, busyM=false, msg=(M.done||M.rolls<=0)?'サイコロはもうないよ。続きは次の探検で！':'サイコロを振ってね', talk=M.done?'楽しかった！':'サイコロ、振ってみて！', fe='normal'; charImg=charPic();
     function render(){
       const left=Math.max(0,Math.ceil((E.end-now())/MIN));
-      modal(`<h2>🎲 ${PLACES[E.p].n}すごろく</h2><p>サイコロ残り <b>${M.rolls}</b>回　帰りまで あと${left}分</p>
+      modal(`<h2>🎲 ${PL(E.p).n}すごろく</h2><p>サイコロ残り <b>${M.rolls}</b>回　帰りまで あと${left}分</p>
         ${talkRow(talk,fe)}
         <div class="board">${order.map(i=>{const q=M.sq[i];const here=i===M.pos;
           return `<button class="sq ${M.seen.includes(i)?'seen':''} ${i===target?'tgt':''} ${q.t}" data-i="${i}" ${i===target&&!busyM?'':'disabled'}>
@@ -1154,13 +1186,14 @@ const K=(()=>{
         else {msg='❓ どんぐりを踏んだ… 何もなかった';talk=pick(['…あれ？ 何もない。','いたっ。どんぐりだった。']);fe='sad';}
       }
       else if(q.t==='puzzle'){save();return puzzle()}
-      else if(q.t==='goal'){const a=wpick(PLACES[E.p].t),b2=wpick(PLACES[E.p].t);E.bonus.push(a,b2);E.end=now()+4000;M.done=true;msg=`🏁 ゴール！ ${IT[a].e}${IT[b2].e}をもらった！ ${esc(S.name)}がもうすぐ帰ってくるよ`;talk='ゴール！ もうすぐ帰るね。';fe='happy';SND.sfx.fanfare()}
+      else if(q.t!=='goal'&&q.t!=='start'){msg='❓ ？？？のマス（このバージョンでは何も起きません）';talk='…なんだろう？';fe='normal'}
+      else if(q.t==='goal'){const a=wpick(PL(E.p).t),b2=wpick(PL(E.p).t);E.bonus.push(a,b2);E.end=now()+4000;M.done=true;msg=`🏁 ゴール！ ${IT[a].e}${IT[b2].e}をもらった！ ${esc(S.name)}がもうすぐ帰ってくるよ`;talk='ゴール！ もうすぐ帰るね。';fe='happy';SND.sfx.fanfare()}
       if(!M.done&&M.rolls<=0){M.done=true;msg+='<br>サイコロがなくなった。続きは次の探検で！'}
       save(); render();
     }
     // パズルマス：3ペアの神経衰弱（4回まで）
     function puzzle(){
-      const ks=[...new Set(PLACES[E.p].t.map(x=>x[0]))].slice(0,3), cards=shuffle(ks.concat(ks)); let open=[],got=[],tries=4,lock=false,pt='パズルだ！ そろえるぞ。',pf='normal';
+      const ks=[...new Set(PL(E.p).t.map(x=>x[0]))].slice(0,3), cards=shuffle(ks.concat(ks)); let open=[],got=[],tries=4,lock=false,pt='パズルだ！ そろえるぞ。',pf='normal';
       function pr(m){
         modal(`<h2>🃏 パズルマス</h2><p>同じ物をそろえよう　のこり <b>${tries}</b>回</p>${talkRow(pt,pf)}
           <div class="mapg p3">${cards.map((k,i)=>`<button class="mt ${open.includes(i)||got.includes(i)?'open':''} ${got.includes(i)?'got':''}" data-i="${i}">${open.includes(i)||got.includes(i)?IT[k].e:''}</button>`).join('')}</div>
@@ -1181,16 +1214,27 @@ const K=(()=>{
     render();
   }
   // ---- ぽこのおひっこし（引き継ぎコード・バックアップ） ----
-  const SAVE_FORMAT=1;                 // 引き継ぎデータの形式バージョン
-  const MAX_IMPORT=200000;             // 読み込みを許す最大の大きさ（文字数）
+  const SAVE_FORMAT=2;                 // セーブ・引き継ぎデータの形式バージョン（v1.9で2）
+  const MAX_IMPORT=2000000;            // 読み込みを許す最大の大きさ（文字数）
+  const ALBUM_MAX=50;                  // アルバムに入れられる数（遊びの上限。将来はここを変えるだけ）
+  const ALBUM_HARD=500;                // データとして受け付ける上限
+  const ID_RE=/^p[0-9a-z]{6,24}$/, KEY_RE=/^[a-z0-9_]{1,30}$/;
+  // 生まれ持った気質（いまは基本性格8種と同じID。将来は別の表にできる）
+  const TEMPER={amaenbo:{n:'甘えん坊'},ottori:{n:'おっとり'},kokishin:{n:'好奇心旺盛'},kuishinbo:{n:'食いしん坊'},
+    cool:{n:'クール'},makezu:{n:'負けず嫌い'},shincho:{n:'慎重派'},kimagure:{n:'気まぐれ'}};
+  const TEMPER_IDS=['amaenbo','ottori','kokishin','kuishinbo','cool','makezu','shincho','kimagure']; // 並び順は変えない（気質の決め方に使う）
+  const TRAIT_VER=1;
   const CRC_T=(()=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
   function crc32(str){const b=new TextEncoder().encode(str);let c=0xFFFFFFFF;for(const x of b)c=CRC_T[(c^x)&255]^(c>>>8);return ((c^0xFFFFFFFF)>>>0).toString(16).padStart(8,'0')}
   const b64e=str=>{const b=new TextEncoder().encode(str);let s='';for(let i=0;i<b.length;i+=8192)s+=String.fromCharCode.apply(null,b.subarray(i,i+8192));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
   const b64d=str=>{let s=str.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const bin=atob(s);const b=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)b[i]=bin.charCodeAt(i);return new TextDecoder('utf-8',{fatal:true}).decode(b)};
 
   // セーブデータを検査して、知っている項目だけのきれいなコピーを返す（おかしければ例外）
-  function checkSave(d){
+  function checkSave(d,lax){   // lax=true は形式2用：決まった形の知らないIDを拒否せずに残す（形・長さ・型・件数は検査する）
     const bad=m=>{throw new Error(m)};
+    const okId=k=>typeof k==='string'&&KEY_RE.test(k);
+    const capObj=(o,n,name)=>{if(lax&&o&&typeof o==='object'&&Object.keys(o).length>n)bad(name+'が多すぎる')};
+    const extra=(src,dst)=>{if(!lax)return dst;let n=0;for(const [k,v] of Object.entries(src)){if(k in dst)continue;if(!/^[A-Za-z_][A-Za-z0-9_]{0,30}$/.test(k)||++n>50)bad('データの形がおかしい');if(v!==undefined&&typeof v!=='function')dst[k]=JSON.parse(JSON.stringify(v))}return dst};
     const isObj=o=>o&&typeof o==='object'&&!Array.isArray(o);
     const num=(v,lo,hi,name)=>{if(typeof v!=='number'||!isFinite(v)||v<lo||v>hi)bad(name+'の値がおかしい');return v};
     const int=(v,lo,hi,name)=>{num(v,lo,hi,name);if(Math.floor(v)!==v)bad(name+'の値がおかしい');return v};
@@ -1201,18 +1245,18 @@ const K=(()=>{
     if(typeof d.name!=='string'||!d.name.trim()||d.name.length>20)bad('名前がおかしい');
     c.name=d.name.replace(/[\u0000-\u001f\u007f<>]/g,'').slice(0,12)||'ぽこ';
     if(!['seed','baby','child','adult'].includes(d.stage))bad('成長段階がおかしい'); c.stage=d.stage;
-    if(d.form==null)c.form=null; else if(['umi','mori','hana','okashi'].includes(d.form))c.form=d.form; else bad('姿がおかしい');
+    if(d.form==null)c.form=null; else if(['umi','mori','hana','okashi'].includes(d.form))c.form=d.form; else if(lax&&okId(d.form))c.form=d.form; else bad('姿がおかしい');
     if(c.stage==='adult'&&!c.form)bad('大人の姿が入っていない');
     c.taps=int(d.taps??0,0,100000,'タップ数');
     c.genki=num(d.genki,0,5,'元気');
     c.aff=int(d.aff,0,10000000,'なかよし');
-    c.inv=counts(d.inv,k=>IT[k]&&!IT[k].d,'材料');
-    c.dishes=counts(d.dishes,k=>!!DISH[k],'料理');
-    c.decor=counts(d.decor,k=>IT[k]&&IT[k].d,'飾り');
+    capObj(d.inv,200,'材料');c.inv=counts(d.inv,k=>hasIT(k)?!IT[k].d:(lax&&okId(k)),'材料');
+    capObj(d.dishes,200,'料理');c.dishes=counts(d.dishes,k=>hasDISH(k)||(lax&&okId(k)),'料理');
+    capObj(d.decor,200,'飾り');c.decor=counts(d.decor,k=>hasIT(k)?!!IT[k].d:(lax&&okId(k)),'飾り');
     if(d.recipes!==undefined&&!Array.isArray(d.recipes))bad('レシピの形がおかしい');
-    c.recipes=[...new Set((d.recipes||[]).map(k=>{if(!DISH[k])bad('知らないレシピがある');return k}))];
-    c.tags=counts(d.tags,k=>['fruit','fish','mush','sweet'].includes(k),'食べた料理の記録');
-    if(d.hideDecor!==undefined){if(!isObj(d.hideDecor))bad('飾りの設定がおかしい');c.hideDecor={};for(const [k,v] of Object.entries(d.hideDecor)){if(!(IT[k]&&IT[k].d))bad('飾りの設定がおかしい');if(v)c.hideDecor[k]=true}}
+    if(lax&&(d.recipes||[]).length>500)bad('レシピが多すぎる');c.recipes=[...new Set((d.recipes||[]).map(k=>{if(!(hasDISH(k)||(lax&&okId(k))))bad('知らないレシピがある');return k}))];
+    capObj(d.tags,50,'食べた料理の記録');c.tags=counts(d.tags,k=>['fruit','fish','mush','sweet'].includes(k)||(lax&&okId(k)),'食べた料理の記録');
+    if(d.hideDecor!==undefined){if(!isObj(d.hideDecor))bad('飾りの設定がおかしい');c.hideDecor={};for(const [k,v] of Object.entries(d.hideDecor)){if(!(hasIT(k)?IT[k].d:(lax&&okId(k))))bad('飾りの設定がおかしい');if(v)c.hideDecor[k]=true}}
     for(const k of ['sleep','lucky','justBack'])c[k]=!!d[k];
     c.last=num(d.last??Date.now(),0,1e15,'時刻'); c.skew=num(d.skew??0,-1e13,1e13,'時刻');
     if(d.tut!==undefined)c.tut=int(d.tut,0,9,'チュートリアル');
@@ -1222,27 +1266,307 @@ const K=(()=>{
     if(d.petAt!==undefined)c.petAt=num(d.petAt,0,1e15,'なでる');
     if(d.pers!==undefined&&d.pers!==null){if(typeof d.pers!=='string'||!/^[a-z_]{1,20}$/.test(d.pers))bad('性格がおかしい');c.pers=d.pers}
     if(d.explore==null)c.explore=null;
-    else{const E=d.explore;if(!isObj(E)||!PLACES[E.p])bad('探検のデータがおかしい');
+    else{const E=d.explore;if(!isObj(E)||!(PLACES[E.p]||(lax&&okId(E.p))))bad('探検のデータがおかしい');
       const e={p:E.p,start:num(E.start??E.end,0,1e15,'探検の時刻'),end:num(E.end,0,1e15,'探検の時刻')};
-      const keys=(a,name,max)=>{if(a===undefined)return [];if(!Array.isArray(a)||a.length>max)bad(name+'がおかしい');return a.map(k=>{if(!IT[k])bad(name+'に知らない物がある');return k})};
+      const keys=(a,name,max)=>{if(a===undefined)return [];if(!Array.isArray(a)||a.length>max)bad(name+'がおかしい');return a.map(k=>{if(!(hasIT(k)||(lax&&okId(k))))bad(name+'に知らない物がある');return k})};
       e.bonus=keys(E.bonus,'探検のおまけ',60);
       if(E.ev!==undefined){if(!Array.isArray(E.ev)||E.ev.length>30)bad('探検のデータがおかしい');
-        e.ev=E.ev.map(v=>{if(!isObj(v)||!IT[v.k])bad('探検のデータがおかしい');return {t:num(v.t,0,1e15,'探検の時刻'),k:v.k,...(v.got?{got:true}:{})}})}
+        e.ev=E.ev.map(v=>{if(!isObj(v)||!(hasIT(v.k)||(lax&&okId(v.k))))bad('探検のデータがおかしい');return extra(v,{t:num(v.t,0,1e15,'探検の時刻'),k:v.k,...(v.got?{got:true}:{})})})}
       if(E.sparkN!==undefined)e.sparkN=int(E.sparkN,0,99,'探検');
       const M=E.map;
       if(M!==undefined&&M!==null){
         if(isObj(M)&&Array.isArray(M.sq)){ // すごろく
-          if(M.sq.length!==16)bad('すごろくのデータがおかしい');
-          const sq=M.sq.map(q=>{if(!isObj(q)||!['start','item','short','treasure','event','puzzle','goal'].includes(q.t))bad('すごろくのデータがおかしい');
-            if(q.t==='item'){if(!IT[q.k])bad('すごろくのデータがおかしい');return {t:'item',k:q.k}}return {t:q.t}});
+          if(lax?(M.sq.length<1||M.sq.length>64):M.sq.length!==16)bad('すごろくのデータがおかしい');
+          const sq=M.sq.map(q=>{if(!isObj(q)||!(['start','item','short','treasure','event','puzzle','goal'].includes(q.t)||(lax&&okId(q.t))))bad('すごろくのデータがおかしい');
+            if(q.t==='item'){if(!(hasIT(q.k)||(lax&&okId(q.k))))bad('すごろくのデータがおかしい');return extra(q,{t:'item',k:q.k})}return extra(q,{t:q.t})});
           if(!Array.isArray(M.seen))bad('すごろくのデータがおかしい');
-          e.map={sq,pos:int(M.pos,0,15,'すごろく'),rolls:int(M.rolls,0,6,'すごろく'),done:!!M.done,seen:M.seen.filter(i=>Number.isInteger(i)&&i>=0&&i<16)};
-        } // 古い形式（めくりマップ）は作り直すので持ってこない
+          e.map=extra(M,{sq,pos:int(M.pos,0,sq.length-1,'すごろく'),rolls:int(M.rolls,0,lax?99:6,'すごろく'),done:!!M.done,seen:M.seen.filter(i=>Number.isInteger(i)&&i>=0&&i<sq.length)});
+        } else if(lax&&isObj(M)) e.map=JSON.parse(JSON.stringify(M));   // 形式2：知らない形のマップも残す（遊ぶときは作り直す）
+        // 古い形式（めくりマップ）は作り直すので持ってこない（形式1）
       }
-      c.explore=e;}
+      c.explore=extra(E,e);}
     return c;
   }
+  // ===== v1.9 セーブ形式2 =====
+  const isO=o=>o&&typeof o==='object'&&!Array.isArray(o);
+  const clone=o=>JSON.parse(JSON.stringify(o));
+  function allIds(d){const a=[];if(d&&typeof d.id==='string')a.push(d.id);(d&&Array.isArray(d.album)?d.album:[]).forEach(r=>{if(r&&typeof r.id==='string')a.push(r.id)});return a}
+  function newId(d){const used=new Set(allIds(d));let id;do{id='p'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}while(used.has(id)||!ID_RE.test(id));return id}
+  const temperOf=id=>TEMPER_IDS[parseInt(crc32(String(id)).slice(0,6),16)%TEMPER_IDS.length];
+  // 形式1（v1.8以前）→ 形式2。元のオブジェクトは変えずに新しいものを返す。今ある項目は消さない・変えない
+  function upgrade(src){
+    const d=clone(src);
+    d.ver=SAVE_FORMAT;
+    if(!Array.isArray(d.album))d.album=[];
+    if(!Array.isArray(d.unlocked))d.unlocked=[];
+    if(typeof d.seeds!=='number'||!isFinite(d.seeds))d.seeds=0;
+    if(d.fav===undefined)d.fav=null;
+    if(!isO(d.seen))d.seen={};
+    if(!isO(d.book))d.book={};
+    return d;
+  }
+  // 整合性チェック：何度実行しても同じ結果になる。ぽこ・種・持ち物は消さない
+  let INTEG_WARN=[];
+  function ensureIntegrity(d){
+    INTEG_WARN=[];
+    if(!d)return d;
+    if(!Array.isArray(d.album))d.album=[];
+    if(!Array.isArray(d.unlocked))d.unlocked=[];
+    if(typeof d.seeds!=='number'||!isFinite(d.seeds))d.seeds=0;
+    if(!isO(d.seen))d.seen={};
+    if(!isO(d.book))d.book={};
+    if(d.fav===undefined)d.fav=null;
+    // 個体ID：一度付けたら変えない。ない・形が違うときだけ付ける
+    if(typeof d.id!=='string'||!ID_RE.test(d.id)||d.album.some(r=>r&&r.id===d.id&&!r.live))d.id=newId(d);
+    if(d.stage!=='seed'&&typeof d.born!=='number'){d.born=Date.now();d.bornGuess=true}
+    if(typeof d.temper!=='string')d.temper=temperOf(d.id);
+    if(typeof d.traitVer!=='number')d.traitVer=TRAIT_VER;
+    if(!isO(d.log))d.log={};
+    if(d.logFixed===undefined)d.logFixed=null;
+    // 行けるようになった場所（プレイヤー全体）
+    Object.entries(PLACES).forEach(([k,p])=>{if(p.need>0&&d.aff>=p.need&&!d.unlocked.includes(k))d.unlocked.push(k)});
+    // 大人：アルバムに目印を1つだけ。種は1匹につき1回だけ
+    if(d.stage==='adult'){
+      if(!d.album.some(r=>r&&r.id===d.id))d.album.push({id:d.id,live:true});
+      if(!d.seedGiven){d.seeds+=1;d.seedGiven=true}
+      if(typeof d.adultAt!=='number')d.adultAt=Date.now();
+    }
+    // 目印が育成枠と合わないものは消さずに残して、警告だけ記録
+    d.album.forEach(r=>{if(r&&r.live&&(r.id!==d.id||d.stage!=='adult'))INTEG_WARN.push('live:'+r.id)});
+    if(d.fav!==null&&!d.album.some(r=>r&&r.id===d.fav))d.fav=null;
+    return d;
+  }
+  // 形式2の検査（引き継ぎコード・バックアップ用）。おかしければ例外。知らない項目は残す
+  function keepExtra(src,dst){
+    let n=0;
+    for(const [k,v] of Object.entries(src)){
+      if(k in dst)continue;
+      if(!/^[A-Za-z_][A-Za-z0-9_]{0,30}$/.test(k)||++n>50)throw new Error('データの形がおかしい');
+      if(v===undefined||typeof v==='function')continue;
+      dst[k]=clone(v);
+    }
+    return dst;
+  }
+  function checkPetExtra(d,c,bad){
+    const str=(v,re,name)=>{if(typeof v!=='string'||!re.test(v))bad(name+'がおかしい');return v};
+    const num=(v,lo,hi,name)=>{if(typeof v!=='number'||!isFinite(v)||v<lo||v>hi)bad(name+'がおかしい');return v};
+    const logObj=(o,name)=>{if(!isO(o))bad(name+'がおかしい');const r={};const ks=Object.keys(o);if(ks.length>200)bad(name+'がおかしい');
+      for(const k of ks){if(!KEY_RE.test(k))bad(name+'がおかしい');num(o[k],0,1e9,name);r[k]=o[k]}return r};
+    if(d.id!==undefined)c.id=str(d.id,ID_RE,'個体ID');
+    if(d.born!==undefined&&d.born!==null)c.born=num(d.born,0,1e15,'誕生日');
+    if(d.bornGuess!==undefined)c.bornGuess=!!d.bornGuess;
+    if(d.temper!==undefined)c.temper=str(d.temper,KEY_RE,'気質');
+    if(d.traitVer!==undefined)c.traitVer=num(d.traitVer,1,99,'気質の版');
+    if(d.seedGiven!==undefined)c.seedGiven=!!d.seedGiven;
+    if(d.adultAt!==undefined)c.adultAt=num(d.adultAt,0,1e15,'大人になった日');
+    if(d.log!==undefined)c.log=logObj(d.log,'育成記録');
+    if(d.logFixed!==undefined)c.logFixed=d.logFixed===null?null:logObj(d.logFixed,'育成記録');
+    if(d.persRule!==undefined)c.persRule=num(d.persRule,1,99,'性格の版');
+    if(d.hidden!==undefined&&d.hidden!==null)c.hidden=str(d.hidden,KEY_RE,'隠れた一面');
+    if(d.memo!==undefined){if(typeof d.memo!=='string'||d.memo.length>300)bad('メモがおかしい');c.memo=d.memo.replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g,'')}
+    return c;
+  }
+  function checkSave2(d){
+    const bad=m=>{throw new Error(m)};
+    if(!isO(d))bad('データの形がおかしい');
+    if(d.ver!==undefined&&(typeof d.ver!=='number'||d.ver>SAVE_FORMAT))bad('新しいバージョンのデータです。ゲームを最新にしてから試してね');
+    const c=checkSave(d,true);      // 今までの項目は今までどおり検査（知らないIDは形を確かめて残す）
+    checkPetExtra(d,c,bad);
+    c.ver=SAVE_FORMAT;
+    c.seeds=d.seeds===undefined?0:(Number.isInteger(d.seeds)&&d.seeds>=0&&d.seeds<=999?d.seeds:bad('種の数がおかしい'));
+    if(d.unlocked!==undefined){if(!Array.isArray(d.unlocked)||d.unlocked.length>50)bad('解放した場所がおかしい');
+      c.unlocked=[...new Set(d.unlocked.map(k=>{if(typeof k!=='string'||!KEY_RE.test(k))bad('解放した場所がおかしい');return k}))]} else c.unlocked=[];
+    if(d.seen!==undefined){if(!isO(d.seen)||Object.keys(d.seen).length>100)bad('案内の記録がおかしい');c.seen={};
+      for(const [k,v] of Object.entries(d.seen)){if(!KEY_RE.test(k))bad('案内の記録がおかしい');if(v)c.seen[k]=true}} else c.seen={};
+    if(d.book!==undefined){if(!isO(d.book)||Object.keys(d.book).length>500)bad('図鑑の記録がおかしい');c.book={};
+      for(const [k,v] of Object.entries(d.book)){if(!KEY_RE.test(k)||!(v===true||(typeof v==='number'&&isFinite(v))))bad('図鑑の記録がおかしい');c.book[k]=v}} else c.book={};
+    c.album=[];
+    if(d.album!==undefined){
+      if(!Array.isArray(d.album)||d.album.length>ALBUM_HARD)bad('アルバムがおかしい');
+      const ids=new Set(); if(c.id)ids.add(c.id); let lives=0;
+      for(const r of d.album){
+        if(!isO(r)||typeof r.id!=='string'||!ID_RE.test(r.id))bad('アルバムがおかしい');
+        if(r.live){ if(++lives>1||r.id!==c.id)bad('アルバムがおかしい'); c.album.push({id:r.id,live:true}); continue; }
+        if(ids.has(r.id))bad('アルバムに同じ子が2回入っている'); ids.add(r.id);
+        // アルバムの子：名前・姿・なかよし・食べた記録などを検査
+        const e={id:r.id};
+        if(typeof r.name!=='string'||!r.name.trim()||r.name.length>20)bad('アルバムの名前がおかしい');
+        e.name=r.name.replace(/[\u0000-\u001f\u007f<>]/g,'').slice(0,12)||'ぽこ';
+        if(typeof r.form!=='string'||!KEY_RE.test(r.form))bad('アルバムの姿がおかしい'); e.form=r.form;
+        e.stage='adult';
+        if(typeof r.aff!=='number'||!Number.isInteger(r.aff)||r.aff<0||r.aff>1e7)bad('アルバムのなかよしがおかしい'); e.aff=r.aff;
+        if(r.tags!==undefined){if(!isO(r.tags))bad('アルバムの記録がおかしい');e.tags={};if(Object.keys(r.tags).length>50)bad('アルバムの記録がおかしい');for(const [k,v] of Object.entries(r.tags)){if(!KEY_RE.test(k)||!Number.isInteger(v)||v<0||v>99999)bad('アルバムの記録がおかしい');if(v>0)e.tags[k]=v}}
+        checkPetExtra(r,e,bad);
+        c.album.push(keepExtra(r,e));
+      }
+    }
+    if(d.hold!==undefined){if(!Array.isArray(d.hold)||d.hold.length>500)bad('保管した物がおかしい');c.hold=d.hold.map(k=>{if(typeof k!=='string'||!KEY_RE.test(k))bad('保管した物がおかしい');return k})}
+    if(d.exploreHeld!==undefined){
+      const L=Array.isArray(d.exploreHeld)?d.exploreHeld:[{at:null,ver:SAVE_FORMAT,data:d.exploreHeld}];
+      if(L.length>HELD_MAX)bad('保管した探検データが多すぎる');
+      c.exploreHeld=L.map(h=>{if(!isO(h)||!('data' in h)||!(h.at===null||(typeof h.at==='number'&&isFinite(h.at)))||!Number.isInteger(h.ver)||h.ver<1||h.ver>99)bad('保管した探検データがおかしい');
+        return keepExtra(h,{at:h.at,ver:h.ver,data:JSON.parse(JSON.stringify(h.data))})})}
+    if(d.fav===undefined||d.fav===null)c.fav=null;
+    else{if(typeof d.fav!=='string'||!c.album.some(r=>r.id===d.fav))bad('お気に入りがおかしい');c.fav=d.fav}
+    return keepExtra(d,c);
+  }
+  // 重要な操作：新しい状態を保存できたときだけ切り替える。backupKey があれば先に今のデータを退避（退避できなければ中止）
+  function commit(next,backupKey){
+    if(LOCK)return {ok:false,why:'lock'};
+    if(conflict()){enterConflict();return {ok:false,why:'conflict'}}
+    let prev=null; try{prev=localStorage.getItem(KEY)}catch(e){}
+    if(backupKey&&prev!==null&&prev!=='null'){
+      try{localStorage.setItem(backupKey,prev); if(localStorage.getItem(backupKey)!==prev)throw 0}catch(e){return {ok:false,why:'backup'}}
+    }
+    let txt; try{txt=JSON.stringify(next)}catch(e){return {ok:false,why:'data'}}
+    try{localStorage.setItem(KEY,txt)}catch(e){return {ok:false,why:'write'}}   // 書けなかったときは元のデータのまま
+    let back=null; try{back=localStorage.getItem(KEY)}catch(e){}
+    if(back!==txt){
+      try{ if(prev===null)localStorage.removeItem(KEY); else localStorage.setItem(KEY,prev);
+        const now2=localStorage.getItem(KEY); if(now2!==prev)throw 0 }
+      catch(e){ storageBroken(); return {ok:false,why:'restorefail'} }
+      return {ok:false,why:'verify'};
+    }
+    KNOWN=txt; S=next; setSaveFail(false); saveLatest(txt); return {ok:true};
+  }
+  // ===== 本体への書き込み（このタブで唯一の入口）と、別のタブとの競合の検知 =====
+  // KNOWN：このタブが最後に読んだ・書いた本体の中身。保存の直前に保存場所と比べ、違えば別のタブ（や古い版）が書いたとみなして止まる
+  let KNOWN=null, BROKEN_KEPT=false, startConfirm=false;
+  const LATEST=KEY+'_latest2';            // 検証済みの最新の形式2データ（v1.8などに上書きされたときの保護）
+  const readKey=k=>{try{return localStorage.getItem(k||KEY)}catch(e){return undefined}};
+  const conflict=()=>readKey()!==KNOWN;
+  function writeMain(txt){
+    if(LOCK)return {ok:false,why:'lock'};
+    if(conflict()){enterConflict();return {ok:false,why:'conflict'}}
+    try{localStorage.setItem(KEY,txt)}catch(e){return {ok:false,why:'write'}}
+    const back=readKey();
+    if(back!==txt){enterConflict();return {ok:false,why:'conflict'}}   // 書いた直後に違う中身＝別のタブが書いた可能性
+    KNOWN=txt; saveLatest(txt); return {ok:true};
+  }
+  // 最新の形式2データの予備：本体に書けて確かめられた、形式2の正しいデータだけを書く。失敗しても前の予備は消さない
+  let latestFailed=false;
+  function validLatest(txt){let d;try{d=JSON.parse(txt)}catch(e){return null}
+    return isO(d)&&d.ver===SAVE_FORMAT&&typeof d.id==='string'&&ID_RE.test(d.id)&&typeof d.stage==='string'&&typeof d.name==='string'?d:null}
+  function saveLatest(txt){
+    if(!validLatest(txt))return;
+    try{localStorage.setItem(LATEST,txt);if(readKey(LATEST)!==txt)throw 0;latestFailed=false}catch(e){latestFailed=true}
+    setSaveFail(saveFailed);
+  }
+  function enterConflict(){
+    if(LOCK==='conflict')return;
+    let mem=null; try{mem=S?JSON.stringify(S):null}catch(e){}
+    lockScreen('conflict',mem);
+  }
+  window.addEventListener('storage',e=>{
+    if(LOCK)return;   // すでに止まっている（保存しない）ときは何もしない。選ぶ画面などは、操作のときに確かめる
+    if(e.key!==KEY&&e.key!==null)return;
+    if(readKey()!==KNOWN)enterConflict();
+  });
+  // ===== 保存失敗の帯・ロック画面 =====
+  let LOCK=null, saveFailed=false;
+  const SAVED_NOTE='ファイルの保存を開始しました。iPhoneは「ファイル」アプリの「ダウンロード」で、保存できたか確認してください';
+  function placeSF(){const el=$('ksavefail');if(!el||!el.classList.contains('on'))return;try{const p=el.offsetParent||el.parentElement,pr=p.getBoundingClientRect(),cr=cv.getBoundingClientRect();el.style.top=Math.max(8,Math.round(cr.top-pr.top+6))+'px'}catch(e){}}
+  window.addEventListener('resize',()=>placeSF());
+  function setSaveFail(on){
+    saveFailed=on; const want=on||latestFailed, el=$('ksavefail');
+    if(!want){el.classList.remove('on');el.dataset.k='';return}
+    const k=on?'main':'latest'; if(el.classList.contains('on')&&el.dataset.k===k)return; el.dataset.k=k;
+    el.innerHTML=(on?'⚠ 保存できませんでした。ブラウザの保存がいっぱいか、使えない状態かもしれません。':'⚠ 予備の保存ができませんでした（本体は保存できています）。')+'今のうちにバックアップファイルを保存してください。<br><button id="sfbk">バックアップを保存</button>';
+    el.classList.add('on'); placeSF(); $('sfbk').onclick=()=>{try{downloadBackup(S);ktoast(SAVED_NOTE)}catch(e){ktoast('保存を開始できませんでした')}};
+  }
+  const ymd=()=>{const d=new Date();return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`};
+  function downloadText(body,name,type){
+    const url=URL.createObjectURL(new Blob([body],{type}));const a=document.createElement('a');a.href=url;a.download=name;
+    document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},3000);
+  }
+  // バックアップファイル（data の ver が形式になる。新しい版のデータは新しい版でしか読めない）
+  function downloadBackup(data,suffix){
+    const d=clone(data), ver=typeof d.ver==='number'?d.ver:1;
+    const body=JSON.stringify({app:'pokohouse',ver,at:Date.now(),crc:crc32(JSON.stringify(d)),data:d},null,1);
+    downloadText(body,`pokohouse_backup_${ymd()}${suffix||''}.json`,'application/json');
+  }
+  function downloadRaw(raw){
+    let d=null; try{d=JSON.parse(raw)}catch(e){}
+    if(isO(d))downloadBackup(d,'_original'); else downloadText(String(raw),`pokohouse_raw_${ymd()}.txt`,'text/plain');
+  }
+  function lockScreen(kind,raw){
+    LOCK=kind; S=null;
+    const T={newer:['新しいバージョンのデータです','このデータは、もっと新しいバージョンの「ぽこのおうち」で保存されています。<br>データを守るため、このままでは遊べません。ページを再読み込みして、最新版で開いてください。'],
+      migrate:['データの更新ができませんでした','<b>今のデータは消えていません。</b><br>データを守るため、ゲームを止めています。「もう一度試す」を押すか、先にバックアップファイルを保存してください。'],
+      backup:['データの更新ができませんでした','更新の前に今のデータを守るための保存ができませんでした（ブラウザの保存がいっぱいかもしれません）。<br><b>今のデータは消えていません。</b>ゲームを止めています。先にバックアップファイルを保存してください。'],
+      storage:['保存に問題が起きました','ブラウザの保存がうまく動いていません。<b>今すぐバックアップファイルを保存して</b>、ページを再読み込みしてください。'],
+      conflict:['別のタブでも開かれています','このゲームが、別のタブ（または別の画面・古い版）でも開かれていて、保存データが書き換えられました。<br><b>データを守るため、このタブを止めました。</b>このタブのデータは古い可能性があるので、保存しません。<br>ほかのタブを閉じてから「最新のデータで再開」を押してください。'],
+      brokenkept:['セーブデータが壊れていて読めませんでした','元のデータは、<b>読み込めない状態のまま、この端末の中に保管しました</b>（消してはいません）。ただし、保管しても元に戻せるとは限りません。<br>念のため「バックアップを保存」か「救出用データをコピー」をしてから、次へ進んでください。'],
+      held:['保管できる数がいっぱいです','このバージョンで扱えない探検データを保管する場所がいっぱいになりました。データを消さないため、ゲームを止めています。バックアップを保存して、ゲームを作った人に知らせてください。'],
+      broken:['セーブデータを読めませんでした','セーブデータが壊れているようです。さらに、壊れたデータを別の場所に残すこともできませんでした（ブラウザの保存がいっぱいかもしれません）。<br><b>データを守るため、ゲームを止めています。</b>新しく始めると上書きされてしまうので、先に「バックアップを保存」か「救出用データをコピー」をしてください。']}[kind]||['エラー',''];
+    $('klockbody').innerHTML=pixify(`<h2>⚠ ${T[0]}</h2><p class="tleft">${T[1]}</p>`)+
+      (kind==='brokenkept'?`<button class="pbtn" id="lknext">復元する・新しく始める画面へ</button>`:`<button class="pbtn" id="lkretry">${kind==='newer'?'再読み込み':kind==='conflict'?'最新のデータで再開':'もう一度試す'}</button>`)+(raw!=null?`<button class="pbtn gray" id="lkbk">バックアップを保存</button>
+      ${kind==='conflict'?'':'<button class="pbtn gray" id="lkrs">救出用データをコピー</button>'}
+      <div id="lkrsbox" style="display:none"><p class="tleft" style="font-size:12px"><b>これは通常の「おひっこしコード」ではありません。</b>そのまま復元できるとは限りません（壊れたデータが入っていることがあります）。困ったときに、ゲームを作った人に送ってください。</p>
+      <textarea id="lkrsta" class="codeta" readonly></textarea></div>`:'');
+    $('klock').classList.add('on'); ['kmodal','ksetup','kconfirm'].forEach(id=>$(id).classList.remove('on'));
+    if($('lkretry'))$('lkretry').onclick=()=>location.reload();   // 再開は必ず読み直し（メモリ上の古いデータは保存しない）
+    if($('lknext'))$('lknext').onclick=()=>{LOCK=null;$('klock').classList.remove('on');$('ksetup').classList.add('on')};
+    if(raw!=null){
+      $('lkbk').onclick=()=>{try{downloadRaw(raw);ktoast(SAVED_NOTE)}catch(e){ktoast('保存を開始できませんでした')}};
+      if($('lkrs'))$('lkrs').onclick=()=>{let t; try{t=`POKO-RESCUE-${b64e(String(raw))}-${crc32(String(raw))}`}catch(e){t=String(raw)}
+        $('lkrsbox').style.display='block'; $('lkrsta').value=t; copyText(t,$('lkrsta'))};
+    }
+  }
+  // 古い版に上書きされたとき：両方を見比べて、利用者が選ぶ
+  function chooseScreen(raw,legacy,latTxt,lat){
+    LOCK='choose'; S=null;
+    const when=t=>typeof t==='number'?new Date(t).toLocaleString('ja-JP'):'不明';
+    const card=(id,title,d,note)=>`<div class="rcv"><b>${title}</b><br>${summary(d)}<br><small>最後に遊んだ時刻：${esc(when(d.last))}${note?'<br>'+note:''}</small>
+      <br><button class="pbtn" id="ch${id}">このデータで続ける</button><button class="pbtn gray" id="cb${id}">ファイルに保存</button></div>`;
+    $('klockbody').innerHTML=pixify(`<h2>⚠ データが古い画面で上書きされました</h2>`)+
+      `<p class="tleft">古いバージョン（v1.8など）の画面が開いたままになっていて、保存データが上書きされたようです。<b>どちらのデータも消さずに保管しています。</b>続けるデータを選んでください。<br><b>先に、古いタブや画面を閉じてください。</b>閉じないと、また上書きされることがあります。</p>`+
+      card('A','v1.9で最後に正しく保存したデータ',repairSave(clone(lat)))+card('B','古い画面で上書きされたデータ',legacy,'こちらを選ぶと新しい形式に移行し、個体の記録（個体IDなど）は新しく付け直されます')+
+      `<p class="mmsg" id="chmsg"></p>`;
+    $('klock').classList.add('on'); ['kmodal','ksetup','kconfirm'].forEach(i=>$(i).classList.remove('on'));
+    const msg=t=>{$('chmsg').innerHTML=pixify(esc(t))};
+    $('cbA').onclick=()=>{try{downloadBackup(lat,'_v19');ktoast(SAVED_NOTE)}catch(e){ktoast('保存を開始できませんでした')}};
+    $('cbB').onclick=()=>{try{downloadRaw(raw);ktoast(SAVED_NOTE)}catch(e){ktoast('保存を開始できませんでした')}};
+    const still=()=>readKey()===raw;   // 選んでいる間に、また書き換えられていないか
+    $('chA').onclick=()=>{
+      if(!still()){msg('⚠ 選んでいる間に、また書き換えられました。古いタブを閉じてから、ページを再読み込みしてください');return}
+      try{localStorage.setItem(KEY,latTxt);if(readKey()!==latTxt)throw 0}catch(e){try{if(readKey()!==raw)localStorage.setItem(KEY,raw)}catch(_){}msg('⚠ 保存できなかったので、何も変えていません');return}
+      location.reload()};
+    $('chB').onclick=()=>{
+      if(!still()){msg('⚠ 選んでいる間に、また書き換えられました。古いタブを閉じてから、ページを再読み込みしてください');return}
+      // Aの予備を、上書きする前に別名で残す（残せなければ中止）
+      let ok=false; try{const k=KEY+'_latest2_prev_'+Date.now();localStorage.setItem(k,latTxt);ok=localStorage.getItem(k)===latTxt}catch(e){}
+      if(!ok){msg('⚠ v1.9のデータを退避できなかったので、何も変えていません（ブラウザの保存がいっぱいかもしれません）');return}
+      try{localStorage.removeItem(LATEST)}catch(e){}
+      if(readKey(LATEST)!==null){msg('⚠ 切り替えできなかったので、何も変えていません');return}
+      location.reload()};   // 予備がなくなったので、読み直すと通常の移行が行われる（元のv1.8データは退避済み）
+  }
+  function storageBroken(){ let raw=null; try{raw=JSON.stringify(S)}catch(e){} lockScreen('storage',raw); }
+  // 形式1 → 形式2 の移行（読み込み時）。成功したら新しいデータ、失敗したら理由を返す。元のデータは必ず残す
+  function migrate(raw,d){
+    const BK=KEY+'_before_v2';
+    try{ if(localStorage.getItem(BK)===null)localStorage.setItem(BK,raw); if(localStorage.getItem(BK)===null)throw 0 }catch(e){return {ok:false,why:'backup'}}
+    let n; try{ n=ensureIntegrity(upgrade(d)); JSON.parse(JSON.stringify(n)) }catch(e){return {ok:false,why:'convert'}}
+    const txt=JSON.stringify(n);
+    try{localStorage.setItem(KEY,txt)}catch(e){return {ok:false,why:'write'}}
+    let back=null; try{back=localStorage.getItem(KEY)}catch(e){}
+    if(back!==txt){ try{localStorage.setItem(KEY,raw); if(localStorage.getItem(KEY)!==raw)throw 0}catch(e){return {ok:false,why:'restorefail'}} return {ok:false,why:'verify'} }
+    KNOWN=txt; saveLatest(txt);
+    return {ok:true,data:n};
+  }
+  // 取り込んだデータ（コード・ファイル・退避）を形式2にそろえる
+  function toCurrent(obj,isCode){
+    const ver=typeof obj.ver==='number'?obj.ver:1;
+    if(ver>SAVE_FORMAT)throw new Error('新しいバージョンのデータです。ゲームを最新にしてから試してね');
+    if(ver<=1){const c=checkSave(obj.data); return ensureIntegrity(upgrade(c));}
+    return ensureIntegrity(checkSave2(obj.data));
+  }
   // 古いセーブを読むとき用：足りない項目を補うだけ（拒否はしない）
+  const HELD_MAX=1000;
+  // 保管の一覧がいっぱいで、さらに保管が必要なとき（黙って消さずに止める）
+  function HELD_FULL_CHECK(d){ if(!isO(d)||!d.explore)return false; const E=d.explore;
+    if(isO(E)&&typeof E.p==='string'&&typeof E.end==='number')return false;
+    const n=Array.isArray(d.exploreHeld)?d.exploreHeld.length:(d.exploreHeld!==undefined?1:0); return n>=HELD_MAX }
   function repairSave(d){
     if(!d||typeof d!=='object')return null;
     for(const k of ['inv','dishes','decor','tags'])if(!d[k]||typeof d[k]!=='object'||Array.isArray(d[k]))d[k]={};
@@ -1252,9 +1576,14 @@ const K=(()=>{
     if(typeof d.last!=='number'||!isFinite(d.last))d.last=Date.now();
     if(typeof d.skew!=='number'||!isFinite(d.skew))d.skew=0;
     if(typeof d.name!=='string'||!d.name)d.name='ぽこ';
-    if(d.stage==='adult'&&!FORMS[d.form])d.form='hana';
+    // v1.9：知らない姿を「花の子」に書き換えない（新しい版のデータを壊さないため）。姿がないときだけ補う
+    if(d.stage==='adult'&&(typeof d.form!=='string'||!d.form))d.form='hana';
     if(!['seed','baby','child','adult'].includes(d.stage))d.stage='baby';
-    if(d.explore&&!PLACES[d.explore.p])d.explore=null;
+    if(d.exploreHeld!==undefined&&!Array.isArray(d.exploreHeld))d.exploreHeld=[{at:null,ver:SAVE_FORMAT,data:d.exploreHeld}];   // 以前の1件だけの形 → 一覧に
+    if(d.explore&&!(isO(d.explore)&&typeof d.explore.p==='string'&&typeof d.explore.end==='number')){   // 使えない形は消さずに一覧の最後に追加
+      if(!Array.isArray(d.exploreHeld))d.exploreHeld=[];
+      d.exploreHeld.push({at:Date.now(),ver:SAVE_FORMAT,data:d.explore}); d.explore=null}
+    if(d.explore){if(!Array.isArray(d.explore.ev))d.explore.ev=[];if(!Array.isArray(d.explore.bonus))d.explore.bonus=[]}
     return d;
   }
   // 引き継ぎコード： POKO-<形式>-<データ>-<確認用の数字>
@@ -1273,7 +1602,7 @@ const K=(()=>{
     if(crc32(json)!==m[3])throw new Error('コードがこわれています（文字が欠けているかも）');
     let obj; try{obj=JSON.parse(json)}catch(e){throw new Error('コードがこわれています')}
     if(!obj||obj.app!=='pokohouse')throw new Error('ぽこのおひっこしコードではないみたい');
-    return checkSave(obj.data);
+    return toCurrent({ver:+m[1],data:obj.data},true);
   }
   function readBackup(text){
     if(text.length>MAX_IMPORT)throw new Error('ファイルが大きすぎます');
@@ -1281,22 +1610,15 @@ const K=(()=>{
     if(!obj||obj.app!=='pokohouse'||typeof obj.data!=='object')throw new Error('ぽこのバックアップファイルではないみたい');
     if(+obj.ver>SAVE_FORMAT)throw new Error('新しいバージョンのファイルです。ゲームを最新にしてから試してね');
     if(obj.crc!==crc32(JSON.stringify(obj.data)))throw new Error('ファイルがこわれています');
-    return checkSave(obj.data);
+    return toCurrent({ver:+obj.ver,data:obj.data},false);
   }
   // 復元：保存できたのを確かめてから画面に反映。失敗したら元に戻す
-  function applySave(clean){
-    let prev=null; try{prev=localStorage.getItem(KEY)}catch(e){}
-    try{ if(prev!==null)localStorage.setItem(KEY+'_before_restore',prev) }catch(e){}
-    try{
-      const txt=JSON.stringify(clean); localStorage.setItem(KEY,txt);
-      if(localStorage.getItem(KEY)!==txt)throw new Error('check');
-    }catch(e){
-      try{ if(prev!==null)localStorage.setItem(KEY,prev) }catch(_){}
-      return false;
-    }
-    S=clean; EX=null; x=34; busy=null; return true;
+  function applySave(clean,backupKey){
+    const r=commit(clean,backupKey||(KEY+'_before_restore_'+Date.now()));
+    if(!r.ok)return false;
+    EX=null; x=34; busy=null; return true;
   }
-  const stageName=d=>d.stage==='seed'?'種':FORMS[d.stage==='adult'?d.form:d.stage].nm;
+  const stageName=d=>d.stage==='seed'?'種':fnm(d.stage==='adult'?d.form:d.stage);
   function summary(d){if(!d)return 'なし（まだ育てていない）';return `「${esc(d.name)}」（${stageName(d)}）なかよし ${d.aff}・レシピ ${d.recipes.filter(k=>k!=='fushigi').length}種`}
   function copyText(txt,ta){
     const ok=()=>ktoast('コピーしました'), ng=()=>{if(ta){ta.focus();ta.select()}ktoast('コピーできなかったので、文字を長押ししてコピーしてね')};
@@ -1317,7 +1639,11 @@ const K=(()=>{
         <button class="pbtn" id="rdcode">このコードで復元する</button></div>
       <div class="sbox"><b>③ バックアップファイル</b>
         ${S?'<button class="pbtn" id="svfile">ファイルに保存する</button>':''}
-        <label class="pbtn gray fl">ファイルから復元する<input type="file" id="ldfile" accept=".json,application/json,text/plain"></label></div>
+        <label class="pbtn gray fl">ファイルから復元する<input type="file" id="ldfile" accept=".json,application/json,text/plain"></label>
+        <details class="tleft dsc"><summary>保存できたか確かめるには</summary>
+          <p>・iPhoneのSafari：ダウンロードの確認が出たら「ダウンロード」を選びます。そのあと「ファイル」アプリの「ダウンロード」フォルダに pokohouse_backup_（日付）.json があるか確かめてください。<br>
+          ・LINEなど、アプリの中で開いているときは、保存できないことがあります。右上のメニューから「Safariで開く」を選んでから保存してください。<br>
+          ・それでも保存できないときは、①の「おひっこしコード」を作って、メモアプリに貼りつけて残してください。</p></details></div>
       <p class="mmsg" id="mvmsg">${note||''}</p>
       <button class="pbtn gray" id="mvback">もどる</button>`);
     const msg=t=>{$('mvmsg').innerHTML=pixify(esc(t))};
@@ -1325,11 +1651,8 @@ const K=(()=>{
     $('cpcode').onclick=()=>copyText($('codeout').value,$('codeout'));}
     $('rdcode').onclick=()=>{try{confirmRestore(readCode($('codein').value),'code')}catch(e){msg('⚠ '+e.message+'。今のデータはそのままです')}};
     if(S)$('svfile').onclick=()=>{
-      try{const data=JSON.parse(JSON.stringify(S));const body=JSON.stringify({app:'pokohouse',ver:SAVE_FORMAT,at:Date.now(),crc:crc32(JSON.stringify(data)),data},null,1);
-        const d=new Date(),ymd=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
-        const url=URL.createObjectURL(new Blob([body],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=`pokohouse_backup_${ymd}.json`;
-        document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},3000);
-        msg('バックアップファイルを保存しました（ダウンロードの場所を見てね）');ANA.track('backup_save')}catch(e){msg('保存できませんでした')}};
+      try{downloadBackup(S);
+        msg('ファイルの保存を開始しました。まだ保存できたとは限りません。iPhoneは「ファイル」アプリの「ダウンロード」に pokohouse_backup_（日付）.json があるか確認してください（くわしくは上の説明）');{const dd=$('kmbody').querySelector('details.dsc');if(dd)dd.open=true}ANA.track('backup_save')}catch(e){msg('保存できませんでした')}};
     $('ldfile').onchange=ev=>{const f=ev.target.files[0];ev.target.value='';if(!f)return;
       if(f.size>MAX_IMPORT){msg('⚠ ファイルが大きすぎます。今のデータはそのままです');return}
       const r=new FileReader();r.onload=()=>{try{confirmRestore(readBackup(String(r.result)),'file')}catch(e){msg('⚠ '+e.message+'。今のデータはそのままです')}};
@@ -1340,11 +1663,11 @@ const K=(()=>{
     modal(`<h2>📦 この子を呼びもどす？</h2>
       <p>読みこんだデータ<br><b>${summary(clean)}</b></p>
       <p>いまのデータ<br>${summary(S)}</p>
-      <p><b>いまのデータは上書きされて、元にもどせません。</b></p>
+      <p><b>いまのデータは上書きされます。</b>上書き前のデータはこの端末の中に退避して、「設定 → データの復旧」から戻せます。心配なら先にバックアップファイルを保存してね。</p>
       <button class="pbtn" id="rsok">上書きして呼びもどす</button><button class="pbtn gray" id="rsng">やめる</button>`);
     $('rsng').onclick=()=>moveUI('やめました。今のデータはそのままです');
     $('rsok').onclick=()=>{
-      if(!applySave(clean)){moveUI('⚠ 保存に失敗しました。今のデータはそのままです');return}
+      if(!applySave(clean)){if(LOCK)return;moveUI('⚠ 保存に失敗しました。今のデータはそのままです');return}
       ANA.track(via==='file'?'backup_restore':'transfer_code_restore');
       $('ksetup').classList.remove('on'); close(); tick(); save(); ui(); draw(); SND.sfx.fanfare(); say('おひっこし完了！ {n}がもどってきた！');
     };
@@ -1354,12 +1677,46 @@ const K=(()=>{
     const st=!ANA.configured()?'まだ準備中（いまは何も送っていません）':ANA.consent==='granted'?'さんかしている':ANA.consent==='denied'?'さんかしていない':'まだ決めていない';
     modal(`<h2>⚙️ せってい</h2>
       <button class="place" id="stmove"><em>📦</em><span>ぽこのおひっこし<small>引き継ぎコード・バックアップ</small></span></button>
+      <button class="place" id="strcv"><em>🛟</em><span>データの復旧<small>この端末に残っている前のデータに戻す</small></span></button>
       <button class="place" id="stana"><em>📊</em><span>プレイ分析<small>${st}</small></span></button>
       <button class="place" id="stsnd"><em>${SND.on?'🔊':'🔇'}</em><span>音<small>${SND.on?'鳴らす':'鳴らさない'}</small></span></button>
       <button class="pbtn gray" onclick="K.close()">とじる</button>`);
     $('stmove').onclick=()=>moveUI();
+    $('strcv').onclick=()=>recoverUI();
     $('stana').onclick=()=>analyticsUI();
     $('stsnd').onclick=()=>{SND.toggle();sndLabel();settingsUI()};
+  }
+  // ---- データの復旧（この端末に残っている退避データ） ----
+  function snapshots(){
+    const L=[]; const lab=k=>k===KEY+'_before_v2'?'更新（v1.9）の前のデータ':k.startsWith(KEY+'_before_restore')?'おひっこし（復元）の前のデータ':k.startsWith(KEY+'_before_reset')?'「最初から」の前のデータ':k.startsWith(KEY+'_before_recover')?'復旧する前のデータ':k.startsWith(KEY+'_broken')?'読めなかったデータ':k.startsWith(KEY+'_v18over')?'古い画面（v1.8など）で上書きされたデータ':k===LATEST?'v1.9で最後に正しく保存したデータ（予備）':k.startsWith(KEY+'_latest2_prev')?'選び直す前のv1.9のデータ':null;
+    try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k||!k.startsWith(KEY+'_'))continue;const l=lab(k);if(!l)continue;
+      const raw=localStorage.getItem(k);if(k===LATEST&&raw===readKey())continue;let d=null;try{d=JSON.parse(raw)}catch(e){}
+      const t=+(k.match(/_(\d{10,})$/)||[])[1]||0; L.push({k,l,raw,d:isO(d)?d:null,t})}}catch(e){}
+    return L.sort((a,b)=>(b.t-a.t)||a.k.localeCompare(b.k));
+  }
+  function recoverUI(note){
+    const L=snapshots();
+    const item=(s,i)=>{const d=s.d,ok=d&&!(typeof d.ver==='number'&&d.ver>SAVE_FORMAT)&&typeof d.stage==='string';
+      const when=s.t?new Date(s.t).toLocaleString('ja-JP'):'';
+      return `<div class="rcv"><b>${esc(s.l)}</b>${when?`<br><small>${esc(when)}</small>`:''}<br>${ok?summary(repairSave(clone(d))):d?'新しいバージョンのデータ（このままでは戻せません）':'読めないデータ'}
+        ${ok?`<br><button class="pbtn" data-r="${i}">このデータに戻す</button>`:''}<button class="pbtn gray" data-b="${i}">ファイルに保存</button></div>`};
+    modal(`<h2>🛟 データの復旧</h2>
+      <p class="tleft">この端末の中に残っている、前のデータです。戻すと今のデータは上書きされますが、上書き前のデータもここに残ります。<br>
+      <b>ブラウザの中のデータは、ブラウザの設定や機種変更で消えることがあります。</b>大事なデータは「ファイルに保存」もしておいてね。</p>
+      ${L.length?L.map(item).join(''):'<p>戻せるデータはありません</p>'}
+      <p class="mmsg" id="rcvmsg">${note||''}</p>
+      <button class="pbtn gray" id="rcvbk">もどる</button>`);
+    $('rcvbk').onclick=()=>S?settingsUI():close();
+    $('kmbody').querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{const s=L[+b.dataset.b];try{downloadRaw(s.raw);ktoast(SAVED_NOTE)}catch(e){ktoast('保存を開始できませんでした')}});
+    $('kmbody').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const s=L[+b.dataset.r];
+      let next; try{const d=repairSave(clone(s.d)); next=(typeof d.ver==='number'&&d.ver>=2)?ensureIntegrity(d):ensureIntegrity(upgrade(d))}catch(e){recoverUI('⚠ このデータは戻せませんでした。今のデータはそのままです');return}
+      modal(`<h2>🛟 このデータに戻す？</h2><p>戻すデータ<br><b>${summary(next)}</b></p><p>いまのデータ<br>${summary(S)}</p>
+        <p>いまのデータは「復旧する前のデータ」として、この端末に残ります。</p>
+        <button class="pbtn" id="rcok">戻す</button><button class="pbtn gray" id="rcng">やめる</button>`);
+      $('rcng').onclick=()=>recoverUI('やめました。今のデータはそのままです');
+      $('rcok').onclick=()=>{ if(!applySave(next,KEY+'_before_recover_'+Date.now())){if(LOCK)return;recoverUI('⚠ 戻せませんでした（保存に失敗）。今のデータはそのままです');return}
+        $('ksetup').classList.remove('on'); close(); tick(); save(); ui(); draw(); say('前のデータに戻しました'); };
+    });
   }
   function analyticsUI(first){
     const st=!ANA.configured()?'いまは まだ 準備中なので、何も送っていません。':ANA.consent==='granted'?'いまは「さんかする」になっています。':ANA.consent==='denied'?'いまは「さんかしない」になっています。':'まだ えらんでいません。';
@@ -1409,41 +1766,69 @@ const K=(()=>{
   document.querySelectorAll('#kbtns button[data-k]').forEach(b=>b.onclick=()=>{SND.sfx.btn();act(b.dataset.k)});
   const sndLabel=()=>$('ksnd').innerHTML=pixify(SND.on?'🔊 音あり':'🔇 音なし'); sndLabel();
   $('ksnd').onclick=()=>{SND.toggle();sndLabel()};
-  $('kset').onclick=()=>{if(!S){ktoast('先にぽこを育て始めてね');return}SND.sfx.btn();settingsUI()};
-  $('kmovein').onclick=()=>moveUI();
+  $('kset').onclick=()=>{if(LOCK)return;if(!S){ktoast('先にぽこを育て始めてね');return}SND.sfx.btn();settingsUI()};
+  $('kmovein').onclick=()=>{if(!LOCK)moveUI()};
   $('kbag').onclick=()=>bagUI();
   cv.onclick=(e)=>{
-    if(!S)return;
+    if(!S||LOCK)return;
     if(S.explore){exTap(e);return}
     if(S.stage==='seed'){S.taps++;
       if(S.taps>=5){let n=0;const iv=setInterval(()=>{g.fillStyle=n%2?'#fff':'#bfe8a0';g.fillRect(0,0,64,48);if(++n>6){clearInterval(iv);
-        S.stage='baby';S.last=now();ANA.track('hatch');S.inv={kinomi:2};save();ui();draw();kfx($('kov'),'🎉',3,30);SND.sfx.fanfare();
+        S.stage='baby';S.last=now();if(typeof S.born!=='number'){S.born=Date.now();S.bornGuess=false}ANA.track('hatch');S.inv={kinomi:2};save();ui();draw();kfx($('kov'),'🎉',3,30);SND.sfx.fanfare();
         say('種から{n}が生まれた！');setTut(1)}},120)}
       else {SND.sfx.pop();} if(S.taps<5) say(['ぴくっ…','動いた！','芽が出た！','もう少し…！'][S.taps-1]);save();draw();return}
     if(!present()||S.sleep)return;
     speak(lineOf('tap'),'happy');SND.cry(ckey());
   };
-  $('kstart').onclick=()=>{const t=Date.now();
+  $('kstart').onclick=()=>{if(LOCK)return; if(BROKEN_KEPT&&!startConfirm){startConfirm=true;$('ksnote').innerHTML=pixify('⚠ 保管した読めないデータは、新しく始めても消えません。<br>本当に新しく始めるなら、もう一度「育てる！」を押してください');$('ksnote').style.display='block';return}
+    const t=Date.now();
     S={name:$('kname').value.trim()||'ぽこ',stage:'seed',taps:0,form:null,genki:3,aff:0,inv:{},dishes:{},decor:{},recipes:[],tags:{},
-       explore:null,sleep:false,lucky:false,justBack:false,last:t,skew:0};
+       explore:null,sleep:false,lucky:false,justBack:false,last:t,skew:0,ver:SAVE_FORMAT,album:[],unlocked:[],seeds:0,fav:null,seen:{},book:{}};
+    ensureIntegrity(S);
     $('ksetup').classList.remove('on');save();ui();draw();say('種をタップして、芽を出させよう')};
-  $('kff').onclick=()=>{if(!S||S.stage==='seed'){ktoast('先に種を育ててね');return}const st=S.explore?3:30;S.skew+=st*MIN;tick();save();ui();draw();ktoast(st+'分たった！')};
-  $('kreset').onclick=()=>$('kconfirm').classList.add('on');
+  $('kff').onclick=()=>{if(LOCK)return;if(!S||S.stage==='seed'){ktoast('先に種を育ててね');return}const st=S.explore?3:30;S.skew+=st*MIN;tick();save();ui();draw();ktoast(st+'分たった！')};
+  $('kreset').onclick=()=>{if(!LOCK)$('kconfirm').classList.add('on')};
   $('kcn').onclick=()=>$('kconfirm').classList.remove('on');
-  $('kcy').onclick=()=>{try{const r=localStorage.getItem(KEY);if(r&&r!=='null')localStorage.setItem(KEY+'_before_reset',r)}catch(e){}store.set(KEY,null);S=null;$('kconfirm').classList.remove('on');$('ksetup').classList.add('on');draw()};
+  $('kcy').onclick=()=>{
+    if(LOCK)return; if(conflict()){enterConflict();return}
+    try{const r=localStorage.getItem(KEY);if(r&&r!=='null'){const bk=KEY+'_before_reset_'+Date.now();localStorage.setItem(bk,r);if(localStorage.getItem(bk)!==r)throw 0}}
+    catch(e){$('kconfirm').classList.remove('on');ktoast('今のデータを退避できなかったので、やめました');setSaveFail(true);return}
+    const wr=writeMain('null'); if(!wr.ok){$('kconfirm').classList.remove('on');if(wr.why!=='conflict'){ktoast('保存できなかったので、やめました');setSaveFail(true)}return}
+    S=null;setSaveFail(false);$('kconfirm').classList.remove('on');$('ksetup').classList.add('on');draw()};
   function open(){show('kid');
-    let raw=null; try{raw=localStorage.getItem(KEY)}catch(e){}
-    S=repairSave(store.get(KEY));
-    if(!S&&raw&&raw!=='null'){ try{localStorage.setItem(KEY+'_broken_'+Date.now(),raw)}catch(e){} }  // 読めないデータも消さずに残す
+    let raw=null; try{raw=localStorage.getItem(KEY)}catch(e){ lockScreen('storage',null); draw(); return; }   // 保存場所を読めないときは何もしない
+    let d0=store.get(KEY);
+    if(!isO(d0)&&raw&&raw!=='null'){   // 読めないデータ：消さずに別名で残す。残せなければ絶対に先へ進まない
+      let kept=false; try{const bk=KEY+'_broken_'+Date.now(); localStorage.setItem(bk,raw); kept=localStorage.getItem(bk)===raw}catch(e){}
+      if(!kept){ lockScreen('broken',raw); draw(); return; }
+      KNOWN=raw; BROKEN_KEPT=true; lockScreen('brokenkept',raw); draw(); return;
+    }
+    if(isO(d0)&&typeof d0.ver==='number'&&d0.ver>SAVE_FORMAT){ lockScreen('newer',raw); draw(); return; }   // 新しい版のデータは触らない
+    KNOWN=raw;
+    if(HELD_FULL_CHECK(d0)){ lockScreen('held',raw); draw(); return; }
+    S=repairSave(isO(d0)?d0:null);
+    if(S&&!(typeof S.ver==='number'&&S.ver>=2)){
+      const lt=readKey(LATEST), lat=lt?validLatest(lt):null;
+      if(lat){ // 形式2を保護していたのに形式1が入っている＝古い版などで上書きされた。自動で合成・移行はしない
+        let ok=false; try{const k=KEY+'_v18over_'+Date.now(); localStorage.setItem(k,raw); ok=localStorage.getItem(k)===raw}catch(e){}
+        if(!ok){ lockScreen('backup',raw); draw(); return; }
+        chooseScreen(raw,repairSave(clone(S)),lt,lat); draw(); return;
+      }
+    }
+    if(S&&!(typeof S.ver==='number'&&S.ver>=2)){              // v1.8以前のデータ → 形式2へ移行
+      const r=migrate(raw,S);
+      if(!r.ok){ lockScreen(r.why==='backup'?'backup':r.why==='restorefail'?'storage':'migrate',raw); draw(); return; }
+      S=r.data;
+    } else if(S){ ensureIntegrity(S); }
     if(S){ANA.track('game_start',{stage:S.stage}); setTimeout(maybeAskConsent,2500);}
     if(!S){$('ksetup').classList.add('on')}
-    else{tick();save();ui();if(!$('kmodal').classList.contains('on'))say(S.stage==='seed'?'種をタップして、芽を出させよう':S.explore?'{n}は探検中…':'おかえり！');if(S.stage!=='seed')setTimeout(()=>speak(lineOf(S.explore?(PLACES[S.explore.p].walk?'sanpo':S.explore.p):per())),1200)}
+    else{tick();save();ui();if(!$('kmodal').classList.contains('on'))say(S.stage==='seed'?'種をタップして、芽を出させよう':S.explore?'{n}は探検中…':'おかえり！');if(S.stage!=='seed')setTimeout(()=>S&&!LOCK&&speak(lineOf(S.explore?(PL(S.explore.p).walk?'sanpo':S.explore.p):per())),1200)}
     draw()}
   setInterval(()=>{if(!$('kid').classList.contains('on'))return;frame++;
     if(S&&present()&&!S.sleep&&!busy&&Math.random()<.18){const nx=x+(Math.random()<.5?-1:1);if(nx>=24&&nx<=44){face=nx>x?1:-1;x=nx}}
     if(S&&S.explore&&!$('kmodal').classList.contains('on'))exStep();
     if(S){idleTalk();bubTick();}
-    SND.bgm(!S||S.stage==='seed'?'home':S.explore?S.explore.p:(S.sleep||per()==='night')?'night':'home');
+    SND.bgm(!S||S.stage==='seed'?'home':S.explore?(PLACES[S.explore.p]?S.explore.p:'mori'):(S.sleep||per()==='night')?'night':'home');
     if(S&&frame%25===0){tick();save()}
     if(frame%2===0)ui();draw()},200);
   return {open,close};
@@ -1452,7 +1837,7 @@ const K=(()=>{
 
 document.querySelectorAll('.kcard h2,#kmovein,#kset').forEach(h=>h.innerHTML=pixify(h.innerHTML));
 document.querySelectorAll('[data-ic]').forEach(e=>e.innerHTML=`<img class="pix bi" src="${ICON(e.dataset.ic)}">`);
-if(location.search.includes('debug'))$('kff').style.display='';
+if(TEST_BUILD&&location.search.includes('debug'))$('kff').style.display='';
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 K.open();
 </script>
