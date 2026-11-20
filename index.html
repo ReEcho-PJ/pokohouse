@@ -112,6 +112,26 @@ img.ii{width:1.3em;height:1.3em;vertical-align:-.28em;image-rendering:pixelated;
 .sq .ic img.ii{width:100%;height:100%}
 .mt img.ii{width:66%;height:66%}
 .fx img{width:30px;height:30px;image-rendering:pixelated}
+.tleft{text-align:left}
+.sbox{border:3px solid #3a2f45;border-radius:12px;padding:8px 10px;margin:10px 0;text-align:left;font-size:14px}
+.sbox .pbtn{margin-top:8px}
+.codeta{display:block;width:100%;height:72px;margin-top:8px;font:12px/1.3 monospace;border:2px solid #3a2f45;border-radius:8px;padding:6px;word-break:break-all;resize:vertical}
+label.fl{display:block;text-align:center;cursor:pointer}
+label.fl input{display:none}
+.dsc{font-size:12px;margin:6px 0;border:2px dashed #b8a8c8;border-radius:10px;padding:6px 8px}
+.dsc summary{font-weight:900;cursor:pointer}
+.dsc p{font-size:12px!important;line-height:1.6;margin:6px 0 0!important}
+#kmodal.on{align-items:flex-start}
+#kmodal .kcard{margin:auto}
+#kbub{position:absolute;left:50%;top:40%;transform:translate(-50%,-100%);max-width:78%;width:max-content;background:#fff;border:3px solid #3a2f45;border-radius:14px;
+  padding:5px 10px;font-size:15px;font-weight:900;line-height:1.35;color:#2e2438;box-shadow:2px 3px 0 rgba(58,47,69,.35);opacity:0;transition:opacity .25s;pointer-events:none;z-index:5;text-align:center}
+#kbub.on{opacity:1}
+#kbub:after{content:"";position:absolute;left:var(--tail,50%);bottom:-11px;margin-left:-8px;border:8px solid transparent;border-top:10px solid #3a2f45;border-bottom:0}
+#kbub:before{content:"";position:absolute;left:var(--tail,50%);bottom:-6px;margin-left:-5px;border:5px solid transparent;border-top:7px solid #fff;border-bottom:0;z-index:1}
+.talk{display:flex;align-items:center;gap:8px;margin:6px 0 4px;text-align:left}
+.talk img.face{width:46px;height:46px;flex:none;image-rendering:pixelated;background:#e8f6ee;border:3px solid #3a2f45;border-radius:10px;padding:2px}
+.talk .tb{position:relative;flex:1;background:#fff;border:3px solid #3a2f45;border-radius:12px;padding:6px 10px;font-size:15px;font-weight:900;color:#2e2438;min-height:2.2em;display:flex;align-items:center}
+.talk .tb:before{content:"";position:absolute;left:-11px;top:50%;margin-top:-7px;border:7px solid transparent;border-right:10px solid #3a2f45;border-left:0}
 .hint{animation:hint 1s ease-in-out infinite;border-color:#ff5f97!important;background:#fff0f6!important}
 @keyframes hint{50%{transform:translateY(-4px)}}
 </style>
@@ -122,7 +142,7 @@ img.ii{width:1.3em;height:1.3em;vertical-align:-.28em;image-rendering:pixelated;
   <div class="khead"><div><b id="kname2"></b> <span id="kstage"></span></div><div id="kgenki"></div></div>
   <div class="kstat"><span>なかよし</span><div class="bar"><i id="kaff"></i></div><span id="kaffn"></span></div>
   <div class="knext" id="knext"></div>
-  <div class="kscene"><canvas id="kcv" width="64" height="48"></canvas><div id="kov"><div id="kdecor"></div><div id="kzz"></div></div></div>
+  <div class="kscene"><canvas id="kcv" width="64" height="48"></canvas><div id="kov"><div id="kdecor"></div><div id="kzz"></div><div id="kbub"></div></div></div>
   <div id="kmsg"></div>
   <div class="kbtns" id="kbtns">
     <button data-k="explore"><em data-ic="explore"></em>探検</button>
@@ -134,12 +154,13 @@ img.ii{width:1.3em;height:1.3em;vertical-align:-.28em;image-rendering:pixelated;
     <button data-k="sleep"><em data-ic="sleep"></em>寝る</button>
     <button id="kbag"><em data-ic="bag"></em>持ち物</button>
   </div>
-  <div class="foot"><button id="ksnd">🔊 音あり</button><button id="kff" style="display:none">⏩ テスト</button><button id="kreset">最初から</button></div>
+  <div class="foot"><button id="kset">⚙️ 設定</button><button id="ksnd">🔊 音あり</button><button id="kff" style="display:none">⏩ テスト</button><button id="kreset">最初から</button></div>
   <div class="ov" id="ksetup"><div class="kcard">
     <h2>🌱 ふしぎな種を拾った！</h2>
     <p>生まれてくる子に<br>名前をつけてください</p>
     <input id="kname" maxlength="6" placeholder="ぽこ">
     <button class="pbtn" id="kstart">育てる！</button>
+    <button class="pbtn gray" id="kmovein">📦 おひっこしコードで続きから</button>
   </div></div>
   <div class="ov" id="kmodal"><div class="kcard" id="kmbody"></div></div>
   <div class="ov" id="kconfirm"><div class="kcard"><h2>最初からやり直す？</h2><p>今の子とはお別れになります</p>
@@ -416,6 +437,9 @@ const ICON=(()=>{
     splash(P,R){ const B='#5fb0e8'; [[2,3],[8,1],[5,6],[9,7],[1,8]].forEach(([x,y])=>{R(x,y+1,2,2,B);P(x,y,B)}); },
     speaker(P,R){ R(1,4,3,4,K); for(let i=0;i<3;i++)R(4+i,3-i,1,6+2*i,K); P(9,3,K);P(10,5,K);P(10,6,K);P(9,8,K);P(11,4,K);P(11,7,K); },
     mute(P,R){ R(1,4,3,4,K); for(let i=0;i<3;i++)R(4+i,3-i,1,6+2*i,K); [[8,4],[9,5],[10,6],[11,7],[11,4],[10,5],[9,6],[8,7]].forEach(([x,y])=>P(x,y,'#e0405a')); },
+    gear(P,R){ const G='#8a8aa0',g='#c8c8d8'; R(4,0,4,12,G); R(0,4,12,4,G); R(2,2,8,8,G); R(1,1,2,2,G);R(9,1,2,2,G);R(1,9,2,2,G);R(9,9,2,2,G); R(4,4,4,4,'#ffffff'); R(5,5,2,2,G); P(3,3,g);P(4,2,g); },
+    box(P,R){ const B='#d8a868',b='#b07838'; R(1,4,10,7,B); R(0,3,12,2,b); R(5,3,2,8,'#e0405a'); R(1,11,10,1,K); R(0,3,1,8,K);R(11,3,1,8,K);R(0,2,12,1,K); P(3,1,'#ffd84d');P(8,0,'#ffd84d');P(9,1,'#ffd84d'); },
+    chart(P,R){ R(0,11,12,1,K); R(1,7,2,4,'#5fb0e8'); R(4,4,2,7,'#ff8fb8'); R(7,6,2,5,'#5bb85b'); R(10,1,2,10,'#ffd84d'); },
     bag(P,R){ const B='#c08a50',b='#8a5a3a'; R(2,3,8,8,B); R(1,4,1,6,K);R(10,4,1,6,K);R(2,11,8,1,K);R(2,2,8,1,K);
       R(4,0,4,1,K);P(3,1,K);P(8,1,K); R(2,3,8,3,b); R(5,6,2,1,'#ffd84d'); R(3,8,6,2,'#a87040'); },
   };
@@ -469,7 +493,7 @@ const itemPix=(()=>{const cache={};return k=>{
 const EMO_SRC=()=>{const m={};
   [['🍒','kinomi'],['🍎','ringo'],['🍄','kinoko'],['🐟','sakana'],['🐠','oosakana'],['🍯','mitsu'],['🌾','komugi'],['⭐','hoshi'],['🌼','hana'],['🪶','hane'],['🐚','kai'],['💎','ishi'],['👢','kutsu'],['🎁','takara']].forEach(([e,k])=>m[e]=itemPix(k));
   [['🗺️','explore'],['🗺','explore'],['🍳','cook'],['🍽️','feed'],['🍽','feed'],['🎒','bag'],['🎲','sugoroku'],['🎣','fish'],['🌱','sprout'],['🎉','confetti'],['🍀','clover'],['💦','splash'],['✨','sparkle'],['💗','heart'],['🔊','speaker'],['🔇','mute'],
-   ['🌳','tree'],['🏖️','beach'],['🏖','beach'],['⛰️','mountain'],['⛰','mountain'],['🐾','walk'],['🔒','lock'],['🏠','house'],['⏩','fast'],['❓','question'],['🃏','card'],['🏁','goal']].forEach(([e,k])=>m[e]=ICON(k));
+   ['🌳','tree'],['🏖️','beach'],['🏖','beach'],['⛰️','mountain'],['⛰','mountain'],['🐾','walk'],['🔒','lock'],['🏠','house'],['⏩','fast'],['❓','question'],['🃏','card'],['🏁','goal'],['⚙️','gear'],['⚙','gear'],['📦','box'],['📊','chart']].forEach(([e,k])=>m[e]=ICON(k));
   return Object.entries(m).sort((a,b)=>b[0].length-a[0].length);};
 let _emo=null;
 function pixify(h){ if(!_emo)_emo=EMO_SRC(); for(const [e,src] of _emo){ if(h.includes(e)) h=h.split(e).join(`<img class="pix ii" src="${src}">`) } return h.replace(/️/g,''); }
@@ -478,6 +502,66 @@ function kfx(box,e,n=1,top=40){ for(let i=0;i<n;i++){const d=document.createElem
   if(e.startsWith('dish:')) d.innerHTML=`<img class="pix" src="${dishPix(e.slice(5))}">`; else d.innerHTML=pixify(e);
   d.style.left=(32+Math.random()*30)+'%';d.style.top=(top+Math.random()*14)+'%';d.style.animationDelay=(i*.12)+'s';box.appendChild(d);setTimeout(()=>d.remove(),1700+i*120)} }
 function ktoast(m){const t=$('ktoast');t.innerHTML=pixify(esc(m));t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1900)}
+// ===== プレイ分析（Google Analytics 4）=====
+// ▼ GA4の測定ID（「G-」で始まる文字）をここに入れてください。例： const GA_MEASUREMENT_ID='G-ABC123XYZ';
+//   空のままなら、分析は一切動かず、何も送信しません。
+const GA_MEASUREMENT_ID='';
+const ANA=(()=>{
+  const CK='pokohouse_consent';            // 同意の記録（セーブデータとは別の場所）
+  let consent=null, loaded=false;
+  try{consent=localStorage.getItem(CK)}catch(e){}
+  // テスト用：URLに ?debug&ga=G-XXXX を付けたときだけ、仮のIDで動かせる
+  let ID=GA_MEASUREMENT_ID;
+  try{const q=new URLSearchParams(location.search);if(q.has('debug')&&q.get('ga'))ID=q.get('ga')}catch(e){}
+  const configured=()=>/^G-[A-Z0-9]{4,20}$/i.test(ID||'');
+  const enabled=()=>configured()&&consent==='granted';
+  function load(){
+    if(loaded||!enabled())return;
+    try{
+      window.dataLayer=window.dataLayer||[];
+      window.gtag=window.gtag||function(){window.dataLayer.push(arguments)};
+      gtag('consent','default',{analytics_storage:'granted',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});
+      gtag('js',new Date());
+      gtag('config',ID,{allow_google_signals:false,allow_ad_personalization_signals:false});
+      const s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(ID);
+      s.onerror=()=>{};document.head.appendChild(s);
+      loaded=true;
+    }catch(e){}
+  }
+  function clearCookies(){
+    try{document.cookie.split(';').forEach(c=>{const n=c.split('=')[0].trim();if(!/^_ga/.test(n))return;
+      const ex='=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';const h=location.hostname;
+      document.cookie=n+ex;document.cookie=n+ex+';domain='+h;document.cookie=n+ex+';domain=.'+h;})}catch(e){}
+  }
+  function set(v){
+    consent=v; try{localStorage.setItem(CK,v)}catch(e){}
+    if(v==='granted'){load();track('analytics_consent_granted')}
+    else{ try{if(loaded&&window.gtag)gtag('consent','update',{analytics_storage:'denied'})}catch(e){} clearCookies(); }
+  }
+  // 送るのはイベント名と、英小文字・数字・_ の値と数値だけ（名前やセーブの中身は送らない）
+  function track(name,params){
+    try{
+      if(!enabled()||!loaded||typeof window.gtag!=='function')return;
+      if(!/^[a-z][a-z0-9_]{0,39}$/.test(name))return;
+      const p={};
+      for(const [k,v] of Object.entries(params||{})){
+        if(!/^[a-z][a-z0-9_]{0,39}$/.test(k))continue;
+        if(typeof v==='number'&&isFinite(v))p[k]=Math.round(v);
+        else if(typeof v==='boolean')p[k]=v;
+        else if(typeof v==='string'&&/^[a-z0-9_]{1,40}$/.test(v))p[k]=v;
+      }
+      window.gtag('event',name,p);
+    }catch(e){}
+  }
+  // 遊んだ時間の目安（画面を見ていた秒数）
+  let visSince=document.visibilityState==='visible'?Date.now():0;
+  function flushTime(){ if(visSince){const sec=(Date.now()-visSince)/1000; if(sec>=5)track('play_time',{seconds:Math.min(sec,7200)}); visSince=0} }
+  document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden')flushTime(); else visSince=Date.now(); });
+  window.addEventListener('pagehide',flushTime);
+  return {configured, get consent(){return consent}, set, track, init(){ if(enabled())load() }};
+})();
+ANA.init();
+
 // ================= こども（たんけん育成） =================
 const K=(()=>{
   const KEY='pokohouse_v1', cv=$('kcv'), g=cv.getContext('2d');
@@ -622,13 +706,14 @@ const K=(()=>{
   function exInit(){ if(!EX) EX={marks:[],spark:null,nextSpark:now()+8000,run:false}; }
   function exStep(){
     const E=S.explore, t=now(); exInit();
+    if(!EX.soon&&E.end-t<45000&&E.end-t>0){EX.soon=true;speak(lineOf('soon'))}
     if(!E.ev) E.ev=[];
     // 見ていない間に過ぎたものは、もう拾ったことにする
     E.ev.forEach(v=>{ if(!v.got&&v.t<=t-8000&&!EX.marks.some(m=>m.v===v)) v.got=true; });
     // もうすぐ見つかるものを地面に置く
     E.ev.forEach(v=>{ if(!v.got&&v.t-t<8000&&!EX.marks.some(m=>m.v===v)) EX.marks.push({v,x:8+Math.floor(Math.random()*48)}); });
     // 光るおまけ
-    if(!EX.spark&&!PLACES[E.p].walk&&(E.sparkN||0)<3&&t>EX.nextSpark){EX.spark={x:8+Math.floor(Math.random()*48),until:t+12000};say('あっ！ 何か光ってる！ タップしてみよう')}
+    if(!EX.spark&&!PLACES[E.p].walk&&(E.sparkN||0)<3&&t>EX.nextSpark){EX.spark={x:8+Math.floor(Math.random()*48),until:t+12000};say('何か光ってる！ 光っている所をタップしてみよう');speak(lineOf('spark'))}
     if(EX.spark&&t>EX.spark.until&&!EX.run){EX.spark=null;EX.nextSpark=t+15000+Math.random()*15000}
     // 行き先
     let tx=null;
@@ -638,7 +723,7 @@ const K=(()=>{
     // 拾う
     if(EX.marks.length&&Math.abs(EX.marks[0].x-x)<1&&!EX.run){
       const m=EX.marks.shift(); m.v.got=true; const it=IT[m.v.k];
-      busy='happy';setTimeout(()=>busy=null,900);kfx($('kov'),it.e,1,40);SND.sfx.pick();setTimeout(()=>SND.cry(ckey()),250);say(`{n}は${it.e}${it.n}を見つけた！`);save();
+      busy='happy';setTimeout(()=>busy=null,900);kfx($('kov'),it.e,1,40);SND.sfx.pick();setTimeout(()=>SND.cry(ckey()),250);say(`{n}は${it.e}${it.n}を見つけた！`);speak(lineOf('find'),'happy');save();
     }
     if(EX.run&&EX.spark&&Math.abs(EX.spark.x-x)<1){
       const k=wpick(PLACES[E.p].t);(E.bonus=E.bonus||[]).push(k);E.sparkN=(E.sparkN||0)+1;EX.spark=null;EX.run=false;EX.nextSpark=t+20000+Math.random()*15000;
@@ -689,7 +774,8 @@ const K=(()=>{
 
   // ---- 状態 ----
   const save=()=>store.set(KEY,S);
-  const say=t=>{$('kmsg').innerHTML=pixify(esc(t.replaceAll('{n}',S.name)))};
+  const showMsg=t=>{$('kmsg').innerHTML=pixify(esc(t.replaceAll('{n}',S?S.name:'ぽこ'))).replace(/\n/g,'<br>')};
+  const say=t=>{msgLock=Date.now()+20000; showMsg(t)};
   const cnt=(o,k)=>o[k]||0;
   const add=(o,k,n=1)=>{o[k]=(o[k]||0)+n;if(o[k]<=0)delete o[k]};
   const present=()=>S.stage!=='seed'&&!S.explore;
@@ -718,9 +804,9 @@ const K=(()=>{
       const t=S.tags;let best='fruit';Object.keys(t).forEach(k=>{if(t[k]>(t[best]||0))best=k});S.form=TAG2FORM[best];grow('adult')}
   }
   function grow(st){
-    S.stage=st; let n=0; SND.sfx.fanfare();
+    S.stage=st; let n=0; SND.sfx.fanfare(); ANA.track('grow',{stage:st,form:st==='adult'?S.form:'none'});
     const iv=setInterval(()=>{g.fillStyle=n%2?'#fff':'#ffd84d';g.fillRect(0,0,64,48);if(++n>6){clearInterval(iv);draw();
-      say(st==='child'?'{n}が少し大きくなった！':`{n}が「${FORMS[S.form].nm}」になった！ 食べた料理で姿が変わったみたい`);kfx($('kov'),'✨',4,30)}},120);
+      say((st==='child'?'{n}が少し大きくなった！':`{n}が「${FORMS[S.form].nm}」になった！ 食べた料理で姿が変わったみたい`)); setTimeout(()=>speak(lineOf('grow'),'happy'),500);kfx($('kov'),'✨',4,30)}},120);
   }
   function tick(){
     const t=now(), dt=(t-S.last)/MIN; if(dt<=0)return; S.last=t;
@@ -733,8 +819,9 @@ const K=(()=>{
     const E=S.explore, pl=PLACES[E.p];
     const got=(E.ev&&E.ev.length?E.ev.map(v=>v.k):Array.from({length:3},()=>wpick(pl.t))).concat(E.bonus||[]);
     got.forEach(k=>IT[k].d?add(S.decor,k):add(S.inv,k));
-    S.explore=null; S.lucky=false; S.justBack=true; EX=null; x=34; save(); SND.sfx.ding();
-    modal(`<h2>${pl.e} ただいま！</h2><p>${S.name}が${pl.n}から帰ってきた！</p><div class="got">${got.map(k=>IT[k].e).join('')}</div>
+    ANA.track('explore_end',{place:E.p,items:got.length});
+    S.explore=null; S.lucky=false; S.justBack=true; EX=null; x=34; save(); SND.sfx.ding(); setTimeout(()=>speak(lineOf('back'),'happy'),400);
+    modal(`<h2>${pl.e} ただいま！</h2><p>${esc(S.name)}が${pl.n}から帰ってきた！</p><div class="got">${got.map(k=>IT[k].e).join('')}</div>
       <p>${[...new Set(got)].map(k=>IT[k].n).join('、')}を拾ってきた${(E.bonus||[]).length?`<br>（すごろくや光るおまけで拾った ${E.bonus.length}個 込み）`:''}<br>「なでる」とおまけをくれるかも？</p><button class="pbtn" onclick="K.close()">やったね！</button>`);
   }
 
@@ -745,7 +832,117 @@ const K=(()=>{
 
   // ---- こうどう ----
   const ckey=()=>S.stage==='adult'?S.form:S.stage;
-  const voice=()=>pick(['ぽこ！','ぽこぽこ〜','えへへ','ぽこっ？','るんるん♪']);
+  // ---- ぽこのセリフ ----
+  // 1つのセリフは文字列か {t:'セリフ', st:['baby'], form:['umi'], pers:['amaenbo'], odd:true}
+  //   st   … 成長段階（seed/baby/child/adult）でしぼる
+  //   form … 大人の姿（umi/mori/hana/okashi）でしぼる
+  //   pers … 将来の性格でしぼる（今回は未使用。S.pers が入ったら有効になる）
+  //   odd  … シュールなセリフの印（出る割合の調整に使う）
+  const L=(t,o={})=>Object.assign({t},o);
+  const LINES={
+    idle:[
+      '今日もいい日だね。','ねえねえ、何してるの？','ぼく、ここが好き。','おなかのところがぽかぽかする。',
+      '雲がゆっくり動いてる。','ふんふふーん。','明日も遊ぼうね。','今、あくびが出そうで出なかった。','ぼく、大きくなれるかな。',
+      L('さっきから地面がついてくる。',{odd:1}),L('今、何か考えてた。忘れた。',{odd:1}),L('ぼくの胃袋が拍手してる。',{odd:1}),
+      L('右手と左手がけんかしてる。',{odd:1}),L('空気って、ちょっとしょっぱい。',{odd:1}),L('昨日、夢でぼくがぼくをなでてた。',{odd:1}),
+      L('たまに自分が丸いことを忘れる。',{odd:1}),L('あの雲、たぶんぼくの知り合い。',{odd:1}),
+      L('ぽこ…ぽこ…',{st:['baby']}),L('ばぶ。',{st:['baby'],odd:1}),L('葉っぱがちょっと伸びた気がする。',{st:['child']}),
+      L('魚に見られてる気がする。',{form:['umi'],odd:1}),L('体がちゃぷちゃぷいってる。',{form:['umi'],odd:1}),
+      L('頭のかさ、勝手に開いた。',{form:['mori'],odd:1}),L('きのこと話が合う。',{form:['mori']}),
+      L('頭の花、いいにおいでしょ。',{form:['hana']}),L('ハチさんがずっとこっちを見てる。',{form:['hana'],odd:1}),
+      L('ぼく、食べ物じゃないからね。',{form:['okashi'],odd:1}),L('体がぷるぷるする。',{form:['okashi']}),
+    ],
+    tap:['なあに？','えへへ。もう一回。','くすぐったい！','呼んだ？','ぽこっ！','指、あったかいね。',
+      L('今、ちょっと寝てた。',{odd:1}),L('タップ、上手だね。',{odd:1})],
+    pet:['えへへ。もっとなでて。','あったかい…','とけそう。','なでられると頭がふわふわする。',
+      L('今、しあわせゲージが増えた。',{odd:1}),L('そのなで方、プロだね。',{odd:1})],
+    feed:['おいしい！ ありがとう。','もぐもぐ…しあわせ。','これ、大好き！','ごちそうさまでした！',
+      L('ほっぺが落ちた。拾って。',{odd:1}),L('おなかが歌ってる。',{odd:1})],
+    cook:['いいにおい！','できたて、食べたいな。','料理の天才だね。',L('ぼくも手伝った気がする。',{odd:1})],
+    go:['おみやげ探してくるね。','行ってきまーす！','ちょっと冒険してくる。',L('地図は頭の中にある。たぶん。',{odd:1})],
+    back:['ただいま！ いっぱい拾ったよ。','楽しかった〜。','疲れたけど、満足。',L('道で石と目が合った。',{odd:1})],
+    fish:['釣れた！','魚さん、こんにちは。','釣りざお、ちょっと重かった。',L('今、魚がウインクした。',{odd:1})],
+    walk:['お散歩、大好き。','少し歩いてくるね。','道ばたの花にあいさつしてくる。',L('足が勝手にスキップする。',{odd:1})],
+    sleep:['おやすみ…ぽこ…','夢でまた会おうね。',L('寝る前に羊を3匹数える。',{odd:1})],
+    wake:['おはよ…まだ眠い。','よく寝た！ 元気出た！',L('夢でぼく、パンだった。',{odd:1})],
+    grow:[L('見て！ ちょっと大きくなった！',{st:['child']}),L('葉っぱが増えた！',{st:['child']}),
+      L('見て！ ぼく、大人になったよ。',{st:['adult']}),L('足が生えた。びっくり。',{st:['adult'],odd:1})],
+    morning:['おはよう！ 朝の光、まぶしいね。','朝ごはん、何かな。',L('寝ぐせ、ついてない？',{odd:1})],
+    day:['お昼だね。おなかすいてきた。','お日さまがぽかぽか。',L('今、影とおにごっこしてた。',{odd:1})],
+    evening:['夕焼け、きれいだね。','そろそろおうちの時間。','夕方のにおいがする。'],
+    night:['夜だね。星がきれい。','そろそろ眠くなってきた…',L('月がこっちを見てる。',{odd:1})],
+    tired:['ちょっと疲れちゃった…','おなかすいた…','元気、ちょっとだけほしいな。',L('体がぺたんこになりそう。',{odd:1})],
+    mori:['きのこのにおいがする。','鳥の声が聞こえる。','この木、ぼくより年上。',L('きのこがぼくを見て笑った。',{odd:1})],
+    umi:['波が足をなめてきた。','海ってしょっぱいね。','貝がら、どこかな。',L('魚がぼくのまねをしてる。',{odd:1})],
+    yama:['ちょっと空に近い。','やっほー！','石がごろごろしてる。',L('やまびこが違うことを言ってきた。',{odd:1})],
+    sanpo:['ちょうちょ、待って〜。','お散歩、楽しいね。','いい天気。',L('今、道にあいさつされた。',{odd:1})],
+    find:['あっ、何かある！','見つけた！','これ、もらっていこう。',L('地面がプレゼントをくれた。',{odd:1})],
+    spark:['あれ、光ってる…？','何だろう、きらきらしてる！'],
+    soon:['そろそろ帰ろうかな。','おみやげ、いっぱい持った。'],
+    zzz:['むにゃむにゃ…','もう食べられない…',L('ぐう…パンの夢…',{odd:1})],
+    love:['一緒にいると楽しいね。','ずっとここにいてね。','きみのこと、大好き。','なかよしだね。',
+      L('きみが来ると、しっぽが…あ、しっぽない。',{odd:1})],
+  };
+  let lastLine='';
+  function lineOf(cat){
+    const st=S.stage, fm=S.stage==='adult'?S.form:null, ps=S.pers||null;
+    const ok=x=>typeof x==='string'||((!x.st||x.st.includes(st))&&(!x.form||x.form.includes(fm))&&(!x.pers||x.pers.includes(ps)));
+    let pool=(LINES[cat]||LINES.idle).filter(ok).map(x=>typeof x==='string'?{t:x}:x);
+    if(!pool.length) pool=LINES.idle.filter(ok).map(x=>typeof x==='string'?{t:x}:x);
+    // 7割かわいい・3割シュール（両方あるとき）
+    const odd=pool.filter(x=>x.odd), cute=pool.filter(x=>!x.odd);
+    let use=(odd.length&&cute.length)?(Math.random()<.3?odd:cute):pool;
+    if(use.length>1){const f=use.filter(x=>x.t!==lastLine); if(f.length) use=f;}
+    const c=use[Math.floor(Math.random()*use.length)]||pool[0];
+    lastLine=c.t; return c.t;
+  }
+  // ---- 吹き出し（ぽこの声はここ。説明は下の枠） ----
+  let bubShown=0, bubUntil=0, bubPending=null, nextIdle=Date.now()+15000;
+  const DEBUG=location.search.includes('debug');
+  const idleGap=()=>DEBUG?(4000+Math.random()*2000):(S&&S.explore?(20000+Math.random()*20000):(45000+Math.random()*45000));
+  const modalOpen=()=>['kmodal','ksetup','kconfirm'].some(id=>$(id).classList.contains('on'));
+  function showBub(text,expr){
+    const el=$('kbub'); el.innerHTML=pixify(esc(text)); el.classList.add('on');
+    bubShown=Date.now(); bubUntil=bubShown+Math.max(3500,1500+text.length*120);
+    if(expr&&!busy&&!S.sleep){busy=expr;setTimeout(()=>{if(busy===expr)busy=null},1400)}
+    placeBub();
+  }
+  // 最低3秒は次のセリフで上書きしない（新しいセリフは待たせる）
+  function speak(text,expr){
+    if(!text||!S||S.stage==='seed')return;
+    if(Date.now()-bubShown<3000&&Date.now()<bubUntil){bubPending={text,expr};return}
+    showBub(text,expr);
+  }
+  function placeBub(){
+    const el=$('kbub'); if(!el.classList.contains('on'))return;
+    const sp=SPR[ckey()]||SPR.baby, cw=cv.clientWidth, ch=cv.clientHeight; if(!cw)return;
+    const sx=(x-Math.round(camX))/cv.width*cw, sy=(47-sp.h-2+(cv.height-48))/cv.height*ch;
+    const w=el.offsetWidth, lx=Math.max(w/2+4,Math.min(cw-w/2-4,sx));
+    el.style.left=lx+'px'; el.style.top=Math.max(el.offsetHeight+6,sy)+'px';
+    el.style.setProperty('--tail',Math.max(14,Math.min(w-14,sx-lx+w/2))+'px');
+  }
+  function bubTick(){
+    const t=Date.now();
+    if(bubPending&&t-bubShown>=3000){const p=bubPending;bubPending=null;showBub(p.text,p.expr)}
+    if(t>bubUntil)$('kbub').classList.remove('on');
+    if(S&&S.stage==='seed')$('kbub').classList.remove('on');
+    placeBub();
+  }
+  function idleTalk(){
+    const t=Date.now();
+    if(t<nextIdle) return;
+    nextIdle=t+idleGap();
+    if(!S||S.stage==='seed'||busy||modalOpen()||t<bubUntil) return;
+    let cat='idle';
+    if(S.explore) cat=PLACES[S.explore.p].walk?'sanpo':S.explore.p;
+    else if(S.sleep) cat='zzz';
+    else if(S.genki<1.5&&Math.random()<.6) cat='tired';
+    else if(S.aff>=40&&Math.random()<.25) cat='love';
+    else if(Math.random()<.25) cat=per();
+    speak(lineOf(cat),S.sleep?null:pick(['happy','normal','happy']));
+  }
+
+
   function act(k){
     tick(); if(!S)return;
     if(S.stage==='seed'){say('まずは種をタップしてみよう');return}
@@ -754,18 +951,18 @@ const K=(()=>{
     if(k==='cook')return cookUI();
     if(S.explore){ if(k==='explore'&&!PLACES[S.explore.p].walk) return mapUI(); return away(); }
     if(k==='walk'){ if(S.sleep)return sleepNG();
-      const st=now(),pl=PLACES.sanpo; S.explore={p:'sanpo',start:st,end:st+pl.min*MIN,bonus:[],ev:[{t:st+60000,k:wpick(pl.t)}]};S.justBack=false;EX=null;x=4;save();ui();
-      say('{n}はお散歩に出かけた！ 2分で帰ってきます');return }
-    if(k==='sleep'){S.sleep=!S.sleep;say(S.sleep?'おやすみ、{n}。寝ている間に元気が戻ります':'{n}が起きた！');save();ui();draw();return}
+      ANA.track('walk_start');const st=now(),pl=PLACES.sanpo; S.explore={p:'sanpo',start:st,end:st+pl.min*MIN,bonus:[],ev:[{t:st+60000,k:wpick(pl.t)}]};S.justBack=false;EX=null;x=4;save();ui();
+      say('{n}はお散歩に出かけた！ 2分で帰ってきます');setTimeout(()=>speak(lineOf('walk')),600);return }
+    if(k==='sleep'){S.sleep=!S.sleep;ANA.track('sleep',{state:S.sleep?'sleep':'wake'});say(S.sleep?'{n}が寝た。寝ている間に元気が戻ります':'{n}が起きた！');speak(lineOf(S.sleep?'sleep':'wake'));save();ui();draw();return}
     if(S.sleep)return sleepNG();
     if(k==='explore')return exploreUI();
     if(k==='fish')return fishUI();
     if(k==='feed')return feedUI();
     if(k==='pet'){
-      if(S.justBack){S.justBack=false;const k2=pick(['kinomi','ringo','kinoko','komugi']);add(S.inv,k2);addAff(2);busy='happy';kfx($('kov'),'💗',2);SND.cry(ckey());
-        say(`{n}が${IT[k2].e}${IT[k2].n}をくれた！ 探検おつかれさま`)}
+      if(S.justBack){S.justBack=false;const k2=pick(['kinomi','ringo','kinoko','komugi']);add(S.inv,k2);ANA.track('pet',{bonus:true});addAff(2);busy='happy';kfx($('kov'),'💗',2);SND.cry(ckey());
+        speak(lineOf('pet'));say(`{n}が${IT[k2].e}${IT[k2].n}をくれた！ 探検おつかれさま`)}
       else{const t=now();if(t-(S.petAt||0)>10*MIN){S.petAt=t;S.petN=0}S.petN++;
-        if(S.petN<=3){addAff(1);busy='happy';kfx($('kov'),'💗');SND.cry(ckey());say(`「${voice()}」 なかよし +1`)}else{busy='normal';say('{n}はもう満足そう。少し時間をおいてね')}}
+        if(S.petN<=3){ANA.track('pet');addAff(1);busy='happy';kfx($('kov'),'💗');SND.cry(ckey());speak(lineOf('pet'));say('なでた！ なかよし +1')}else{busy='normal';say('{n}はもう満足そう。少し時間をおいてね')}}
       setTimeout(()=>busy=null,1200);save();ui();
     }
   }
@@ -775,7 +972,7 @@ const K=(()=>{
       return `<button class="place" ${lock?'disabled':''} data-p="${k}"><em>${lock?'🔒':p.e}</em><span>${p.n}（${p.min}分）<small>${lock?`なかよし${p.need}で解放`:p.t.slice(0,3).map(([i])=>IT[i].e).join(' ')+' など'}</small></span></button>`}).join('');
     modal(`<h2>🗺️ どこへ行く？</h2><p>元気を♥1つ使います${S.lucky?'<br>🍀 ラッキー！ いつもよりたくさん拾える':''}</p>${html}<button class="pbtn gray" onclick="K.close()">やめる</button>`);
     $('kmbody').querySelectorAll('.place').forEach(b=>b.onclick=()=>{const p=PLACES[b.dataset.p];
-      S.genki-=1;{const st=now(),dur=p.min*MIN,n=2+Math.floor(Math.random()*3)+(S.lucky?1:0);S.explore={p:b.dataset.p,start:st,end:st+dur,bonus:[],map:makeMap(p),ev:Array.from({length:n},(_,i)=>({t:st+dur*(i+0.5+(Math.random()-.5)*.6)/n,k:wpick(p.t)}))}};EX=null;x=4;S.justBack=false;if(S.tut===3){S.tut=0;setTimeout(()=>say(TUT[4]),2600)}save();close();say(`{n}は${p.n}へ出かけた！ 「すごろく」で遊ぶと、おまけや近道が見つかるよ`)});
+      ANA.track('explore_start',{place:b.dataset.p});S.genki-=1;{const st=now(),dur=p.min*MIN,n=2+Math.floor(Math.random()*3)+(S.lucky?1:0);S.explore={p:b.dataset.p,start:st,end:st+dur,bonus:[],map:makeMap(p),ev:Array.from({length:n},(_,i)=>({t:st+dur*(i+0.5+(Math.random()-.5)*.6)/n,k:wpick(p.t)}))}};EX=null;x=4;S.justBack=false;if(S.tut===3){S.tut=0;setTimeout(()=>say(TUT[4]),2600)}save();close();say(`{n}は${p.n}へ出かけた！「すごろく」で遊ぶと、おまけや近道が見つかるよ`);setTimeout(()=>speak(lineOf('go')),600)});
   }
   function cookUI(){
     let sel=[];
@@ -789,7 +986,7 @@ const K=(()=>{
       $('kclr').onclick=()=>{if(sel.length){sel=[];render()}else close()};
       $('kcook').onclick=()=>{
         const key=[...sel].sort().join('+'), d=R[key]||FUSHIGI, isNew=!S.recipes.includes(d.k);
-        sel.forEach(k=>add(S.inv,k,-1)); if(S.tut===1)setTut(2); SND.sfx.ding(); add(S.dishes,d.k); if(isNew)S.recipes.push(d.k); save();
+        sel.forEach(k=>add(S.inv,k,-1)); ANA.track('cook',{recipe:d.k,is_new:isNew}); if(S.tut===1)setTut(2); SND.sfx.ding(); if(S.stage!=='seed'&&!S.explore) speak(lineOf('cook')); add(S.dishes,d.k); if(isNew)S.recipes.push(d.k); save();
         modal(`<h2>${isNew?'🎉 新しいレシピ！':'できた！'}</h2><div class="got"><img class="pix" src="${dishPix(d.k)}"></div><p><b>${d.n}</b><br>元気 +${d.g}　なかよし +${d.a}</p>
           <button class="pbtn" onclick="K.close()">OK</button>`);
         if(isNew)kfx($('kmbody'),'✨',3,20);
@@ -805,7 +1002,7 @@ const K=(()=>{
       const d=DISH[b.dataset.d];
       if(S.genki>=5){close();say('「おなかいっぱい！」 探検に行って、おなかをすかせよう');return}
       add(S.dishes,d.k,-1);S.genki=clamp(S.genki+d.g,0,5);if(d.tag)S.tags[d.tag]=(S.tags[d.tag]||0)+1;
-      close();busy='eat';kfx($('kov'),'dish:'+d.k);SND.sfx.eat();setTimeout(()=>SND.cry(ckey()),500);say(`{n}は${d.n}を食べた！「${voice()}」 元気 +${d.g}　なかよし +${d.a}`);
+      ANA.track('feed',{dish:d.k});close();busy='eat';kfx($('kov'),'dish:'+d.k);SND.sfx.eat();setTimeout(()=>SND.cry(ckey()),500);say(`${d.n}を食べた！ 元気 +${d.g}　なかよし +${d.a}`);setTimeout(()=>speak(lineOf('feed'),'happy'),1300);
       setTimeout(()=>{busy='happy';setTimeout(()=>busy=null,900)},1200);addAff(d.a);if(S.tut===2)setTut(3);save();ui();
     });
   }
@@ -813,26 +1010,26 @@ const K=(()=>{
   function fishUI(){
     const t=now();
     if((S.fishRest||0)>t){say(`{n}は釣りで疲れています。あと${Math.ceil((S.fishRest-t)/MIN)}分休ませてあげよう`);return}
-    modal(`<h2>🎣 釣り</h2><canvas id="fcv" width="64" height="36"></canvas><p id="fmsg">浮きが沈んだら「引く！」をタップ</p>
+    modal(`<h2>🎣 釣り</h2><div id="ftalk">${talkRow('静かに…静かに…','normal')}</div><canvas id="fcv" width="64" height="36"></canvas><p id="fmsg">浮きが沈んだら「引く！」をタップ</p>
       <button class="pbtn" id="fbtn">引く！</button><button class="pbtn gray" id="fend">終わる</button>`);
     const fc=$('fcv').getContext('2d'); let F;
-    const start=()=>{F={ph:'wait',bite:Date.now()+1500+Math.random()*2500,fr:0};$('fmsg').textContent='じっと待って…';$('fbtn').textContent='引く！'};
+    const start=()=>{F={ph:'wait',bite:Date.now()+1500+Math.random()*2500,fr:0};$('fmsg').textContent='じっと待って…';$('ftalk').innerHTML=talkRow(pick(['静かに…静かに…','魚さん、おいで〜。']),'normal');$('fbtn').textContent='引く！'};
     const drawF=()=>{F.fr++;fc.fillStyle='#9fd8ff';fc.fillRect(0,0,64,12);fc.fillStyle='#5ab4e6';fc.fillRect(0,12,64,24);
       for(let i=0;i<5;i++){fc.fillStyle='#cdeeff';fc.fillRect((F.fr+i*13)%64,16+i*4,4,1)}
       const by=F.ph==='bite'?21:16+(F.fr%8<4?0:1);
       fc.fillStyle='#555';for(let y=0;y<by;y++)fc.fillRect(32+(y<3?y-3:0),y,1,1);
       fc.fillStyle='#e04848';fc.fillRect(31,by,3,2);fc.fillStyle='#fff';fc.fillRect(31,by+2,3,1);
       if(F.ph==='bite'){fc.fillStyle='#ffd84d';fc.fillRect(40,6,2,5);fc.fillRect(40,12,2,2)}
-      if(F.ph==='wait'&&Date.now()>=F.bite){F.ph='bite';F.end=Date.now()+900;SND.sfx.bite();$('fmsg').textContent='今だ！！'}
+      if(F.ph==='wait'&&Date.now()>=F.bite){F.ph='bite';F.end=Date.now()+900;SND.sfx.bite();$('fmsg').textContent='今だ！！';$('ftalk').innerHTML=talkRow('来た！ 来たよ！','happy')}
       if(F.ph==='bite'&&Date.now()>F.end)done(false,'逃げられた…');
     };
-    const done=(ok,m)=>{
+    const done=(ok,m)=>{ANA.track('fish',{result:ok?'catch':'miss'});
       F.ph='done'; S.fishN=(S.fishN||0)+1; let txt=m;
       if(ok){const k=wpick([['sakana',60],['oosakana',15],['kutsu',15],['takara',10]]);
         if(k==='takara'){add(S.decor,'takara');add(S.inv,'hoshi');txt='🎁 宝箱！ 中に⭐星のかけらが入っていた！'}
         else{IT[k].d?add(S.decor,k):add(S.inv,k);txt=k==='kutsu'?'👢 長ぐつ… 飾りにしちゃおう':`${IT[k].e} ${IT[k].n}が釣れた！`}
         if(k!=='kutsu'){S.lucky=true;txt+='　🍀次の探検はラッキー'}
-        kfx($('kmbody'),'💦',2,20);SND.sfx.splash()} else SND.sfx.miss();
+        kfx($('kmbody'),'💦',2,20);SND.sfx.splash();$('ftalk').innerHTML=talkRow(k==='kutsu'?'…長ぐつ？ なんで？':k==='takara'?'宝箱だ！':k==='oosakana'?'大物だ〜！':lineOf('fish'),k==='kutsu'?'normal':'happy')} else {SND.sfx.miss();$('ftalk').innerHTML=talkRow(pick(['逃げられた〜。','早かったかな…']),'sad')}
       if(S.fishN>=3){S.fishN=0;S.fishRest=now()+10*MIN;txt+='\n{n}は疲れちゃった（10分休憩）';$('fbtn').disabled=true}
       $('fmsg').innerHTML=pixify(esc(txt.replaceAll('{n}',S.name))); $('fbtn').textContent='もう一回'; save();
     };
@@ -851,14 +1048,16 @@ const K=(()=>{
   }
   const sqIcon=q=>q.t==='item'?IT[q.k].e:SQ[q.t].e;
   let charImg=null;
-  function charPic(){const sp=SPR[ckey()]||SPR.baby,c=document.createElement('canvas');c.width=sp.w+2;c.height=sp.h+2;drawSprite(c.getContext('2d'),sp,1,1,'happy');return c.toDataURL()}
+  function charPic(e='happy'){const sp=SPR[ckey()]||SPR.baby,c=document.createElement('canvas');c.width=sp.w+2;c.height=sp.h+2;drawSprite(c.getContext('2d'),sp,1,1,e);return c.toDataURL()}
+  const talkRow=(text,e)=>`<div class="talk"><img class="pix face" src="${charPic(e)}"><div class="tb">${esc(text)}</div></div>`;
   function mapUI(){
     const E=S.explore; if(!E.map||!E.map.sq) E.map=makeMap(PLACES[E.p]);
     const M=E.map, order=[0,1,2,3,7,6,5,4,8,9,10,11,15,14,13,12];
-    let target=null, busyM=false, msg='サイコロを振ってね'; charImg=charPic();
+    let target=null, busyM=false, msg='サイコロを振ってね', talk=M.done?'楽しかった！':'サイコロ、振ってみて！', fe='normal'; charImg=charPic();
     function render(){
       const left=Math.max(0,Math.ceil((E.end-now())/MIN));
       modal(`<h2>🎲 ${PLACES[E.p].n}すごろく</h2><p>サイコロ残り <b>${M.rolls}</b>回　帰りまで あと${left}分</p>
+        ${talkRow(talk,fe)}
         <div class="board">${order.map(i=>{const q=M.sq[i];const here=i===M.pos;
           return `<button class="sq ${M.seen.includes(i)?'seen':''} ${i===target?'tgt':''} ${q.t}" data-i="${i}" ${i===target&&!busyM?'':'disabled'}>
             <span class="no">${i===0?'':i}</span>${here?`<img class="pix me" src="${charImg}">`:`<span class="ic">${sqIcon(q)}</span>`}</button>`}).join('')}</div>
@@ -871,7 +1070,7 @@ const K=(()=>{
     function roll(){
       if(M.rolls<=0||busyM)return; busyM=true; let n=0, face=1;
       const iv=setInterval(()=>{face=1+Math.floor(Math.random()*3);msg=`🎲 ${'⚀⚁⚂'[face-1]}`;render();SND.sfx.btn();
-        if(++n>6){clearInterval(iv);M.rolls--;busyM=false;target=Math.min(15,M.pos+face);msg=`${face}が出た！ 光っているマスをタップ`;save();render()}},90);
+        if(++n>6){clearInterval(iv);M.rolls--;busyM=false;target=Math.min(15,M.pos+face);msg=`${face}が出た！ 光っているマスをタップ`;talk=pick(['それっ！','行くよー！','どこに止まるかな。']);fe='happy';save();render()}},90);
     }
     function move(to){
       busyM=true; target=null;
@@ -879,41 +1078,251 @@ const K=(()=>{
     }
     function land(){
       const q=M.sq[M.pos]; if(!M.seen.includes(M.pos))M.seen.push(M.pos);
-      if(q.t==='item'){E.bonus.push(q.k);msg=`${IT[q.k].e}${IT[q.k].n}を拾った！`;SND.sfx.pick();SND.cry(ckey())}
-      else if(q.t==='short'){E.end=Math.max(now()+5000,E.end-2*MIN);msg='⏩ 近道！ 帰りが2分早くなった';SND.sfx.ding()}
-      else if(q.t==='treasure'){const r=pick(['hoshi','hoshi','ishi','takara']);E.bonus.push(r);msg=`🎁 宝箱！ ${IT[r].e}${IT[r].n}が入っていた！`;SND.sfx.fanfare()}
+      if(q.t==='item'){E.bonus.push(q.k);msg=`${IT[q.k].e}${IT[q.k].n}を拾った！`;talk=lineOf('find');fe='happy';SND.sfx.pick();SND.cry(ckey())}
+      else if(q.t==='short'){E.end=Math.max(now()+5000,E.end-2*MIN);msg='⏩ 近道！ 帰りが2分早くなった';talk=pick(['こっちが近道！','近道、発見！']);fe='happy';SND.sfx.ding()}
+      else if(q.t==='treasure'){const r=pick(['hoshi','hoshi','ishi','takara']);E.bonus.push(r);msg=`🎁 宝箱！ ${IT[r].e}${IT[r].n}が入っていた！`;talk='わあ、宝箱！';fe='happy';SND.sfx.fanfare()}
       else if(q.t==='event'){
         const ev=pick(['jump','friend','nothing','friend','jump']);
-        if(ev==='jump'&&M.pos<15){msg='❓ 追い風！ 2マス進む';save();render();setTimeout(()=>move(Math.min(15,M.pos+2)),700);return}
-        if(ev==='friend'){addAff(2);msg=`❓ ${pick(['うさぎ','りす','たぬき','ことり'])}に会った！ なかよし+2`;SND.cry(ckey())}
-        else msg='❓ どんぐりを踏んだ… 何もなかった';
+        if(ev==='jump'&&M.pos<15){msg='❓ 追い風！ 2マス進む';talk='追い風だー！ 飛ばされる〜！';fe='happy';save();render();setTimeout(()=>move(Math.min(15,M.pos+2)),700);return}
+        if(ev==='friend'){addAff(2);const an=pick(['うさぎ','りす','たぬき','ことり']);msg=`❓ ${an}に会った！ なかよし+2`;talk=`${an}さん、こんにちは！`;fe='happy';SND.cry(ckey())}
+        else {msg='❓ どんぐりを踏んだ… 何もなかった';talk=pick(['…あれ？ 何もない。','いたっ。どんぐりだった。']);fe='sad';}
       }
       else if(q.t==='puzzle'){save();return puzzle()}
-      else if(q.t==='goal'){const a=wpick(PLACES[E.p].t),b2=wpick(PLACES[E.p].t);E.bonus.push(a,b2);E.end=now()+4000;M.done=true;msg=`🏁 ゴール！ ${IT[a].e}${IT[b2].e}をもらった！ {n}がもうすぐ帰ってくるよ`.replace('{n}',S.name);SND.sfx.fanfare()}
+      else if(q.t==='goal'){const a=wpick(PLACES[E.p].t),b2=wpick(PLACES[E.p].t);E.bonus.push(a,b2);E.end=now()+4000;M.done=true;msg=`🏁 ゴール！ ${IT[a].e}${IT[b2].e}をもらった！ ${esc(S.name)}がもうすぐ帰ってくるよ`;talk='ゴール！ もうすぐ帰るね。';fe='happy';SND.sfx.fanfare()}
       if(!M.done&&M.rolls<=0){M.done=true;msg+='<br>サイコロがなくなった。続きは次の探検で！'}
       save(); render();
     }
     // パズルマス：3ペアの神経衰弱（4回まで）
     function puzzle(){
-      const ks=[...new Set(PLACES[E.p].t.map(x=>x[0]))].slice(0,3), cards=shuffle(ks.concat(ks)); let open=[],got=[],tries=4,lock=false;
+      const ks=[...new Set(PLACES[E.p].t.map(x=>x[0]))].slice(0,3), cards=shuffle(ks.concat(ks)); let open=[],got=[],tries=4,lock=false,pt='パズルだ！ そろえるぞ。',pf='normal';
       function pr(m){
-        modal(`<h2>🃏 パズルマス</h2><p>同じ物をそろえよう　のこり <b>${tries}</b>回</p>
+        modal(`<h2>🃏 パズルマス</h2><p>同じ物をそろえよう　のこり <b>${tries}</b>回</p>${talkRow(pt,pf)}
           <div class="mapg p3">${cards.map((k,i)=>`<button class="mt ${open.includes(i)||got.includes(i)?'open':''} ${got.includes(i)?'got':''}" data-i="${i}">${open.includes(i)||got.includes(i)?IT[k].e:''}</button>`).join('')}</div>
           <p class="mmsg">${m||'カードをめくってね'}</p>`);
         $('kmbody').querySelectorAll('.mt').forEach(b=>b.onclick=()=>flip(+b.dataset.i));
       }
       function finish(){const n=got.length/2;for(let i=0;i<got.length;i+=2)E.bonus.push(cards[got[i]]);
-        msg=n?`🃏 パズルで${n}個そろえた！ ${got.filter((_,i)=>i%2===0).map(i=>IT[cards[i]].e).join('')}をゲット`:'🃏 パズル失敗… ざんねん';
+        talk=n?'パズル、楽しかった！':'パズル、難しかった…';fe=n?'happy':'sad';msg=n?`🃏 パズルで${n}個そろえた！ ${got.filter((_,i)=>i%2===0).map(i=>IT[cards[i]].e).join('')}をゲット`:'🃏 パズル失敗… ざんねん';
         if(!M.done&&M.rolls<=0){M.done=true;msg+='<br>サイコロがなくなった'}save();setTimeout(render,900)}
       function flip(i){
         if(lock||open.includes(i)||got.includes(i)||tries<=0)return; SND.sfx.btn(); open.push(i); pr();
         if(open.length<2)return; tries--; const [a,b2]=open;
-        if(cards[a]===cards[b2]){got.push(a,b2);open=[];SND.sfx.pick();pr('そろった！');if(got.length===6||tries<=0)finish()}
-        else{lock=true;setTimeout(()=>{open=[];lock=false;pr('ちがった…');if(tries<=0)finish()},700)}
+        if(cards[a]===cards[b2]){got.push(a,b2);open=[];SND.sfx.pick();pt=pick(['やった、そろった！','その調子！']);pf='happy';pr('そろった！');if(got.length===6||tries<=0)finish()}
+        else{lock=true;setTimeout(()=>{open=[];lock=false;pt=pick(['うーん、おしい！','次は当たる気がする。']);pf='normal';pr('ちがった…');if(tries<=0)finish()},700)}
       }
       pr();
     }
     render();
+  }
+  // ---- ぽこのおひっこし（引き継ぎコード・バックアップ） ----
+  const SAVE_FORMAT=1;                 // 引き継ぎデータの形式バージョン
+  const MAX_IMPORT=200000;             // 読み込みを許す最大の大きさ（文字数）
+  const CRC_T=(()=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+  function crc32(str){const b=new TextEncoder().encode(str);let c=0xFFFFFFFF;for(const x of b)c=CRC_T[(c^x)&255]^(c>>>8);return ((c^0xFFFFFFFF)>>>0).toString(16).padStart(8,'0')}
+  const b64e=str=>{const b=new TextEncoder().encode(str);let s='';for(let i=0;i<b.length;i+=8192)s+=String.fromCharCode.apply(null,b.subarray(i,i+8192));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
+  const b64d=str=>{let s=str.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const bin=atob(s);const b=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)b[i]=bin.charCodeAt(i);return new TextDecoder('utf-8',{fatal:true}).decode(b)};
+
+  // セーブデータを検査して、知っている項目だけのきれいなコピーを返す（おかしければ例外）
+  function checkSave(d){
+    const bad=m=>{throw new Error(m)};
+    const isObj=o=>o&&typeof o==='object'&&!Array.isArray(o);
+    const num=(v,lo,hi,name)=>{if(typeof v!=='number'||!isFinite(v)||v<lo||v>hi)bad(name+'の値がおかしい');return v};
+    const int=(v,lo,hi,name)=>{num(v,lo,hi,name);if(Math.floor(v)!==v)bad(name+'の値がおかしい');return v};
+    const counts=(o,okKey,name)=>{if(o===undefined)return {};if(!isObj(o))bad(name+'の形がおかしい');const r={};
+      for(const [k,v] of Object.entries(o)){if(!okKey(k))bad(name+'に知らない物がある');int(v,0,99999,name);if(v>0)r[k]=v}return r};
+    if(!isObj(d))bad('データの形がおかしい');
+    const c={};
+    if(typeof d.name!=='string'||!d.name.trim()||d.name.length>20)bad('名前がおかしい');
+    c.name=d.name.replace(/[\u0000-\u001f\u007f<>]/g,'').slice(0,12)||'ぽこ';
+    if(!['seed','baby','child','adult'].includes(d.stage))bad('成長段階がおかしい'); c.stage=d.stage;
+    if(d.form==null)c.form=null; else if(['umi','mori','hana','okashi'].includes(d.form))c.form=d.form; else bad('姿がおかしい');
+    if(c.stage==='adult'&&!c.form)bad('大人の姿が入っていない');
+    c.taps=int(d.taps??0,0,100000,'タップ数');
+    c.genki=num(d.genki,0,5,'元気');
+    c.aff=int(d.aff,0,10000000,'なかよし');
+    c.inv=counts(d.inv,k=>IT[k]&&!IT[k].d,'材料');
+    c.dishes=counts(d.dishes,k=>!!DISH[k],'料理');
+    c.decor=counts(d.decor,k=>IT[k]&&IT[k].d,'飾り');
+    if(d.recipes!==undefined&&!Array.isArray(d.recipes))bad('レシピの形がおかしい');
+    c.recipes=[...new Set((d.recipes||[]).map(k=>{if(!DISH[k])bad('知らないレシピがある');return k}))];
+    c.tags=counts(d.tags,k=>['fruit','fish','mush','sweet'].includes(k),'食べた料理の記録');
+    if(d.hideDecor!==undefined){if(!isObj(d.hideDecor))bad('飾りの設定がおかしい');c.hideDecor={};for(const [k,v] of Object.entries(d.hideDecor)){if(!(IT[k]&&IT[k].d))bad('飾りの設定がおかしい');if(v)c.hideDecor[k]=true}}
+    for(const k of ['sleep','lucky','justBack'])c[k]=!!d[k];
+    c.last=num(d.last??Date.now(),0,1e15,'時刻'); c.skew=num(d.skew??0,-1e13,1e13,'時刻');
+    if(d.tut!==undefined)c.tut=int(d.tut,0,9,'チュートリアル');
+    if(d.fishN!==undefined)c.fishN=int(d.fishN,0,99,'釣り');
+    if(d.fishRest!==undefined)c.fishRest=num(d.fishRest,0,1e15,'釣り');
+    if(d.petN!==undefined)c.petN=int(d.petN,0,999,'なでる');
+    if(d.petAt!==undefined)c.petAt=num(d.petAt,0,1e15,'なでる');
+    if(d.pers!==undefined&&d.pers!==null){if(typeof d.pers!=='string'||!/^[a-z_]{1,20}$/.test(d.pers))bad('性格がおかしい');c.pers=d.pers}
+    if(d.explore==null)c.explore=null;
+    else{const E=d.explore;if(!isObj(E)||!PLACES[E.p])bad('探検のデータがおかしい');
+      const e={p:E.p,start:num(E.start??E.end,0,1e15,'探検の時刻'),end:num(E.end,0,1e15,'探検の時刻')};
+      const keys=(a,name,max)=>{if(a===undefined)return [];if(!Array.isArray(a)||a.length>max)bad(name+'がおかしい');return a.map(k=>{if(!IT[k])bad(name+'に知らない物がある');return k})};
+      e.bonus=keys(E.bonus,'探検のおまけ',60);
+      if(E.ev!==undefined){if(!Array.isArray(E.ev)||E.ev.length>30)bad('探検のデータがおかしい');
+        e.ev=E.ev.map(v=>{if(!isObj(v)||!IT[v.k])bad('探検のデータがおかしい');return {t:num(v.t,0,1e15,'探検の時刻'),k:v.k,...(v.got?{got:true}:{})}})}
+      if(E.sparkN!==undefined)e.sparkN=int(E.sparkN,0,99,'探検');
+      const M=E.map;
+      if(M!==undefined&&M!==null){
+        if(isObj(M)&&Array.isArray(M.sq)){ // すごろく
+          if(M.sq.length!==16)bad('すごろくのデータがおかしい');
+          const sq=M.sq.map(q=>{if(!isObj(q)||!['start','item','short','treasure','event','puzzle','goal'].includes(q.t))bad('すごろくのデータがおかしい');
+            if(q.t==='item'){if(!IT[q.k])bad('すごろくのデータがおかしい');return {t:'item',k:q.k}}return {t:q.t}});
+          if(!Array.isArray(M.seen))bad('すごろくのデータがおかしい');
+          e.map={sq,pos:int(M.pos,0,15,'すごろく'),rolls:int(M.rolls,0,6,'すごろく'),done:!!M.done,seen:M.seen.filter(i=>Number.isInteger(i)&&i>=0&&i<16)};
+        } // 古い形式（めくりマップ）は作り直すので持ってこない
+      }
+      c.explore=e;}
+    return c;
+  }
+  // 古いセーブを読むとき用：足りない項目を補うだけ（拒否はしない）
+  function repairSave(d){
+    if(!d||typeof d!=='object')return null;
+    for(const k of ['inv','dishes','decor','tags'])if(!d[k]||typeof d[k]!=='object'||Array.isArray(d[k]))d[k]={};
+    if(!Array.isArray(d.recipes))d.recipes=[];
+    if(typeof d.genki!=='number'||!isFinite(d.genki))d.genki=3;
+    if(typeof d.aff!=='number'||!isFinite(d.aff))d.aff=0;
+    if(typeof d.last!=='number'||!isFinite(d.last))d.last=Date.now();
+    if(typeof d.skew!=='number'||!isFinite(d.skew))d.skew=0;
+    if(typeof d.name!=='string'||!d.name)d.name='ぽこ';
+    if(d.stage==='adult'&&!FORMS[d.form])d.form='hana';
+    if(!['seed','baby','child','adult'].includes(d.stage))d.stage='baby';
+    if(d.explore&&!PLACES[d.explore.p])d.explore=null;
+    return d;
+  }
+  // 引き継ぎコード： POKO-<形式>-<データ>-<確認用の数字>
+  function makeCode(){
+    const json=JSON.stringify({app:'pokohouse',ver:SAVE_FORMAT,at:Date.now(),data:S});
+    return `POKO-${SAVE_FORMAT}-${b64e(json)}-${crc32(json)}`;
+  }
+  function readCode(code){
+    code=String(code||'').replace(/\s+/g,'');
+    if(!code)throw new Error('コードが入っていません');
+    if(code.length>MAX_IMPORT)throw new Error('コードが長すぎます');
+    const m=code.match(/^POKO-(\d+)-([A-Za-z0-9_-]+)-([0-9a-f]{8})$/);
+    if(!m)throw new Error('ぽこのおひっこしコードではないみたい');
+    if(+m[1]>SAVE_FORMAT)throw new Error('新しいバージョンのコードです。ゲームを最新にしてから試してね');
+    let json; try{json=b64d(m[2])}catch(e){throw new Error('コードがこわれています（文字が欠けているかも）')}
+    if(crc32(json)!==m[3])throw new Error('コードがこわれています（文字が欠けているかも）');
+    let obj; try{obj=JSON.parse(json)}catch(e){throw new Error('コードがこわれています')}
+    if(!obj||obj.app!=='pokohouse')throw new Error('ぽこのおひっこしコードではないみたい');
+    return checkSave(obj.data);
+  }
+  function readBackup(text){
+    if(text.length>MAX_IMPORT)throw new Error('ファイルが大きすぎます');
+    let obj; try{obj=JSON.parse(text)}catch(e){throw new Error('バックアップファイルではないみたい')}
+    if(!obj||obj.app!=='pokohouse'||typeof obj.data!=='object')throw new Error('ぽこのバックアップファイルではないみたい');
+    if(+obj.ver>SAVE_FORMAT)throw new Error('新しいバージョンのファイルです。ゲームを最新にしてから試してね');
+    if(obj.crc!==crc32(JSON.stringify(obj.data)))throw new Error('ファイルがこわれています');
+    return checkSave(obj.data);
+  }
+  // 復元：保存できたのを確かめてから画面に反映。失敗したら元に戻す
+  function applySave(clean){
+    let prev=null; try{prev=localStorage.getItem(KEY)}catch(e){}
+    try{ if(prev!==null)localStorage.setItem(KEY+'_before_restore',prev) }catch(e){}
+    try{
+      const txt=JSON.stringify(clean); localStorage.setItem(KEY,txt);
+      if(localStorage.getItem(KEY)!==txt)throw new Error('check');
+    }catch(e){
+      try{ if(prev!==null)localStorage.setItem(KEY,prev) }catch(_){}
+      return false;
+    }
+    S=clean; EX=null; x=34; busy=null; return true;
+  }
+  const stageName=d=>d.stage==='seed'?'種':FORMS[d.stage==='adult'?d.form:d.stage].nm;
+  function summary(d){if(!d)return 'なし（まだ育てていない）';return `「${esc(d.name)}」（${stageName(d)}）なかよし ${d.aff}・レシピ ${d.recipes.filter(k=>k!=='fushigi').length}種`}
+  function copyText(txt,ta){
+    const ok=()=>ktoast('コピーしました'), ng=()=>{if(ta){ta.focus();ta.select()}ktoast('コピーできなかったので、文字を長押ししてコピーしてね')};
+    try{ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(ok,()=>{try{ta.select();document.execCommand('copy')?ok():ng()}catch(e){ng()}});return} }catch(e){}
+    try{ta.select();document.execCommand('copy')?ok():ng()}catch(e){ng()}
+  }
+  function moveUI(note){
+    modal(`<h2>📦 ぽこのおひっこし</h2>
+      <p class="tleft">スマホを変えるときや、データが消えてしまったときのための しくみです。<br>
+      コードやファイルは<b>どこにも自動では保存されません</b>。自分でメモや保存をしておいてね。<br>
+      <b>コードを知っている人は、ぽこをコピーできます。</b>ほかの人には教えないでね。</p>
+      ${S?`<div class="sbox"><b>① おひっこしコードを作る</b>
+        <button class="pbtn" id="mkcode">コードを作る</button>
+        <textarea id="codeout" class="codeta" readonly placeholder="ここにコードが出ます"></textarea>
+        <button class="pbtn gray" id="cpcode" disabled>コピーする</button></div>`:''}
+      <div class="sbox"><b>② コードでぽこを呼びもどす</b>
+        <textarea id="codein" class="codeta" placeholder="おひっこしコードをここに貼りつけてね"></textarea>
+        <button class="pbtn" id="rdcode">このコードで復元する</button></div>
+      <div class="sbox"><b>③ バックアップファイル</b>
+        ${S?'<button class="pbtn" id="svfile">ファイルに保存する</button>':''}
+        <label class="pbtn gray fl">ファイルから復元する<input type="file" id="ldfile" accept=".json,application/json,text/plain"></label></div>
+      <p class="mmsg" id="mvmsg">${note||''}</p>
+      <button class="pbtn gray" id="mvback">もどる</button>`);
+    const msg=t=>{$('mvmsg').innerHTML=pixify(esc(t))};
+    if(S){$('mkcode').onclick=()=>{try{const c=makeCode();$('codeout').value=c;$('cpcode').disabled=false;msg('コードができました。コピーして、メモアプリなどに保存してね');ANA.track('transfer_code_issue')}catch(e){msg('コードを作れませんでした')}};
+    $('cpcode').onclick=()=>copyText($('codeout').value,$('codeout'));}
+    $('rdcode').onclick=()=>{try{confirmRestore(readCode($('codein').value),'code')}catch(e){msg('⚠ '+e.message+'。今のデータはそのままです')}};
+    if(S)$('svfile').onclick=()=>{
+      try{const data=JSON.parse(JSON.stringify(S));const body=JSON.stringify({app:'pokohouse',ver:SAVE_FORMAT,at:Date.now(),crc:crc32(JSON.stringify(data)),data},null,1);
+        const d=new Date(),ymd=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
+        const url=URL.createObjectURL(new Blob([body],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=`pokohouse_backup_${ymd}.json`;
+        document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove()},3000);
+        msg('バックアップファイルを保存しました（ダウンロードの場所を見てね）');ANA.track('backup_save')}catch(e){msg('保存できませんでした')}};
+    $('ldfile').onchange=ev=>{const f=ev.target.files[0];ev.target.value='';if(!f)return;
+      if(f.size>MAX_IMPORT){msg('⚠ ファイルが大きすぎます。今のデータはそのままです');return}
+      const r=new FileReader();r.onload=()=>{try{confirmRestore(readBackup(String(r.result)),'file')}catch(e){msg('⚠ '+e.message+'。今のデータはそのままです')}};
+      r.onerror=()=>msg('⚠ ファイルを読めませんでした');r.readAsText(f)};
+    $('mvback').onclick=()=>S?settingsUI():close();
+  }
+  function confirmRestore(clean,via){
+    modal(`<h2>📦 この子を呼びもどす？</h2>
+      <p>読みこんだデータ<br><b>${summary(clean)}</b></p>
+      <p>いまのデータ<br>${summary(S)}</p>
+      <p><b>いまのデータは上書きされて、元にもどせません。</b></p>
+      <button class="pbtn" id="rsok">上書きして呼びもどす</button><button class="pbtn gray" id="rsng">やめる</button>`);
+    $('rsng').onclick=()=>moveUI('やめました。今のデータはそのままです');
+    $('rsok').onclick=()=>{
+      if(!applySave(clean)){moveUI('⚠ 保存に失敗しました。今のデータはそのままです');return}
+      ANA.track(via==='file'?'backup_restore':'transfer_code_restore');
+      $('ksetup').classList.remove('on'); close(); tick(); save(); ui(); draw(); SND.sfx.fanfare(); say('おひっこし完了！ {n}がもどってきた！');
+    };
+  }
+  // ---- せってい ----
+  function settingsUI(){
+    const st=!ANA.configured()?'まだ準備中（いまは何も送っていません）':ANA.consent==='granted'?'さんかしている':ANA.consent==='denied'?'さんかしていない':'まだ決めていない';
+    modal(`<h2>⚙️ せってい</h2>
+      <button class="place" id="stmove"><em>📦</em><span>ぽこのおひっこし<small>引き継ぎコード・バックアップ</small></span></button>
+      <button class="place" id="stana"><em>📊</em><span>プレイ分析<small>${st}</small></span></button>
+      <button class="place" id="stsnd"><em>${SND.on?'🔊':'🔇'}</em><span>音<small>${SND.on?'鳴らす':'鳴らさない'}</small></span></button>
+      <button class="pbtn gray" onclick="K.close()">とじる</button>`);
+    $('stmove').onclick=()=>moveUI();
+    $('stana').onclick=()=>analyticsUI();
+    $('stsnd').onclick=()=>{SND.toggle();sndLabel();settingsUI()};
+  }
+  function analyticsUI(first){
+    const st=!ANA.configured()?'いまは まだ 準備中なので、何も送っていません。':ANA.consent==='granted'?'いまは「さんかする」になっています。':ANA.consent==='denied'?'いまは「さんかしない」になっています。':'まだ えらんでいません。';
+    modal(`<h2>📊 プレイ分析について</h2>
+      <p class="tleft">ぽこのおうちを もっと たのしく するために、<b>どの あそびが よく つかわれているか</b>を かぞえる しくみです。
+      たとえば「つりが なんかい あそばれたか」「どのくらいの じかん あそんだか」を かぞえます。</p>
+      <p class="tleft"><b>おくらないもの：</b>ぽこの なまえ、きみの なまえ、セーブデータ、おひっこしコード、きみの ことが わかる じょうほう</p>
+      <p class="tleft">さんかしなくても、ゲームは いつもどおり あそべます。あとから いつでも かえられます。<br><b>おうちの人と そうだんして えらんでね。</b></p>
+      <details class="tleft dsc"><summary>くわしい説明（おうちの方へ）</summary>
+        <p>「さんかする」を選んだ場合のみ、Google LLC の Google アナリティクス 4 を読み込み、遊んだ機能の回数・おおよその遊んだ時間などの統計情報を送信します。
+        計測のため、この端末に Google アナリティクスの Cookie（_ga など）が保存され、端末・ブラウザの一般的な情報やおおよその地域が Google によって処理されます。
+        広告用の機能（Google シグナル、広告のカスタマイズ）は無効にしています。名前・セーブデータ・入力した文章は送信しません。
+        「さんかしない」に変えると以後の送信を止め、保存された Cookie の削除を試みます。
+        Google によるデータの扱いは <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">Google のサイトのページ</a> をご覧ください。</p>
+      </details>
+      <p class="mmsg">${st}</p>
+      ${ANA.configured()?`<button class="pbtn" id="anaok">さんかする</button><button class="pbtn gray" id="anang">さんかしない</button>`:''}
+      <button class="pbtn gray" id="anabk">${first?'あとで決める':'もどる'}</button>`);
+    if(ANA.configured()){
+      $('anaok').onclick=()=>{ANA.set('granted');first?close():settingsUI();ktoast('ありがとう！ さんかするにしました')};
+      $('anang').onclick=()=>{ANA.set('denied');first?close():settingsUI();ktoast('さんかしないにしました')};
+    }
+    $('anabk').onclick=()=>first?close():settingsUI();
+  }
+  // 分析の準備ができていて、まだ選んでいない人にだけ、最初に1回きく
+  function maybeAskConsent(){
+    if(!ANA.configured()||ANA.consent||!S||S.stage==='seed')return;
+    if($('kmodal').classList.contains('on')||$('ksetup').classList.contains('on'))return;
+    analyticsUI(true);
   }
   // ---- もちもの ----
   function bagUI(tab='food'){
@@ -934,17 +1343,19 @@ const K=(()=>{
   document.querySelectorAll('#kbtns button[data-k]').forEach(b=>b.onclick=()=>{SND.sfx.btn();act(b.dataset.k)});
   const sndLabel=()=>$('ksnd').innerHTML=pixify(SND.on?'🔊 音あり':'🔇 音なし'); sndLabel();
   $('ksnd').onclick=()=>{SND.toggle();sndLabel()};
+  $('kset').onclick=()=>{if(!S){ktoast('先にぽこを育て始めてね');return}SND.sfx.btn();settingsUI()};
+  $('kmovein').onclick=()=>moveUI();
   $('kbag').onclick=()=>bagUI();
   cv.onclick=(e)=>{
     if(!S)return;
     if(S.explore){exTap(e);return}
     if(S.stage==='seed'){S.taps++;
       if(S.taps>=5){let n=0;const iv=setInterval(()=>{g.fillStyle=n%2?'#fff':'#bfe8a0';g.fillRect(0,0,64,48);if(++n>6){clearInterval(iv);
-        S.stage='baby';S.last=now();S.inv={kinomi:2};save();ui();draw();kfx($('kov'),'🎉',3,30);SND.sfx.fanfare();
+        S.stage='baby';S.last=now();ANA.track('hatch');S.inv={kinomi:2};save();ui();draw();kfx($('kov'),'🎉',3,30);SND.sfx.fanfare();
         say('種から{n}が生まれた！');setTut(1)}},120)}
       else {SND.sfx.pop();} if(S.taps<5) say(['ぴくっ…','動いた！','芽が出た！','もう少し…！'][S.taps-1]);save();draw();return}
     if(!present()||S.sleep)return;
-    busy='happy';say(`「${voice()}」`);setTimeout(()=>busy=null,900);SND.cry(ckey());
+    speak(lineOf('tap'),'happy');SND.cry(ckey());
   };
   $('kstart').onclick=()=>{const t=Date.now();
     S={name:$('kname').value.trim()||'ぽこ',stage:'seed',taps:0,form:null,genki:3,aff:0,inv:{},dishes:{},decor:{},recipes:[],tags:{},
@@ -953,14 +1364,19 @@ const K=(()=>{
   $('kff').onclick=()=>{if(!S||S.stage==='seed'){ktoast('先に種を育ててね');return}const st=S.explore?3:30;S.skew+=st*MIN;tick();save();ui();draw();ktoast(st+'分たった！')};
   $('kreset').onclick=()=>$('kconfirm').classList.add('on');
   $('kcn').onclick=()=>$('kconfirm').classList.remove('on');
-  $('kcy').onclick=()=>{store.set(KEY,null);S=null;$('kconfirm').classList.remove('on');$('ksetup').classList.add('on');draw()};
-  function open(){show('kid');S=store.get(KEY);
+  $('kcy').onclick=()=>{try{const r=localStorage.getItem(KEY);if(r&&r!=='null')localStorage.setItem(KEY+'_before_reset',r)}catch(e){}store.set(KEY,null);S=null;$('kconfirm').classList.remove('on');$('ksetup').classList.add('on');draw()};
+  function open(){show('kid');
+    let raw=null; try{raw=localStorage.getItem(KEY)}catch(e){}
+    S=repairSave(store.get(KEY));
+    if(!S&&raw&&raw!=='null'){ try{localStorage.setItem(KEY+'_broken_'+Date.now(),raw)}catch(e){} }  // 読めないデータも消さずに残す
+    if(S){ANA.track('game_start',{stage:S.stage}); setTimeout(maybeAskConsent,2500);}
     if(!S){$('ksetup').classList.add('on')}
-    else{tick();save();ui();if(!$('kmodal').classList.contains('on'))say(S.stage==='seed'?'種をタップして、芽を出させよう':S.explore?'{n}は探検中…':'おかえり！ {n}が待ってたよ')}
+    else{tick();save();ui();if(!$('kmodal').classList.contains('on'))say(S.stage==='seed'?'種をタップして、芽を出させよう':S.explore?'{n}は探検中…':'おかえり！');if(S.stage!=='seed')setTimeout(()=>speak(lineOf(S.explore?(PLACES[S.explore.p].walk?'sanpo':S.explore.p):per())),1200)}
     draw()}
   setInterval(()=>{if(!$('kid').classList.contains('on'))return;frame++;
     if(S&&present()&&!S.sleep&&!busy&&Math.random()<.18){const nx=x+(Math.random()<.5?-1:1);if(nx>=24&&nx<=44){face=nx>x?1:-1;x=nx}}
     if(S&&S.explore&&!$('kmodal').classList.contains('on'))exStep();
+    if(S){idleTalk();bubTick();}
     SND.bgm(!S||S.stage==='seed'?'home':S.explore?S.explore.p:(S.sleep||per()==='night')?'night':'home');
     if(S&&frame%25===0){tick();save()}
     if(frame%2===0)ui();draw()},200);
@@ -968,7 +1384,7 @@ const K=(()=>{
 })();
 
 
-document.querySelectorAll('.kcard h2').forEach(h=>h.innerHTML=pixify(h.innerHTML));
+document.querySelectorAll('.kcard h2,#kmovein,#kset').forEach(h=>h.innerHTML=pixify(h.innerHTML));
 document.querySelectorAll('[data-ic]').forEach(e=>e.innerHTML=`<img class="pix bi" src="${ICON(e.dataset.ic)}">`);
 if(location.search.includes('debug'))$('kff').style.display='';
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
