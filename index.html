@@ -358,6 +358,8 @@ img.pcd{image-rendering:pixelated}
 }
 /* v2.2b：ノッチ・時計の帯があるスマホ（セーフエリアが0より大きいとき）だけ：上は帯の下のぼかしにかからないよう少しあけ、下はホームバーの余白があるのでゲーム側の余白をへらす */
 .sa-top .kprof{margin-top:16px}
+.ios-br .kprof{margin-top:20px}   /* iPhoneのSafari（ホーム画面に追加していないとき）：上の端にiOSがかけるぼかしの帯をよける */
+@media (max-height:520px){.ios-br .kprof{margin-top:14px}}
 .sa-bot #kid .foot{margin-bottom:0;padding-bottom:2px}
 @media (max-width:359px){   /* 320px：ゲージは次の段に（文字・ゲージを小さくしない） */
   .kpaffl{display:none}.kpr2{gap:5px}.kbar{min-width:60px;margin-right:4px}   /* ゲージは同じ行のまま（「なかよし」の文字だけ省く。読み上げは aria-label） */
@@ -3134,6 +3136,7 @@ if(TEST_BUILD&&location.search.includes('debug'))$('kff').style.display='';
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 K.open();
 // v2.2b：セーフエリアがあるか（body の余白が0より大きいか）を見て印を付ける。回転したときも見直す
+try{const ua=navigator.userAgent,ios=/iP(hone|od|ad)/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),sa=navigator.standalone===true||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);if(ios&&!sa)document.documentElement.classList.add('ios-br')}catch(e){}
 (function(){const f=()=>{try{const cs=getComputedStyle(document.body);document.documentElement.classList.toggle('sa-top',parseFloat(cs.paddingTop)>0);document.documentElement.classList.toggle('sa-bot',parseFloat(cs.paddingBottom)>0)}catch(e){}};f();window.addEventListener('resize',f);window.addEventListener('orientationchange',()=>setTimeout(f,300))})();
 // v2.2b：iPhone などの高精細の画面で、ドット絵の1マスがちょうど整数の画素になる大きさに合わせる（半端な倍率だと点がにじむ・ガタガタになる）。
 // 決めた大きさより大きくはしない。パソコンなど（devicePixelRatio が2より小さい）では何もしない（今までどおり）
