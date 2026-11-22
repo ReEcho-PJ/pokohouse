@@ -58,6 +58,15 @@ button{font-family:inherit;cursor:pointer}
 .kbtns img.bi{width:30px;height:30px;image-rendering:pixelated}
 .kbtns button:active{transform:translateY(3px);box-shadow:0 1px 0 #3a2f45}
 #kid .foot{width:auto;margin:10px 12px}
+.kbtns2{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:8px 12px 0}
+.kbtns2 button{border:3px solid #3a2f45;background:#fff;border-radius:12px;padding:6px 2px;font-size:14px;font-weight:900;color:#2e2438;box-shadow:0 3px 0 #3a2f45}
+.kbtns2 button:active{transform:translateY(2px);box-shadow:0 1px 0 #3a2f45}
+img.apic{width:44px;height:44px;image-rendering:pixelated;flex:none}
+img.apicl{width:96px;height:96px;image-rendering:pixelated;display:block;margin:6px auto}
+.atbl{width:100%;font-size:14px;text-align:left;border-collapse:collapse;margin-top:6px}.atbl td{padding:3px 4px;border-bottom:1px dashed #cbb}
+.atbl td:first-child{white-space:nowrap;width:1%;vertical-align:top}.atbl td+td{overflow-wrap:anywhere;word-break:break-word}   /* 見出しは1行、長い文は右の列の中で折り返す */
+.atbl td.dt{white-space:nowrap}@media(max-width:360px){.atbl{font-size:13px}}
+.pbtn.red{background:#ffb3b3}
 .items{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}
 .item{border:3px solid #ddd;background:#fff;padding:6px 2px;font-size:12px;text-align:center;line-height:1.3;color:#2e2438}
 .item em{display:block;font-size:24px;font-style:normal}
@@ -140,6 +149,7 @@ label.fl input{display:none}
 #kbub{position:absolute;left:50%;top:40%;transform:translate(-50%,-100%);max-width:78%;width:max-content;background:#fff;border:3px solid #3a2f45;border-radius:14px;
   padding:5px 10px;font-size:15px;font-weight:900;line-height:1.35;color:#2e2438;box-shadow:2px 3px 0 rgba(58,47,69,.35);opacity:0;transition:opacity .25s;pointer-events:none;z-index:5;text-align:center}
 #kbub.on{opacity:1}
+#kbub .ln{display:block;white-space:nowrap}   /* 改行は bubLayout が決める（ブラウザに1文字ずつ折り返させない） */
 #kbub:after{content:"";position:absolute;left:var(--tail,50%);bottom:-11px;margin-left:-8px;border:8px solid transparent;border-top:10px solid #3a2f45;border-bottom:0}
 #kbub:before{content:"";position:absolute;left:var(--tail,50%);bottom:-6px;margin-left:-5px;border:5px solid transparent;border-top:7px solid #fff;border-bottom:0;z-index:1}
 .talk{display:flex;align-items:center;gap:8px;margin:6px 0 4px;text-align:left}
@@ -148,6 +158,141 @@ label.fl input{display:none}
 .talk .tb:before{content:"";position:absolute;left:-11px;top:50%;margin-top:-7px;border:7px solid transparent;border-right:10px solid #3a2f45;border-left:0}
 .hint{animation:hint 1s ease-in-out infinite;border-color:#ff5f97!important;background:#fff0f6!important}
 @keyframes hint{50%{transform:translateY(-4px)}}
+.zk .fd{font-family:'DotGothic16','Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP','Yu Gothic','Meiryo',sans-serif;font-weight:400}   /* v2.1：プロフィール帳・ことば図鑑・進化図鑑だけ。タイトル・タブ・項目名・No.・発見数 */
+.zk .fm,.zk small,.zk .place small,.zk p{font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN','Hiragino Sans','Noto Sans JP','Yu Gothic','Meiryo',sans-serif}   /* 説明・セリフ・日付・メモ */
+.zk .place>span{font-family:'DotGothic16','Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP','Yu Gothic','Meiryo',sans-serif;font-weight:400;font-size:16px;min-width:0;overflow-wrap:anywhere}
+.zk .place>span small{font-weight:700}
+.zk .ztabs{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+.zk .ztab{flex:1 1 calc(25% - 4px);min-width:0;min-height:40px;padding:4px 0;white-space:nowrap;font-size:16px;line-height:1.1;border:3px solid #3a2f45;background:#fff;color:#2e2438}
+.zk .ztab small{display:block;font-size:13px}
+.zk .ztab.on{background:#ffd84d}
+.zk .ptbl td.fd,.zk p.fd{font-size:16px}
+.zk .wrow{display:flex;gap:8px;align-items:baseline;text-align:left;padding:6px 2px;border-bottom:1px dashed #cbb;min-width:0}
+.zk .wno{font-size:16px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.zk .wt{flex:1;min-width:0;font-size:14px;overflow-wrap:anywhere;word-break:break-word}
+.zk .wt small{display:block;font-size:13px;color:#5a4868;font-weight:500}
+.zk .wq{font-size:16px;color:#9a8aa8}
+.zk .wlist{max-height:46vh;overflow-y:auto;border:3px solid #3a2f45;padding:2px 6px;margin-top:6px}
+.zk .sbox b{font-size:16px}
+/* ===== v2.1 ぽこコレクション（平成のプロフィール帳・シール帳風）。この画面の中だけ ===== */
+#kcol.ov{padding:calc(8px + 0px) 8px 8px;overflow:hidden}
+#kcol.on{display:flex;align-items:stretch;justify-content:center}
+.pcn{--ink:#4B345A;--pink:#F8C5D9;--mint:#C6E5CE;--soda:#C8DDF5;--paper:#FFF7E9;--yel:#FFE08A;--lpink:#E9CAD8;--tc:var(--pink);--tca:rgba(248,197,217,.6);
+  position:relative;width:100%;max-width:440px;height:100%;display:flex;flex-direction:column;color:var(--ink);
+  border:4px solid var(--ink);border-radius:18px;box-shadow:4px 5px 0 var(--ink);overflow:hidden;
+  background-color:#fff;background-image:linear-gradient(90deg,var(--tca) 50%,transparent 50%),linear-gradient(var(--tca) 50%,transparent 50%);background-size:14px 14px}
+.pcn.pc-zukan{--tc:var(--mint);--tca:rgba(198,229,206,.65)}.pcn.pc-kotoba{--tc:var(--soda);--tca:rgba(200,221,245,.65)}
+.pchead{position:relative;z-index:2;flex:none;padding:6px 8px 6px 22px;background:linear-gradient(#fff 0,#fff 70%,transparent);border-bottom:3px dashed var(--lpink)}
+.pcrow{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:4px}
+.pcrb{width:44px;height:44px;border-radius:50%;border:3px solid var(--ink);background:#fff;color:var(--ink);font-size:20px;font-weight:900;line-height:1;box-shadow:0 3px 0 var(--ink);display:flex;align-items:center;justify-content:center;padding:0}
+.pcrb:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}.pcrb:disabled{opacity:.4}
+#pctitle{font-family:'DotGothic16','Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP','Yu Gothic','Meiryo',sans-serif;font-size:16px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  background:#fff;border:3px solid var(--ink);border-radius:20px;padding:5px 6px;box-shadow:inset 0 -3px 0 var(--tc)}
+#pctabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.pctab{min-height:48px;border:3px solid var(--ink);border-radius:14px;font-size:16px;color:var(--ink);box-shadow:0 3px 0 var(--ink);padding:2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  background:linear-gradient(#fff8 0,#fff8 35%,transparent 36%),var(--c)}
+.pctab img{width:20px;height:20px}
+.pctab[data-pt=album]{--c:#F8C5D9}.pctab[data-pt=zukan]{--c:#C6E5CE}.pctab[data-pt=kotoba]{--c:#C8DDF5}
+.pctab.on{box-shadow:0 0 0 3px #FFE08A,0 3px 0 3px var(--ink);transform:translateY(-1px)}
+.pcrings{position:absolute;left:-6px;top:14px;bottom:14px;width:26px;z-index:3;display:flex;flex-direction:column;justify-content:space-around;pointer-events:none}
+.pcrings i{position:relative;display:block;width:26px;height:12px;border:3px solid var(--ink);border-radius:8px;background:linear-gradient(#fff 0,#fff 40%,#c9c0d6)}
+.pcrings i:after{content:'';position:absolute;right:-1px;top:1px;width:5px;height:5px;border-radius:50%;background:var(--ink)}
+#pcbody{position:relative;z-index:1;flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;margin:6px 6px 6px 18px;padding:8px 10px 14px;
+  background:var(--paper);border:3px solid var(--ink);border-radius:12px;background-image:repeating-linear-gradient(transparent 0 27px,#f3dfe6 27px 28px)}
+#pcfoot{flex:none;position:relative;z-index:2;padding:0 8px 8px 20px}
+.pcn img.pcd{width:18px;height:18px;vertical-align:-3px;image-rendering:pixelated}
+.pcsec{display:flex;justify-content:space-between;align-items:center;margin:12px 0 6px;padding:4px 10px;border-radius:16px;border:3px solid var(--ink);background:linear-gradient(#fff,#fff 60%,var(--tc))}
+.pcsec span{font-size:16px}.pcsec.keep{background:linear-gradient(#fff,#fff 60%,#F8C5D9)}.pcsec.mem{background:linear-gradient(#fff,#fff 60%,#C8DDF5);border-style:dashed}
+.pcsec:first-child,.pcnote+.pcsec{margin-top:2px}
+.pccard{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:8px;margin:6px 0;color:var(--ink);box-shadow:0 3px 0 var(--lpink),0 3px 0 1px var(--ink);min-height:64px}
+.pccard:active:not(.ro){transform:translateY(2px)}.pccard.ro{border-style:dashed;box-shadow:none;background:#fffdf8}
+.pcph{flex:none;width:56px;height:56px;border-radius:10px;background:radial-gradient(#fff 40%,var(--tc));display:flex;align-items:center;justify-content:center;border:2px solid var(--lpink)}
+.pcph img{width:48px;height:48px;image-rendering:pixelated}
+.pcci{flex:1;min-width:0;display:flex;flex-direction:column;overflow-wrap:anywhere}
+.pcci b{font-size:16px;font-weight:900}.pcci small{font-size:13px;font-weight:700;color:#5a4868;line-height:1.35}
+.pcgo{flex:none;font-size:24px;font-weight:900;color:#e0457b}
+.pcfav img{width:22px;height:22px}
+.pctag{flex:none;font-size:12px;font-weight:900;border:2px solid var(--ink);border-radius:12px;padding:3px 6px;white-space:nowrap;max-width:46%}
+.pctag.mem{font-size:10.5px;padding:1px 4px;border-radius:10px}
+.pccard.ro{flex-wrap:wrap;row-gap:4px}.pccard.ro .pcci{flex:1 1 110px}.pccard.ro .pctag{margin-left:auto;max-width:100%}   /* 札が長くて狭いときは下の段へ（名前・日付をつぶさない） */   /* 思い出だけ：名前・種類・日付を読みやすく（少し小さく） */
+.pctag.now{background:#d6f2d0}.pctag.fav{background:#FFE08A}.pctag.keep{background:#F8C5D9}.pctag.mem{background:#C8DDF5}
+.pcsub{font-size:13px;color:#5a4868;margin:2px 4px 4px;line-height:1.5}
+.pcempty{font-size:13px;color:#7a6a88;text-align:center;padding:10px 4px;border:2px dashed var(--lpink);border-radius:10px;background:#fff}
+.pcwhy{font-size:13px;color:#7a6a88;margin:4px}
+.pcnote{background:#fff;border:3px solid var(--ink);border-radius:12px;padding:8px;font-size:14px;margin-bottom:6px;box-shadow:inset 0 -4px 0 #FFE08A}
+.pcbtn{display:block;width:100%;min-height:46px;margin-top:8px;padding:8px;font-size:16px;font-weight:900;color:var(--ink);border:3px solid var(--ink);border-radius:16px;box-shadow:0 4px 0 var(--ink);
+  background:linear-gradient(#fff9 0,#fff9 40%,transparent 41%),#fff}
+.pcbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.pcbtn.pink{background:linear-gradient(#fff9 0,#fff9 40%,transparent 41%),#F8C5D9}.pcbtn.red{background:linear-gradient(#fff9 0,#fff9 40%,transparent 41%),#ffb3b3}.pcbtn.yel{background:linear-gradient(#fff9 0,#fff9 40%,transparent 41%),#FFE08A}
+.pcbox{background:#fff;border:3px solid var(--ink);border-radius:14px;padding:10px;text-align:center}
+.pcbox p{font-size:14px;line-height:1.6;margin:6px 0}
+.pcin{width:100%;font:inherit;font-size:18px;text-align:center;padding:8px;border:3px solid var(--ink);border-radius:12px;margin-top:6px}
+.pcprof{display:flex;gap:8px;align-items:flex-start}
+.pcphoto{position:relative;flex:none;width:104px;height:104px;background:#fff;border:3px solid var(--ink);border-radius:6px;padding:6px;box-shadow:3px 3px 0 var(--lpink);transform:rotate(-2deg)}
+.pcphoto img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;background:radial-gradient(#fff 35%,#F8C5D9);border-radius:4px}
+.pcphoto.big{width:150px;height:150px;margin:6px auto 10px}
+.tape{position:absolute;width:44px;height:14px;opacity:.85;border:1px solid #0001}
+.tape.t1{left:-14px;top:4px;transform:rotate(-35deg);background:repeating-linear-gradient(90deg,#F8C5D9 0 5px,#fff 5px 9px),#F8C5D9}
+.tape.t2{right:-14px;bottom:6px;transform:rotate(-35deg);background:radial-gradient(#fff 1.5px,transparent 2px) 0 0/6px 6px,#C8DDF5}
+.pcinfo{flex:1;min-width:0;background:#fff;border:3px solid var(--ink);border-radius:10px;padding:2px 8px}
+.pcir{padding:3px 0;border-bottom:1px dashed var(--lpink);display:flex;flex-direction:column}.pcir:last-child{border-bottom:0}
+.pcir span{font-size:16px;color:#6a5478;line-height:1.2}.pcir b{font-size:15px;font-weight:900;overflow-wrap:anywhere;line-height:1.35}.pcir b small{font-size:12px;font-weight:700}
+.pcbox2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.pcmini{background:#fff;border:3px solid var(--ink);border-radius:12px;padding:6px 8px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.pch{display:flex;align-items:center;gap:4px}.pcmini .fd{font-size:16px}.pcmini b{font-size:15px;font-weight:900;overflow-wrap:anywhere}.pcmini b small{font-size:13px}
+.pckosei,.pcaff,.pcwords{position:relative;background:#fff;border:3px solid var(--ink);border-radius:12px;padding:16px 10px 8px;margin-top:16px}
+.pclab{position:absolute;left:8px;top:-13px;display:flex;align-items:center;gap:4px;background:#FFE08A;border:3px solid var(--ink);border-radius:12px;padding:0 8px;font-size:16px;line-height:1.4;white-space:nowrap;max-width:calc(100% - 16px)}
+.pckosei p{font-size:15px;line-height:1.6;font-weight:900;overflow-wrap:anywhere;white-space:pre-wrap}
+.pcaff{display:flex;align-items:center;gap:8px;padding-top:18px}.pcaff b{font-size:16px;white-space:nowrap}
+.pcbar{flex:1;height:14px;border:3px solid var(--ink);border-radius:9px;background:#fff;overflow:hidden;display:block}.pcbar i{display:block;height:100%;background:#f58bb0}
+.pcw{display:flex;gap:6px;align-items:flex-start;padding:5px 0;border-bottom:1px dashed var(--lpink);font-size:15px;font-weight:900}
+.pcw img{flex:none;margin-top:3px}.pcw span{min-width:0;overflow-wrap:anywhere}.pcw small{display:block;font-size:12px;font-weight:700;color:#7a6a88}
+.pcacts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.pcpill{background:#fff;border:3px solid var(--ink);border-radius:22px;padding:6px 10px;text-align:center;font-size:16px;box-shadow:0 3px 0 var(--ink)}
+.pcgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.pcz{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px 6px;background:#fff;border:3px solid var(--ink);border-radius:12px;color:var(--ink);box-shadow:0 3px 0 var(--mint),0 3px 0 1px var(--ink);min-width:0}
+.pcz img{width:56px;height:56px;image-rendering:pixelated}.pcz span{font-size:16px;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pcz.un{background:#f4f8f5}
+.pcbig{font-size:16px;margin:4px 0 8px}
+.pcpager{display:flex;justify-content:center;align-items:center;gap:14px;background:#fff;border:3px solid var(--ink);border-radius:22px;padding:2px}
+.pckt{position:sticky;top:-8px;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:-8px -10px 6px;padding:8px 8px 6px;background:var(--paper);border-bottom:3px dashed var(--lpink)}
+.pctb{min-height:44px;border:3px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink);font-size:16px;line-height:1.1;padding:2px 0;white-space:nowrap}
+.pctb small{display:block;font-size:12px}.pctb.on{background:#FFE08A}
+.pcwl{background:#fff;border:3px solid var(--ink);border-radius:12px;padding:2px 8px}
+.pcwr{display:flex;gap:8px;align-items:baseline;padding:6px 0;border-bottom:1px dashed var(--lpink)}
+.pcno{flex:none;font-size:16px;font-variant-numeric:tabular-nums}.pcwt{flex:1;min-width:0;font-size:15px;font-weight:900;overflow-wrap:anywhere}.pcwt small{display:block;font-size:12px;font-weight:700;color:#7a6a88}
+.pcq{flex:1;font-size:16px;color:#a898b8;letter-spacing:2px}.pchrt{flex:none}
+#pcfoot .pcpill{margin-top:0}
+.pcspk{display:flex;gap:2px;opacity:.95}
+.pcstrip{display:flex;align-items:center;justify-content:center;gap:8px;margin:16px 0 4px;pointer-events:none}
+.tp{display:inline-block;width:46px;height:14px;transform:rotate(-6deg);border:1px solid #0001}
+.tp.pk{background:repeating-linear-gradient(90deg,#F8C5D9 0 5px,#fff 5px 9px),#F8C5D9}.tp.bl{background:radial-gradient(#fff 1.5px,transparent 2px) 0 0/6px 6px,#C8DDF5;transform:rotate(6deg)}
+.tp.yl{background:repeating-linear-gradient(45deg,#FFE08A 0 5px,#fff4c4 5px 9px)}
+.pcpill{position:relative}.pcpill .tp.tl{position:absolute;left:-14px;top:-8px;transform:rotate(-25deg)}
+.pcz{position:relative}.pcz-st{position:absolute;right:-6px;top:-8px}.pcz-st img.pcd{width:20px;height:20px}
+.pcdeco{position:absolute;pointer-events:none;z-index:4;image-rendering:pixelated}
+#pctitle{color:#c23d72}.pc-zukan #pctitle{color:#2f7d4b}.pc-kotoba #pctitle{color:#2c5fa8}
+.pcban{display:flex;align-items:center;justify-content:center;gap:6px;margin:0 0 6px}
+.pcban span{white-space:nowrap;font-family:'DotGothic16','Hiragino Kaku Gothic ProN',sans-serif;font-size:16px;letter-spacing:0;color:#fff;background:#f58bb0;border:3px solid var(--ink);border-radius:14px;padding:0 10px;text-shadow:1px 1px 0 var(--ink);transform:rotate(-3deg)}
+@media(max-width:350px){.pchead{padding-left:14px}#pctabs{gap:4px}.pctab{padding:2px 0;letter-spacing:-.5px}#pcfoot{padding-left:12px}.pcrib{display:none}.pcprof{flex-direction:column;align-items:center}.pcinfo{width:100%}.pctag{font-size:11px;padding:2px 4px}}
+.khead b{font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;font-weight:900;font-size:18px}   /* v2.1：名前を太い丸ゴシックに（くっきり） */
+#kstage{font-size:14px}
+.kcolb{margin:8px 12px 0}
+.kcolb button{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:46px;border:3px solid #4B345A;border-radius:16px;font-size:17px;font-weight:900;color:#4B345A;
+  background:linear-gradient(#fff9 0,#fff9 40%,transparent 41%),#F8C5D9;box-shadow:0 4px 0 #4B345A}
+.kcolb button:active{transform:translateY(3px);box-shadow:0 1px 0 #4B345A}
+.kfind{position:absolute;left:50%;top:50%;z-index:40;width:min(300px,84%);max-height:70%;overflow:hidden;transform:translate(-50%,-50%) scale(.6);opacity:0;pointer-events:none;
+  background:linear-gradient(90deg,rgba(248,197,217,.55) 50%,transparent 50%) 0 0/12px 12px,linear-gradient(rgba(248,197,217,.55) 50%,transparent 50%) 0 0/12px 12px,#FFF7E9;
+  border:4px solid #4B345A;border-radius:20px;box-shadow:0 5px 0 #4B345A;padding:16px 14px 12px;text-align:center;color:#4B345A;transition:transform .25s cubic-bezier(.3,1.6,.5,1),opacity .2s}
+.kfind{overflow:visible}.kfind.on{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto}
+.kfind .kfx{position:absolute;right:-14px;top:-14px;z-index:2;width:44px;height:44px;border-radius:50%;border:3px solid #4B345A;background:#fff;color:#4B345A;font-size:20px;font-weight:900;line-height:1;padding:0;box-shadow:0 3px 0 #4B345A;display:flex;align-items:center;justify-content:center}
+.kfind .kfx:active{transform:translateY(2px);box-shadow:0 1px 0 #4B345A}
+.kfind .kft{display:block;font-family:'DotGothic16','Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;font-weight:400;font-size:16px;line-height:1.3;color:#fff;background:#f58bb0;border:3px solid #4B345A;border-radius:14px;padding:4px 8px;margin:0 auto 10px;width:fit-content;max-width:100%;text-shadow:1px 1px 0 #4B345A}
+.kfind .kfl{font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;font-weight:900;font-size:17px;line-height:1.55;background:#fff;border:3px solid #4B345A;border-radius:12px;padding:10px 8px;overflow-wrap:anywhere;word-break:break-word}
+.kfind .kfs{display:block;margin-top:8px;font-size:13px;font-weight:900;color:#7a5a88}
+.kfind img.pcd{width:16px;height:16px;vertical-align:-3px;image-rendering:pixelated}
+.kfind .kfd{position:absolute}.kfind .kfd img.pcd{width:20px;height:20px}.kfd.d1{left:8px;top:8px}.kfd.d2{right:34px;top:8px}.kfd.d3{left:10px;bottom:10px}.kfd.d4{right:12px;bottom:12px}
+@media (prefers-reduced-motion:reduce){.kfind{transition:opacity .2s;transform:translate(-50%,-50%)}.kfind.on{transform:translate(-50%,-50%)}}
 </style>
 </head>
 <body>
@@ -168,7 +313,13 @@ label.fl input{display:none}
     <button data-k="sleep"><em data-ic="sleep"></em>寝る</button>
     <button id="kbag"><em data-ic="bag"></em>持ち物</button>
   </div>
+  <div class="kcolb"><button id="kcolbtn">ぽこコレクション</button></div>
   <div class="foot"><button id="kset">⚙️ 設定</button><button id="ksnd">🔊 音あり</button><button id="kff" style="display:none">⏩ テスト</button><button id="kreset">最初から</button></div>
+  <div class="ov" id="kcol"><div class="pcn zk pc-album" id="kcolnote">
+    <div class="pcrings" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="pchead"><div class="pcrow"><button class="pcrb" id="pcback" aria-label="もどる">←</button><div id="pctitle"></div><button class="pcrb" id="pcx" aria-label="とじる">×</button></div>
+      <div id="pctabs"><button class="pctab fd" data-pt="album">❤アルバム</button><button class="pctab fd" data-pt="zukan">📖進化図鑑</button><button class="pctab fd" data-pt="kotoba">💬ことば図鑑</button></div></div>
+    <div id="pcbody"></div><div id="pcfoot"></div></div></div>
   <div class="ov" id="ksetup"><div class="kcard">
     <h2>🌱 ふしぎな種を拾った！</h2>
     <p>生まれてくる子に<br>名前をつけてください</p>
@@ -178,12 +329,13 @@ label.fl input{display:none}
     <button class="pbtn gray" id="kmovein">📦 おひっこしコードで続きから</button>
   </div></div>
   <div class="ov" id="kmodal"><div class="kcard" id="kmbody"></div></div>
-  <div class="ov" id="kconfirm"><div class="kcard"><h2>最初からやり直す？</h2><p>今の子とはお別れになります</p><p style="font-size:12px">消す前に「設定 → ぽこのおひっこし → ファイルに保存する」でバックアップを残しておくと安心です</p>
+  <div class="ov" id="kconfirm"><div class="kcard"><h2>全部消して最初から？</h2><p>今の子・アルバム・持ち物などが消えます</p><p style="font-size:12px"><b>進化図鑑（発見記録・思い出）は消えずに残ります。</b></p><p style="font-size:12px">消す前に「設定 → ぽこのおひっこし → ファイルに保存する」でバックアップを残しておくと安心です</p>
     <button class="pbtn" id="kcy">最初から</button><button class="pbtn gray" id="kcn">やめる</button></div></div>
   <div class="savefail" id="ksavefail"></div>
   <div class="rotnote" id="krot" aria-live="polite"><b>📱 スマホを縦にしてね</b><span>横向きだと、ぽこが見えません。<br>縦向きにすると、そのまま続きから遊べます。</span></div>
   <div class="ov" id="klock"><div class="kcard" id="klockbody"></div></div>
   <div class="toast" id="ktoast"></div>
+  <div class="kfind" id="kfind" role="status" aria-live="polite"></div>
 </div>
 
 
@@ -847,7 +999,7 @@ const K=(()=>{
   }
   function draw(){
     fit(); g.setTransform(1,0,0,1,0,0); g.clearRect(0,0,cv.width,cv.height);
-    const VW=cv.width, want=VW<64&&S&&S.stage!=='seed'?Math.max(0,Math.min(64-VW,x-VW/2)):(64-VW)/2;
+    const VW=cv.width, want=VW<64&&S&&S.stage!=='seed'&&!favHere()?Math.max(0,Math.min(64-VW,x-VW/2)):(64-VW)/2;   // お気に入りがいるときは真ん中に固定（2匹とも入る範囲だけを歩く）
     camX+=(want-camX)*0.08; const cx=Math.round(camX);
     skyTop(); g.setTransform(1,0,0,1,-cx,cv.height-48);
     drawMain(); g.setTransform(1,0,0,1,0,0);
@@ -858,12 +1010,39 @@ const K=(()=>{
     if(S.explore){drawStage();return}
     let ex='normal';
     if(busy)ex=busy; else if(S.sleep)ex='sleep'; else if(S.genki<1)ex='sad'; else if(frame%10===0)ex='happy';
-    pet(ex);
+    pet(ex); favDraw();
+  }
+  // ===== AL6：お気に入りと2匹暮らし（お世話なし・なかよしは変えない・セーブは書かない）=====
+  let favBusy=0, favN=0;
+  const favHere=()=>S&&S.stage!=='seed'&&!S.explore?favRec():null;
+  const favGap=()=>{const f=favHere();if(!f)return 0;const cw=(SPR[ckey()]||SPR_Q).w,fw=(SPR[f.form]||SPR_Q).w;return Math.ceil(cw/2+fw/2)+2};   // 2匹が重ならない間隔（体の大きさから）
+  const favX=()=>Math.round(x)+favGap();
+  // お気に入りがいるとき、今の子が歩ける範囲（2匹とも画面の中に入るように）
+  // カメラを動かさなくても2匹とも画面に入る範囲にする（画面の幅 VW は縦横・機種で 50〜64）
+  const walkRange=()=>{const f=favHere();if(!f)return [24,44];const cw=(SPR[ckey()]||SPR_Q).w,fw=(SPR[f.form]||SPR_Q).w,VW=cv.width,g2=favGap();
+    const lo=Math.max(Math.ceil(cw/2)+1,Math.ceil(32-VW/2+cw/2)+1), hi=Math.min(Math.floor(63-fw/2-g2),Math.floor(32+VW/2-fw/2-g2)-1);
+    return lo<=hi?[lo,hi]:[Math.round((lo+hi)/2),Math.round((lo+hi)/2)]};
+  function favDraw(){
+    const f=favHere(); if(!f)return;
+    const sp=SPR[f.form]||SPR_Q, bob=(frame+2)%4<2?0:1, ox=Math.round(favX()-sp.w/2);
+    const ex=Date.now()<favBusy?'happy':S.sleep?'sleep':(frame+5)%12===0?'happy':'normal';
+    footShadow(sp,ox,bob); drawSprite(g,sp,ox,47-sp.h-bob,ex,true);
+  }
+  const FAV_LINES=['いっしょにいられて、うれしいな','{n}、大きくなったね！','なでなで、ありがと〜','今日はなにして遊ぶ？','おうちって、いいね','{n}のこと、見てるよ'];
+  function favTap(e){   // お気に入りの子をさわったら true（なでる・話す。なかよしは変えない）
+    const f=favHere(); if(!f||S.sleep)return false;
+    const sp=SPR[f.form]||SPR_Q, gx=Math.round(camX)+e.offsetX/cv.clientWidth*cv.width, gy=e.offsetY/cv.clientHeight*cv.height-(cv.height-48);
+    if(Math.abs(gx-favX())>sp.w/2+1||gy<47-sp.h-2)return false;
+    favBusy=Date.now()+1200; favN++;
+    kfx($('kov'),'💗',1); SND.cry(f.form);
+    const t=FAV_LINES[favN%FAV_LINES.length].replaceAll('{n}',S.name);
+    speak(`${favN%2?'なでなで…えへへ。':''}${t}`,null,'fav',undefined,'l_fav_'+String(favN%FAV_LINES.length+1).padStart(2,'0')); draw();   // 反応（ハート・鳴き声）はすぐ。セリフは今のセリフの後
+    return true;
   }
 
   // ---- 状態 ----
   const save=()=>{if(LOCK||!S)return false;let txt;try{txt=JSON.stringify(S)}catch(e){setSaveFail(true);return false}
-    const r=writeMain(txt); if(r.why==='conflict'||r.why==='lock')return false; setSaveFail(!r.ok); return r.ok};
+    const r=writeMain(txt); if(r.why==='conflict'||r.why==='lock')return false; setSaveFail(!r.ok); if(r.ok&&dexDirty)dexFlush(); return r.ok};
   const showMsg=t=>{$('kmsg').innerHTML=pixify(esc(t.replaceAll('{n}',S?S.name:'ぽこ'))).replace(/\n/g,'<br>')};
   const say=t=>{msgLock=Date.now()+20000; showMsg(t)};
   const cnt=(o,k)=>o[k]||0;
@@ -886,12 +1065,96 @@ const K=(()=>{
      const want=onMap?'sugoroku':'explore'; if(eb.dataset.cur!==want){eb.dataset.cur=want;eb.innerHTML=`<em><img class="pix bi" src="${ICON(want)}"></em>${onMap?'すごろく':'探検'}`;} if(onMap)eb.classList.add('hint');}
     $('kzz').textContent=S.sleep&&present()?(frame%4<2?'Z z':'z Z'):'';
   }
+  // ===== v2.1 WD1.5：性格（docs/v21_pers.md 22章が正。persRule＝1）=====
+  // 6つの行動（ごはん・料理・効果のあったなでる・探検・お散歩・釣り）を log に数だけで記録し、大人になった瞬間に一度だけ性格を書く。
+  // 進化（tags・form）・なかよし・元気・場所の解放には使わない。判定は記録・気質・子のIDだけで決まる（乱数・時刻は使わない）
+  const PERS={pr_amae:{n:'甘えん坊'},pr_bouken:{n:'冒険好き'},pr_kuishinbo:{n:'食いしん坊'},pr_nonbiri:{n:'のんびり屋'},
+    pr_kenkyu:{n:'研究家'},pr_jishin:{n:'自信家'},pr_kodawari:{n:'こだわり屋'},pr_fushigi:{n:'不思議ちゃん'}};
+  const PERS_IDS=['pr_amae','pr_bouken','pr_kuishinbo','pr_nonbiri','pr_kenkyu','pr_jishin','pr_kodawari','pr_fushigi'];   // 並び順は変えない（相性表の列）
+  const PERS_AFFINITY={amaenbo:[5,1,2,2,1,1,2,2],ottori:[2,1,2,5,2,1,3,2],kokishin:[1,5,2,2,4,3,1,4],kuishinbo:[2,1,5,2,3,1,3,2],
+    cool:[1,2,1,2,5,4,3,2],makezu:[1,3,2,1,2,5,4,1],shincho:[2,1,2,3,4,1,5,2],kimagure:[2,3,2,3,2,1,1,5]};
+  const PERS_FALLBACK={cool:'pr_kenkyu'};   // 記録不足のとき、相性の最高値が並ぶ気質の決め方（正式の表では並ばないが、安全のため残す）
+  const PERS_RULE=1, PR_ACTS=['feed','cook','pet','go','walk','fish'], PR_MIN_NEW=10, PR_MIN_OLD=30;
+  const dayNo=()=>{const t=now();return Math.floor((t-new Date(t).getTimezoneOffset()*60000)/864e5)};   // 端末の日付の日番号
+  // px：その子用の拡張の入れ物（v21_evo）。持ち主の id（of）を入れる。料理ごとの回数 food.c（作った）・food.e（食べた）
+  function pxOf(d){ d=d||S; if(d.px!==undefined&&!isO(d.px))return null; if(!d.px)d.px={of:d.id}; const p=d.px; if(p.of!==d.id)return null;
+    if(!isO(p.food))p.food={}; if(!isO(p.food.c))p.food.c={}; if(!isO(p.food.e))p.food.e={}; return p }
+  function prFood(kind,k){const p=pxOf(); if(p&&typeof k==='string'){const f=p.food[kind];f[k]=Math.min(1e9,(f[k]||0)+1)}}
+  // 行動を1回記録：回数 n_、有効回数 v_（その日の6回目まで）、点 p_（半点の整数：1〜3回目+4、4〜6回目+2）、日数 d_、今日の回数 c_・日番号 t_
+  function prRec(a,more){
+    if(!S||S.stage==='seed'||!isO(S.log))return;
+    const L=S.log, d=dayNo(), inc=k=>{L[k]=Math.min(1e9,(L[k]||0)+1)};
+    if(typeof L.from!=='number')L.from=d;
+    if(typeof L['t_'+a]!=='number'||d>L['t_'+a]){L['t_'+a]=d;L['c_'+a]=0;inc('d_'+a)}   // 時計を戻したときは同じ日として続ける（得をしない）
+    inc('c_'+a); inc('n_'+a); const k=L['c_'+a];
+    if(k<=6){inc('v_'+a); L['p_'+a]=Math.min(1e9,(L['p_'+a]||0)+(k<=3?4:2))}
+    (more||[]).forEach(inc);
+    prLegacy();
+  }
+  // 性格の点（0〜1 の同じ尺度）。L：log、F：px.food
+  function prScores(L,F){
+    const n=a=>L['n_'+a]||0, P={}, mix={};
+    PR_ACTS.forEach(a=>{P[a]=(L['p_'+a]||0)/2+Math.min(3,Math.max(0,(L['d_'+a]||0)-1))});
+    const TP=PR_ACTS.reduce((s,a)=>s+P[a],0)||1, TN=PR_ACTS.reduce((s,a)=>s+n(a),0)||1;
+    PR_ACTS.forEach(a=>{mix[a]=.35*P[a]/TP+.65*n(a)/TN});
+    const c=isO(F)&&isO(F.c)?F.c:{}, e=isO(F)&&isO(F.e)?F.e:{};
+    const odd=L.n_odd||0, ncook=n('cook'), oddr=ncook?odd/ncook:0;
+    const good=Object.entries(c).filter(([k,v])=>k!=='fushigi'&&v>0), gsum=good.reduce((s,[,v])=>s+v,0), kinds=good.length;
+    const s={pr_amae:.8*mix.pet, pr_bouken:mix.go, pr_kuishinbo:1.3*mix.feed, pr_nonbiri:.45*(mix.walk+mix.fish)};
+    s.pr_kenkyu=(ncook-odd>=4&&kinds>=3&&oddr<.3)?1.25*mix.cook*Math.min(1,kinds/5)*(1-oddr):null;
+    const ngo=n('go'), yama=ngo?(L.n_go_yama||0)/ngo:0, nf=n('fish'), fok=nf?(L.n_fishok||0)/nf:0;
+    s.pr_jishin=1.6*mix.go*yama+.8*mix.fish*fok;
+    const ev=Object.values(e).filter(v=>v>0), dcook=gsum?Math.max(...good.map(([,v])=>v))/gsum:0, dfeed=n('feed')>=4&&ev.length?Math.max(...ev)/n('feed'):0, df=Math.max(dcook,dfeed);
+    const qs=Object.keys(L).filter(k=>/^q_/.test(k)).map(k=>L[k]), pc=qs.reduce((a,b)=>a+b,0), pf=pc?Math.max(...qs)/pc:0;
+    const c1=ncook>=4&&df>=.6, c2=pc>=4&&pf>=.75;
+    s.pr_kodawari=(c1||c2)?1.5*Math.max(c1?(mix.cook+mix.feed)*.8*df:0,c2?mix.go*pf:0):null;
+    s.pr_fushigi=(odd>=2&&oddr>=.2)?1.5*mix.cook*Math.min(1,oddr/.4):null;
+    return s;
+  }
+  function prTie(tied,d){   // 相性 → 子のIDから決まる固定順
+    const af=PERS_AFFINITY[d.temper]||[];
+    if(tied.length>1){const m=Math.max(...tied.map(i=>af[i]||0));tied=tied.filter(i=>(af[i]||0)===m)}
+    const ord=i=>parseInt(crc32(`${d.id}:${PERS_IDS[i]}`),16);
+    return PERS_IDS[tied.slice().sort((a,b)=>ord(a)-ord(b))[0]];
+  }
+  function prValid(L){return {valid:PR_ACTS.reduce((s,a)=>s+(L['v_'+a]||0),0),kinds:PR_ACTS.filter(a=>(L['v_'+a]||0)>0).length}}
+  // 記録から決める。最低条件（有効 min 回以上・2種類以上）に届かなければ null
+  function prDecide(d,min){
+    const L=isO(d.log)?d.log:{}, v=prValid(L); if(v.valid<min||v.kinds<2)return null;
+    const s=prScores(L,isO(d.px)&&d.px.of===d.id?d.px.food:null);
+    const cand=PERS_IDS.map((p,i)=>[s[p]==null?null:Math.round(s[p]*1000),i]).filter(c=>c[0]!==null);
+    const top=Math.max(...cand.map(c=>c[0])); let tied=cand.filter(c=>c[0]===top).map(c=>c[1]);
+    if(tied.length>1){const n=a=>L['n_'+a]||0, raw=[n('pet'),n('go'),n('feed'),n('walk')+n('fish'),n('cook'),(L.n_go_yama||0)+(L.n_fishok||0),n('cook'),L.n_odd||0];
+      const m=Math.max(...tied.map(i=>raw[i])); tied=tied.filter(i=>raw[i]===m)}
+    return prTie(tied,d);
+  }
+  const prFallback=d=>PERS_FALLBACK[d.temper]||prTie(PERS_IDS.map((p,i)=>i),d);
+  // 一度だけ書く（pers が入っている子には二度と書かない）。log の写し logFixed と、料理の写し px.foodFixed も一度だけ
+  function prFix(d,p,mode){
+    if(d.pers||!PERS[p])return false;
+    if(!isO(d.log))d.log={};
+    d.pers=p; d.persRule=PERS_RULE; d.log.pr_mode=mode; d.log.pr_day=dayNo();
+    if(!d.logFixed)d.logFixed=clone(d.log);
+    const x=pxOf(d); if(x&&!x.foodFixed)x.foodFixed=clone(x.food);
+    return true;
+  }
+  // 大人になった瞬間（姿を決めたすぐ後）：記録から。届かなければ気質との相性から（pr_mode 2）
+  function prOnAdult(){ if(!S||S.pers)return; const p=prDecide(S,PR_MIN_NEW); prFix(S,p||prFallback(S),p?1:2) }
+  // 性格がまだない大人（v2.1 より前に大人になった子など）：v2.1 からの記録が有効30回・2種類に届いたら確定（pr_mode 3）
+  function prLegacy(){
+    if(!S||S.stage!=='adult'||S.pers)return; const p=prDecide(S,PR_MIN_OLD); if(!p)return;
+    if(prFix(S,p,3))setTimeout(()=>{if(S&&S.pers===p){say(`{n}の性格が見つかった！「${PERS[p].n}」 アルバムのプロフィール帳で見られるよ`);ktoast('📖 性格が見つかった！')}},900);
+  }
+  // W3：大人になるときの姿（基本の進化先）を決める。v1.9 の判定をそのまま移したもの（docs/spec.md「進化の決まり」）
+  // 食べた料理のタグの回数がいちばん多いタグの姿。同じ回数なら先に記録されたタグ、ただし fruit（花の子）と同じ回数なら fruit。何もなければ花の子
+  function baseForm(tags){const t=tags;let best='fruit';Object.keys(t).forEach(k=>{if(TAG2FORM[k]&&t[k]>(t[best]||0))best=k});return TAG2FORM[best]}
   function addAff(n){
     const b=S.aff; S.aff+=n; if(!Array.isArray(S.unlocked))S.unlocked=[];
     Object.entries(PLACES).forEach(([k,p])=>{if(p.need>0&&b<p.need&&S.aff>=p.need&&!S.unlocked.includes(k)){S.unlocked.push(k);setTimeout(()=>{say(`新しい場所「${p.n}」に行けるようになった！`);ktoast(`${p.e} ${p.n} 解放！`)},1600)}});
     if(S.stage==='baby'&&S.aff>=15)grow('child');
     else if(S.stage==='child'&&S.aff>=60){
-      const t=S.tags;let best='fruit';Object.keys(t).forEach(k=>{if(TAG2FORM[k]&&t[k]>(t[best]||0))best=k});S.form=TAG2FORM[best];S.adultAt=now();ensureIntegrity(S);grow('adult')}
+      S.form=baseForm(S.tags);S.adultAt=now();prOnAdult();ensureIntegrity(S);grow('adult')}
+    if(S.stage==='adult'&&!(S.album||[]).some(r=>r&&r.id===S.id)){ensureIntegrity(S);const nw=!(DEXS&&DEXS.sp[S.form]);dexAddPet(S,false);if(nw){const fm=S.form;setTimeout(()=>newFormUI(fm),2400)}}   // AL3：大人になった直後に、アルバムの目印・たね（1匹1回：seedGiven）・図鑑の記録を付ける
   }
   function grow(st){
     S.stage=st; let n=0; SND.sfx.fanfare(); ANA.track('grow',{stage:st,form:st==='adult'?S.form:'none'});
@@ -911,7 +1174,9 @@ const K=(()=>{
     let held=0;
     got.forEach(k=>{ if(hasIT(k)) IT[k].d?add(S.decor,k):add(S.inv,k); else { if(!Array.isArray(S.hold))S.hold=[]; S.hold.push(k); held++; } });
     ANA.track('explore_end',{place:E.p,items:got.length});
-    S.explore=null; S.lucky=false; S.justBack=true; if(pl.walk)S.backFrom='walk'; else if(!pl.unknown)S.backFrom='explore'; else delete S.backFrom; EX=null; x=34; save();
+    S.explore=null; S.lucky=false; S.justBack=true; if(pl.walk)S.backFrom='walk'; else if(!pl.unknown)S.backFrom='explore'; else delete S.backFrom; EX=null; x=34;
+    if(pl.walk)prRec('walk'); else if(!pl.unknown)prRec('go',['n_go_'+E.p].concat(Object.keys(PLACES).filter(k=>!PLACES[k].walk&&(PLACES[k].need<=0||(S.unlocked||[]).includes(k))).length>=2?['q_'+E.p]:[]));   // v2.1 性格の記録
+    save();
     say('おかえり！');   // 探検中の案内（光・おまけ・ダッシュ・あと○分など）は、帰ったら残さない SND.sfx.ding(); setTimeout(()=>speak(lineOf('back'),'happy'),400);
     modal(`<h2>${pl.e} ただいま！</h2><p>${esc(S.name)}が${pl.n}から帰ってきた！</p><div class="got">${got.map(k=>IT[k].e).join('')}</div>
       <p>${[...new Set(got)].map(k=>IT[k].n).join('、')}を拾ってきた${(E.bonus||[]).length?`<br>（すごろくや光るおまけで拾った ${E.bonus.length}個 込み）`:''}${held?`<br>（このバージョンで使えない物 ${held}個は、なくさないように保管しました）`:''}<br>「なでる」とおまけをくれるかも？</p><button class="pbtn" onclick="K.close()">やったね！</button>`);
@@ -920,7 +1185,7 @@ const K=(()=>{
   // ---- モーダル ----
   let fishTimer=null;
   function modal(html){$('kmbody').innerHTML=pixify(html);$('kmodal').classList.add('on')}
-  function close(){$('kmodal').classList.remove('on');clearInterval(fishTimer);fishTimer=null;ui();draw()}
+  function close(){$('kmodal').classList.remove('on');$('kcol').classList.remove('on');clearInterval(fishTimer);fishTimer=null;ui();draw()}
 
   // ---- こうどう ----
   const ckey=()=>!S?'baby':S.stage==='adult'?S.form:S.stage;
@@ -975,71 +1240,339 @@ const K=(()=>{
     love:['一緒にいると楽しいね。','ずっとここにいてね。','きみのこと、大好き。','なかよしだね。',
       L('きみが来ると、しっぽが…あ、しっぽない。',{odd:1})],
   };
+  // ===== v2.1 WD1：セリフID（文・条件・並びは上の表のまま。ID は種類ごとの並び順で l_<種類>_<2けた>） =====
+  // 一度付けたIDは変えない・使い直さない（docs/v21_lines_current.md と同じ。台帳 ids/ledger.json の line）
+  const LINE_ID=(cat,i)=>`l_${cat}_${String(i+1).padStart(2,'0')}`;
+  const LINE_C6={idle:'日常',tap:'日常',pet:'日常',feed:'日常',cook:'日常',sleep:'日常',wake:'日常',zzz:'日常',morning:'日常',day:'日常',evening:'日常',night:'日常',
+    go:'特別',back:'特別',fish:'特別',walk:'特別',mori:'特別',umi:'特別',yama:'特別',sanpo:'特別',find:'特別',spark:'特別',soon:'特別',tired:'気分',love:'気分',grow:'成長'};
+  const BASE_LINES=[];   // 既存133本：{id,t,c6}（図鑑・ことば帳の表示用。抽選には使わない）
+  Object.entries(LINES).forEach(([cat,a])=>a.forEach((x,i)=>BASE_LINES.push({id:LINE_ID(cat,i),t:typeof x==='string'?x:x.t,c6:LINE_C6[cat]||'日常'})));
+  FAV_LINES.forEach((t,i)=>BASE_LINES.push({id:'l_fav_'+String(i+1).padStart(2,'0'),t,c6:'日常'}));
+  BASE_LINES.push({id:'l_dex_01',t:'図鑑にのったよ、うれしいな',c6:'特別'});
+  let RECENT=[];   // 直近に出したセリフID（新しい層で同じ文を避ける。保存しない）
+  function lineSeen(id){ if(!id)return; RECENT.push(id); if(RECENT.length>8)RECENT.shift(); }
+  // ===== v2.1 WD2：追加セリフ66本・豆知識・気質×性格の64通り（docs/v21_lines_batch1.md 4章、v21_voicemap.md）=====
+  // ly：pers（性格別）・combo（気質×性格の組み合わせ限定）・trivia（豆知識）。on：出る場面。pers/temper/st：そろったときだけ候補。fact：豆知識の事実ID
+  const XLINES=[
+    {"id":"l_pers_amae_001","ly":"pers","t":"そばにいて。用事はないけど。","on":"idle","c6":"性格","pers":"pr_amae","st":"adult"},
+    {"id":"l_pers_amae_002","ly":"pers","t":"なでてもらう準備はできてる。","on":"idle","c6":"性格","pers":"pr_amae","st":"adult","odd":1},
+    {"id":"l_pers_amae_003","ly":"pers","t":"顔を見たら甘えたくなった。","on":"idle","c6":"性格","pers":"pr_amae","st":"adult"},
+    {"id":"l_pers_amae_004","ly":"pers","t":"今日は頑張った。褒めてもいいよ。","on":"idle","c6":"性格","pers":"pr_amae","st":"adult","odd":1},
+    {"id":"l_pers_bouken_001","ly":"pers","t":"知らない道を見つけた。","on":"idle","c6":"性格","pers":"pr_bouken","st":"adult"},
+    {"id":"l_pers_bouken_002","ly":"pers","t":"次はもっと遠くへ行きたい。","on":"idle","c6":"性格","pers":"pr_bouken","st":"adult","odd":1},
+    {"id":"l_pers_bouken_003","ly":"pers","t":"地図の端には何があるんだろう。","on":"idle","c6":"性格","pers":"pr_bouken","st":"adult"},
+    {"id":"l_pers_bouken_004","ly":"pers","t":"準備はできた。おやつも持った。","on":"idle","c6":"性格","pers":"pr_bouken","st":"adult","odd":1},
+    {"id":"l_pers_kuishinbo_001","ly":"pers","t":"満腹。でも食べたいものはある。","on":"idle","c6":"性格","pers":"pr_kuishinbo","st":"adult"},
+    {"id":"l_pers_kuishinbo_002","ly":"pers","t":"今日のごはん、また食べたい。","on":"idle","c6":"性格","pers":"pr_kuishinbo","st":"adult","odd":1},
+    {"id":"l_pers_kuishinbo_003","ly":"pers","t":"おいしいものには弱いんだ。","on":"idle","c6":"性格","pers":"pr_kuishinbo","st":"adult"},
+    {"id":"l_pers_kuishinbo_004","ly":"pers","t":"食べ物のことを考えてた。","on":"idle","c6":"性格","pers":"pr_kuishinbo","st":"adult","odd":1},
+    {"id":"l_pers_nonbiri_001","ly":"pers","t":"今日はゆっくりしよう。","on":"idle","c6":"性格","pers":"pr_nonbiri","st":"adult"},
+    {"id":"l_pers_nonbiri_002","ly":"pers","t":"急ぐ用事がないって、いいね。","on":"idle","c6":"性格","pers":"pr_nonbiri","st":"adult","odd":1},
+    {"id":"l_pers_nonbiri_003","ly":"pers","t":"休憩しよう。さっきもしたけど。","on":"idle","c6":"性格","pers":"pr_nonbiri","st":"adult"},
+    {"id":"l_pers_nonbiri_004","ly":"pers","t":"何もしない時間も好き。","on":"idle","c6":"性格","pers":"pr_nonbiri","st":"adult","odd":1},
+    {"id":"l_pers_kenkyu_001","ly":"pers","t":"気になることが増えた。","on":"idle","c6":"性格","pers":"pr_kenkyu","st":"adult"},
+    {"id":"l_pers_kenkyu_002","ly":"pers","t":"あの料理、もう一度試したい。","on":"idle","c6":"性格","pers":"pr_kenkyu","st":"adult","odd":1},
+    {"id":"l_pers_kenkyu_003","ly":"pers","t":"失敗にも理由があるはず。","on":"idle","c6":"性格","pers":"pr_kenkyu","st":"adult"},
+    {"id":"l_pers_kenkyu_004","ly":"pers","t":"考え事をしてた。内容は忘れた。","on":"idle","c6":"性格","pers":"pr_kenkyu","st":"adult","odd":1},
+    {"id":"l_pers_jishin_001","ly":"pers","t":"今日は調子がいい。たぶん。","on":"idle","c6":"性格","pers":"pr_jishin","st":"adult"},
+    {"id":"l_pers_jishin_002","ly":"pers","t":"任せて。何をするんだっけ。","on":"idle","c6":"性格","pers":"pr_jishin","st":"adult","odd":1},
+    {"id":"l_pers_jishin_003","ly":"pers","t":"できる気がする。根拠はない。","on":"idle","c6":"性格","pers":"pr_jishin","st":"adult"},
+    {"id":"l_pers_jishin_004","ly":"pers","t":"失敗じゃない。練習だよ。","on":"idle","c6":"性格","pers":"pr_jishin","st":"adult","odd":1},
+    {"id":"l_pers_kodawari_001","ly":"pers","t":"いつもの場所が落ち着く。","on":"idle","c6":"性格","pers":"pr_kodawari","st":"adult"},
+    {"id":"l_pers_kodawari_002","ly":"pers","t":"食べる順番も大事なんだ。","on":"idle","c6":"性格","pers":"pr_kodawari","st":"adult","odd":1},
+    {"id":"l_pers_kodawari_003","ly":"pers","t":"何でもいいよ。……やっぱりこれがいい。","on":"idle","c6":"性格","pers":"pr_kodawari","st":"adult"},
+    {"id":"l_pers_kodawari_004","ly":"pers","t":"ちょっと違う。説明は難しい。","on":"idle","c6":"性格","pers":"pr_kodawari","st":"adult","odd":1},
+    {"id":"l_pers_fushigi_001","ly":"pers","t":"夢に知らない人が出てきた。","on":"idle","c6":"性格","pers":"pr_fushigi","st":"adult"},
+    {"id":"l_pers_fushigi_002","ly":"pers","t":"何かの気配がする。気のせい？","on":"idle","c6":"性格","pers":"pr_fushigi","st":"adult","odd":1},
+    {"id":"l_pers_fushigi_003","ly":"pers","t":"部屋が少し広くなった気がする。","on":"idle","c6":"性格","pers":"pr_fushigi","st":"adult"},
+    {"id":"l_pers_fushigi_004","ly":"pers","t":"あの料理、こっちを見てない？","on":"idle","c6":"性格","pers":"pr_fushigi","st":"adult","odd":1},
+    {"id":"l_combo_001","ly":"combo","t":"別になでてほしくない。……もう終わり？","on":"pet","c6":"性格","pers":"pr_amae","temper":"cool","st":"adult","odd":1},
+    {"id":"l_combo_002","ly":"combo","t":"冒険の前に帰り道を調べよう。","on":"idle","c6":"性格","pers":"pr_bouken","temper":"shincho","st":"adult","odd":1},
+    {"id":"l_combo_003","ly":"combo","t":"誰よりものんびりしてみせる。","on":"idle","c6":"性格","pers":"pr_nonbiri","temper":"makezu","st":"adult","odd":1},
+    {"id":"l_combo_004","ly":"combo","t":"味見で全部消えた。研究は順調。","on":"cook","c6":"性格","pers":"pr_kenkyu","temper":"kuishinbo","st":"adult","odd":1},
+    {"id":"l_combo_005","ly":"combo","t":"なんとかなるよ。たぶんね。","on":"idle","c6":"性格","pers":"pr_jishin","temper":"ottori","st":"adult","odd":1},
+    {"id":"l_combo_006","ly":"combo","t":"昨日まではこれが一番だった。","on":"idle","c6":"性格","pers":"pr_kodawari","temper":"kimagure","st":"adult","odd":1},
+    {"id":"l_combo_007","ly":"combo","t":"そばにいて。理由は明日教える。","on":"idle","c6":"性格","pers":"pr_fushigi","temper":"amaenbo","st":"adult","odd":1},
+    {"id":"l_combo_008","ly":"combo","t":"これ、食べられるのかな。","on":"idle","c6":"性格","pers":"pr_kuishinbo","temper":"kokishin","st":"adult","odd":1},
+    {"id":"l_combo_009","ly":"combo","t":"おかわり。……聞こえた？","on":"feed","c6":"性格","pers":"pr_kuishinbo","temper":"cool","st":"adult","odd":1},
+    {"id":"l_combo_010","ly":"combo","t":"成功するよ。あと三回確認する。","on":"idle","c6":"性格","pers":"pr_jishin","temper":"shincho","st":"adult","odd":1},
+    {"id":"l_combo_011","ly":"combo","t":"なでられた回数なら負けない。","on":"idle","c6":"性格","pers":"pr_amae","temper":"makezu","st":"adult","odd":1},
+    {"id":"l_combo_012","ly":"combo","t":"知らない場所に着いた。いいね。","on":"idle","c6":"性格","pers":"pr_bouken","temper":"ottori","st":"adult","odd":1},
+    {"id":"l_combo_013","ly":"combo","t":"気になることは順番に調べる。","on":"idle","c6":"性格","pers":"pr_kodawari","temper":"kokishin","st":"adult","odd":1},
+    {"id":"l_combo_014","ly":"combo","t":"材料は謎だけど、おかわり。","on":"feed","c6":"性格","pers":"pr_fushigi","temper":"kuishinbo","st":"adult","odd":1},
+    {"id":"l_combo_015","ly":"combo","t":"前の研究はちょっと休憩中。","on":"idle","c6":"性格","pers":"pr_kenkyu","temper":"kimagure","st":"adult","odd":1},
+    {"id":"l_combo_016","ly":"combo","t":"ぼくのこと好きでしょ。知ってる。","on":"idle","c6":"性格","pers":"pr_jishin","temper":"amaenbo","st":"adult","odd":1},
+    {"id":"l_trivia_animals_001","ly":"trivia","t":"タコには心臓が3つあるんだって。心配事も3倍かな。","on":"idle","c6":"豆知識","fact":"f_animals_001","odd":1},
+    {"id":"l_trivia_animals_002","ly":"trivia","t":"ウォンバットのフンは四角いんだって。妙にきっちりしてる。","on":"idle","c6":"豆知識","fact":"f_animals_002","odd":1},
+    {"id":"l_trivia_animals_003","ly":"trivia","t":"ラッコは石で貝を割るんだって。道具を使いこなしてる。","on":"idle","c6":"豆知識","fact":"f_animals_003","odd":1},
+    {"id":"l_trivia_food_001","ly":"trivia","t":"トマトは植物学では果実なんだって。野菜売り場には内緒。","on":"idle","c6":"豆知識","fact":"f_food_001","odd":1},
+    {"id":"l_trivia_food_002","ly":"trivia","t":"ポップコーンは粒の中の水分で弾けるんだって。大仕事だね。","on":"idle","c6":"豆知識","fact":"f_food_002","odd":1},
+    {"id":"l_trivia_food_003","ly":"trivia","t":"チョコってカカオの種からできるんだって。種のままじゃダメだったのかな。","on":"idle","c6":"豆知識","fact":"f_food_003","odd":1},
+    {"id":"l_trivia_science_001","ly":"trivia","t":"月では地球より体が軽く感じるんだって。体重計を持っていこう。","on":"idle","c6":"豆知識","fact":"f_science_001","odd":1},
+    {"id":"l_trivia_science_002","ly":"trivia","t":"宇宙の真空では音が伝わらないんだって。叫び損だね。","on":"idle","c6":"豆知識","fact":"f_science_002","odd":1},
+    {"id":"l_trivia_science_003","ly":"trivia","t":"金星は1回自転する間に、太陽を1周以上するんだって。のんびりだね。","on":"idle","c6":"豆知識","fact":"f_science_003","odd":1},
+    {"id":"l_trivia_daily_001","ly":"trivia","t":"鉛筆の芯は黒鉛と粘土でできてるんだって。名前って難しい。","on":"idle","c6":"豆知識","fact":"f_daily_001","odd":1},
+    {"id":"l_trivia_daily_002","ly":"trivia","t":"鏡って、左右じゃなくて前後が逆になるんだって。ややこしいね。","on":"idle","c6":"豆知識","fact":"f_daily_002","odd":1},
+    {"id":"l_trivia_daily_003","ly":"trivia","t":"雲は小さな水滴や氷の粒でできてるんだって。ふわふわなのに。","on":"idle","c6":"豆知識","fact":"f_daily_003","odd":1},
+    {"id":"l_trivia_history_001","ly":"trivia","t":"江戸時代は季節で一刻の長さが変わったんだって。遅刻の言い訳に使えそう。","on":"idle","c6":"豆知識","fact":"f_history_001","odd":1},
+    {"id":"l_trivia_history_002","ly":"trivia","t":"江戸時代には時刻を鐘で知らせたんだって。町ぐるみの時計だね。","on":"idle","c6":"豆知識","fact":"f_history_002","odd":1},
+    {"id":"l_trivia_history_003","ly":"trivia","t":"ひらがなは漢字を崩して生まれたんだって。文字にも昔の姿がある。","on":"idle","c6":"豆知識","fact":"f_history_003","odd":1},
+    {"id":"l_trivia_gaming_001","ly":"trivia","t":"NPCはプレイヤーが操作しないキャラなんだって。ぼくはどっちだろう。","on":"idle","c6":"豆知識","fact":"f_gaming_001","odd":1},
+    {"id":"l_trivia_gaming_002","ly":"trivia","t":"ドット絵は小さな点を並べた絵なんだって。ぼくも四角い？","on":"idle","c6":"豆知識","fact":"f_gaming_002","odd":1},
+    {"id":"l_trivia_gaming_003","ly":"trivia","t":"英語のbugには虫という意味もあるんだって。虫も迷惑だろうね。","on":"idle","c6":"豆知識","fact":"f_gaming_003","odd":1}];
+  // 豆知識の事実の確認状態（docs/v21_facts_batch1_final.csv）。verified 以外の事実のセリフは抽選にも図鑑の分母にも入れない
+  const FACTS={"f_animals_001":"verified","f_animals_002":"verified","f_animals_003":"verified","f_food_001":"verified","f_food_002":"verified","f_food_003":"verified","f_science_001":"verified","f_science_002":"verified","f_science_003":"verified","f_daily_001":"verified","f_daily_002":"verified","f_daily_003":"verified","f_history_001":"verified","f_history_002":"verified","f_history_003":"verified","f_gaming_001":"verified","f_gaming_002":"verified","f_gaming_003":"verified"};
+  // 気質×性格の64通りの個性の説明（docs/v21_voice_map.csv の d_play）。プロフィール帳にだけ出す。保存しない。文を直しても性格・記録は変わらない
+  const VOICE_MAP={v:1,cells:{"amaenbo|pr_amae":{"id":"vm_amaenbo_amae","d":"素直に甘え、そばにいたがる"},"ottori|pr_amae":{"id":"vm_ottori_amae","d":"控えめに甘え、待つのが得意"},"kokishin|pr_amae":{"id":"vm_kokishin_amae","d":"何でも見せて共有したがる"},"kuishinbo|pr_amae":{"id":"vm_kuishinbo_amae","d":"おやつを口実に甘える"},"cool|pr_amae":{"id":"vm_cool_amae","d":"甘えたいのに素直に言えない"},"makezu|pr_amae":{"id":"vm_makezu_amae","d":"甘える回数でも張り合う"},"shincho|pr_amae":{"id":"vm_shincho_amae","d":"安心できる相手にだけ甘える"},"kimagure|pr_amae":{"id":"vm_kimagure_amae","d":"急に甘えて、急に離れる"},"amaenbo|pr_bouken":{"id":"vm_amaenbo_bouken","d":"一緒に冒険したがる"},"ottori|pr_bouken":{"id":"vm_ottori_bouken","d":"寄り道を楽しみながら冒険する"},"kokishin|pr_bouken":{"id":"vm_kokishin_bouken","d":"発見するとすぐ飛び出す"},"kuishinbo|pr_bouken":{"id":"vm_kuishinbo_bouken","d":"食べ物を探して冒険する"},"cool|pr_bouken":{"id":"vm_cool_bouken","d":"平気な顔で、あぶなそうな場所にも行く"},"makezu|pr_bouken":{"id":"vm_makezu_bouken","d":"誰より遠くへ行きたがる"},"shincho|pr_bouken":{"id":"vm_shincho_bouken","d":"準備万端で冒険したがる"},"kimagure|pr_bouken":{"id":"vm_kimagure_bouken","d":"思いつきで目的地を変える"},"amaenbo|pr_kuishinbo":{"id":"vm_amaenbo_kuishinbo","d":"ごはんも一緒に食べたがる"},"ottori|pr_kuishinbo":{"id":"vm_ottori_kuishinbo","d":"ゆっくり味わって、幸せそうに食べる"},"kokishin|pr_kuishinbo":{"id":"vm_kokishin_kuishinbo","d":"未知の味に挑戦したがる"},"kuishinbo|pr_kuishinbo":{"id":"vm_kuishinbo_kuishinbo","d":"常に次のごはんを考える"},"cool|pr_kuishinbo":{"id":"vm_cool_kuishinbo","d":"食への執着を隠そうとする"},"makezu|pr_kuishinbo":{"id":"vm_makezu_kuishinbo","d":"大盛りや早食いに挑みたがる"},"shincho|pr_kuishinbo":{"id":"vm_shincho_kuishinbo","d":"初めての料理はよく確かめる"},"kimagure|pr_kuishinbo":{"id":"vm_kimagure_kuishinbo","d":"好物がころころ変わる"},"amaenbo|pr_nonbiri":{"id":"vm_amaenbo_nonbiri","d":"そばでのんびりしたがる"},"ottori|pr_nonbiri":{"id":"vm_ottori_nonbiri","d":"何も急がず満足している"},"kokishin|pr_nonbiri":{"id":"vm_kokishin_nonbiri","d":"気になるものを眺めて過ごす"},"kuishinbo|pr_nonbiri":{"id":"vm_kuishinbo_nonbiri","d":"食べて休むことに全力"},"cool|pr_nonbiri":{"id":"vm_cool_nonbiri","d":"無駄なことをしたがらない"},"makezu|pr_nonbiri":{"id":"vm_makezu_nonbiri","d":"のんびりすることまで競う"},"shincho|pr_nonbiri":{"id":"vm_shincho_nonbiri","d":"予定どおりの休息を好む"},"kimagure|pr_nonbiri":{"id":"vm_kimagure_nonbiri","d":"のんびりしていても、急に動き出す"},"amaenbo|pr_kenkyu":{"id":"vm_amaenbo_kenkyu","d":"発見をすぐ報告したがる"},"ottori|pr_kenkyu":{"id":"vm_ottori_kenkyu","d":"時間をかけて観察する"},"kokishin|pr_kenkyu":{"id":"vm_kokishin_kenkyu","d":"疑問が次々と増える"},"kuishinbo|pr_kenkyu":{"id":"vm_kuishinbo_kenkyu","d":"味や材料の研究に熱心"},"cool|pr_kenkyu":{"id":"vm_cool_kenkyu","d":"感情を抑えて分析する"},"makezu|pr_kenkyu":{"id":"vm_makezu_kenkyu","d":"正解を見つけるまで諦めない"},"shincho|pr_kenkyu":{"id":"vm_shincho_kenkyu","d":"何度も検証してから結論を出す"},"kimagure|pr_kenkyu":{"id":"vm_kimagure_kenkyu","d":"研究対象が突然変わる"},"amaenbo|pr_jishin":{"id":"vm_amaenbo_jishin","d":"褒められる前提で自慢する"},"ottori|pr_jishin":{"id":"vm_ottori_jishin","d":"穏やかに自信を持っている"},"kokishin|pr_jishin":{"id":"vm_kokishin_jishin","d":"未経験でもできると思っている"},"kuishinbo|pr_jishin":{"id":"vm_kuishinbo_jishin","d":"味の違いには絶対の自信がある"},"cool|pr_jishin":{"id":"vm_cool_jishin","d":"淡々と実力を主張する"},"makezu|pr_jishin":{"id":"vm_makezu_jishin","d":"失敗を認めたがらない"},"shincho|pr_jishin":{"id":"vm_shincho_jishin","d":"自信はあるが確認を欠かさない"},"kimagure|pr_jishin":{"id":"vm_kimagure_jishin","d":"根拠のない自信が突然湧く"},"amaenbo|pr_kodawari":{"id":"vm_amaenbo_kodawari","d":"甘え方にも決まった手順がある"},"ottori|pr_kodawari":{"id":"vm_ottori_kodawari","d":"自分のペースを崩さない"},"kokishin|pr_kodawari":{"id":"vm_kokishin_kodawari","d":"細部まで確かめたがる"},"kuishinbo|pr_kodawari":{"id":"vm_kuishinbo_kodawari","d":"食べ方や順番にうるさい"},"cool|pr_kodawari":{"id":"vm_cool_kodawari","d":"美学があり、簡単には譲らない"},"makezu|pr_kodawari":{"id":"vm_makezu_kodawari","d":"自分のやり方が一番だと思う"},"shincho|pr_kodawari":{"id":"vm_shincho_kodawari","d":"いつもの手順を守りたがる"},"kimagure|pr_kodawari":{"id":"vm_kimagure_kodawari","d":"こだわる対象が日によって変わる"},"amaenbo|pr_fushigi":{"id":"vm_amaenbo_fushigi","d":"不思議な理由でそばにいたがる"},"ottori|pr_fushigi":{"id":"vm_ottori_fushigi","d":"夢と現実を自然に混ぜる"},"kokishin|pr_fushigi":{"id":"vm_kokishin_fushigi","d":"ふつうは気にしないことを不思議がる"},"kuishinbo|pr_fushigi":{"id":"vm_kuishinbo_fushigi","d":"謎の料理を平然と食べる"},"cool|pr_fushigi":{"id":"vm_cool_fushigi","d":"奇妙なことを真顔で言う"},"makezu|pr_fushigi":{"id":"vm_makezu_fushigi","d":"独特な理屈で張り合う"},"shincho|pr_fushigi":{"id":"vm_shincho_fushigi","d":"不思議な現象を慎重に観察する"},"kimagure|pr_fushigi":{"id":"vm_kimagure_fushigi","d":"発想が読めないけど、本人はいたって自然"}}};
+  const lineUsable=x=>!x.fact||FACTS[x.fact]==='verified';
+  const xOk=x=>lineUsable(x)&&(!x.st||x.st===S.stage)&&(!x.pers||x.pers===S.pers)&&(!x.temper||x.temper===S.temper);
+  // 性格の層（4章の⑤）：性格が決まった子だけ、家で起きているとき。候補があるときだけ 25%。組み合わせ限定は重み2倍。直近8本は避ける
+  function persPick(cat){
+    if(!S||!S.pers||S.explore||S.sleep)return null;
+    const c=XLINES.filter(x=>(x.ly==='pers'||x.ly==='combo')&&x.on===cat&&xOk(x)); if(!c.length)return null;
+    if(Math.random()>=.25)return null;
+    let use=c.filter(x=>!RECENT.includes(x.id)); if(!use.length)use=c;
+    const w=use.map(x=>x.ly==='combo'?2:1); let r=Math.random()*w.reduce((a,b)=>a+b,0), p=use[use.length-1];
+    for(let i=0;i<use.length;i++){if((r-=w[i])<0){p=use[i];break}}
+    lastLine=p.t; lineSeen(p.id); return p.t;
+  }
+  // 豆知識の層（4章の③）：家で起きているときのひとりごとの 10%（候補があるときだけ）。同じ事実は直近20回のひとりごとで繰り返さない
+  let TALKS=[];
+  function triviaPick(){
+    if(!S||S.explore||S.sleep)return null;
+    const rf=new Set(TALKS.filter(Boolean)), c=XLINES.filter(x=>x.ly==='trivia'&&xOk(x)&&!rf.has(x.fact)); if(!c.length)return null;
+    if(Math.random()>=.1)return null;
+    let use=c.filter(x=>!RECENT.includes(x.id)); if(!use.length)use=c;
+    const p=use[Math.floor(Math.random()*use.length)]; lineSeen(p.id); return p;
+  }
+  const talkDone=f=>{TALKS.push(f||null); if(TALKS.length>20)TALKS.shift()};
+  const voiceCell=d=>d&&d.pers?(VOICE_MAP.cells[d.temper+'|'+d.pers]||null):null;   // 性格が決まった子だけ（先取りしない）
+  const ALL_LINES=BASE_LINES.concat(XLINES.map(x=>({id:x.id,t:x.t,c6:x.c6,fact:x.fact})));   // ことば図鑑の並び（既存133本 → 追加66本）
+  const LID_TEXT=new Map(); ALL_LINES.forEach(x=>LID_TEXT.set(x.t,x.id));
   let lastLine='';
   function lineOf(cat){
     if(!S)return '';
+    {const xp=persPick(cat); if(xp)return xp}
     const st=S.stage, fm=S.stage==='adult'?S.form:null, ps=S.pers||null;
     const ok=x=>typeof x==='string'||((!x.st||x.st.includes(st))&&(!x.form||x.form.includes(fm))&&(!x.pers||x.pers.includes(ps)));
-    let pool=(LINES[cat]||LINES.idle).filter(ok).map(x=>typeof x==='string'?{t:x}:x);
-    if(!pool.length) pool=LINES.idle.filter(ok).map(x=>typeof x==='string'?{t:x}:x);
+    const withId=c=>(x,i)=>Object.assign(typeof x==='string'?{t:x}:Object.assign({},x),{id:LINE_ID(c,i)});
+    const src=LINES[cat]?cat:'idle';
+    let pool=LINES[src].map(withId(src)).filter((x,i)=>ok(LINES[src][i]));
+    if(!pool.length) pool=LINES.idle.map(withId('idle')).filter((x,i)=>ok(LINES.idle[i]));
     // 7割かわいい・3割シュール（両方あるとき）
     const odd=pool.filter(x=>x.odd), cute=pool.filter(x=>!x.odd);
     let use=(odd.length&&cute.length)?(Math.random()<.3?odd:cute):pool;
     if(use.length>1){const f=use.filter(x=>x.t!==lastLine); if(f.length) use=f;}
     const c=use[Math.floor(Math.random()*use.length)]||pool[0];
-    lastLine=c.t; return c.t;
+    lastLine=c.t; lineSeen(c.id); return c.t;
   }
   // ---- 吹き出し（ぽこの声はここ。説明は下の枠） ----
-  let bubShown=0, bubUntil=0, bubPending=null, nextIdle=Date.now()+15000;
+  let bubShown=0, bubUntil=0, nextIdle=Date.now()+15000;
   const DEBUG=TEST_BUILD&&location.search.includes('debug');
   const idleGap=()=>DEBUG?(4000+Math.random()*2000):(S&&S.explore?(20000+Math.random()*20000):(45000+Math.random()*45000));
-  const modalOpen=()=>['kmodal','ksetup','kconfirm'].some(id=>$(id).classList.contains('on'));
-  function showBub(text,expr){
-    const el=$('kbub'); el.innerHTML=pixify(esc(text)); el.classList.add('on');
-    bubShown=Date.now(); bubUntil=bubShown+Math.max(3500,1500+text.length*120);
-    if(expr&&!busy&&!S.sleep){busy=expr;setTimeout(()=>{if(busy===expr)busy=null},1400)}
+  const modalOpen=()=>['kmodal','ksetup','kconfirm','kcol'].some(id=>$(id).classList.contains('on'));
+  // ===== 吹き出しの改行・区切り（修正3）=====
+  // 改行できる所の優先：文の終わり（。！？…）＞「、」＞言葉の切れ目（Intl.Segmenter）。行の頭に「。、！？」「ー」「っ」「）」などは来ない
+  const BUB_MIN=13, BUB_MAX=15, BUB_LH=1.35, BUB_PAD=16;
+  const NO_HEAD=/^[。、，．！？!?…‥ー〜～ーっゃゅょぁぃぅぇぉゎッャュョァィゥェォヮ」』）)】〉》・：；,.\s]/;   // 行の頭に来てはいけない文字
+  const NO_TAIL=/[「『（(【〈《]$/;   // 行の終わりに来てはいけない文字
+  const _seg=(typeof Intl!=='undefined'&&Intl.Segmenter)?new Intl.Segmenter('ja',{granularity:'word'}):null;
+  const chType=c=>/[ぁ-ゖ]/.test(c)?'h':/[ァ-ヺー]/.test(c)?'k':/[一-龯々〆]/.test(c)?'j':/[A-Za-z0-9]/.test(c)?'a':'o';
+  function bubWords(t){   // 言葉のかたまり（Segmenter がない古い端末は、文字の種類が変わる所で区切る）
+    let w=[];
+    if(_seg){for(const x of _seg.segment(t))w.push(x.segment)}
+    else{let cur='';for(const c of t){if(cur&&chType(c)!==chType(cur.slice(-1))&&!(chType(cur.slice(-1))==='j'&&chType(c)==='h')){w.push(cur);cur=''}cur+=c}if(cur)w.push(cur)}
+    // 文節にまとめる：漢字・カタカナ・英数字で始まる語の前、または「、…」の後でだけ区切る（送りがな・助詞は前の語につける：「見｜つけた」「遊｜ぶ」にしない）
+    const out=[];
+    for(const x of w){
+      const prev=out[out.length-1], head=chType(x[0]), tail=prev?prev.slice(-1):'';
+      const brk=!prev||(/[、，…‥！？!?。]/.test(tail))||((head==='j'||head==='k'||head==='a')&&(chType(tail)==='h'||/[ー〜]/.test(tail)))||(/^\s/.test(x));
+      if(brk&&!NO_HEAD.test(x)&&!NO_TAIL.test(prev||''))out.push(x); else if(prev!==undefined)out[out.length-1]+=x; else out.push(x);
+    }
+    return out;
+  }
+  let _mctx=null;
+  function bubMeasure(t,fs){ if(!_mctx)_mctx=document.createElement('canvas').getContext('2d');
+    const cs=getComputedStyle($('kbub')); _mctx.font=`900 ${fs}px ${cs.fontFamily}`;
+    let w=0; for(const ch of t){ w+=/\p{Extended_Pictographic}/u.test(ch)?fs*1.1:_mctx.measureText(ch).width } return w; }
+  // 1文を、幅 maxW の行に分ける（「、」の後を優先、なければ言葉の切れ目。言葉の途中では切らない）
+  function wrapSentence(sen,maxW,fs){   // 「、」を優先した分け方と、文節で詰めた分け方のうち、行が少ない方（同じなら「、」優先）
+    const A=wrapWith(sen,maxW,fs,true), B=wrapWith(sen,maxW,fs,false); return B.length<A.length?B:A;
+  }
+  function wrapWith(sen,maxW,fs,comma){
+    const words=bubWords(sen), lines=[]; let cur=[];
+    const W=a=>bubMeasure(a.join(''),fs);
+    for(const w of words){
+      if(!cur.length||W([...cur,w])<=maxW){cur.push(w);continue}
+      // 入らない：今の行の中で、いちばん後ろの「、」の後で切れるならそこで切る（短すぎる行は作らない）
+      let k=-1; for(let i=cur.length-1;i>0;i--){if(/[、…‥]$/.test(cur[i-1])&&cur.slice(0,i).join('').length>=4){k=i;break}}
+      if(comma&&k>0&&W(cur.slice(k).concat(w))<=maxW){lines.push(cur.slice(0,k).join(''));cur=cur.slice(k).concat(w);continue}
+      lines.push(cur.join('')); cur=[w];
+    }
+    if(cur.length)lines.push(cur.join(''));
+    // 1語が幅より長いとき（まれ）は、その語だけ文字で切る
+    return lines.flatMap(l=>{if(bubMeasure(l,fs)<=maxW)return [l];const r=[];let c='';for(const ch of l){if(c&&bubMeasure(c+ch,fs)>maxW&&!NO_HEAD.test(ch)){r.push(c);c=''}c+=ch}if(c)r.push(c);return r});
+  }
+  // セリフ全体を行に分ける：文（。！？で終わる）ごとに新しい行。「…」は文の途中の区切り（「、」と同じ扱い）
+  function bubLayout(text,maxW,fs){
+    const sens=text.match(/[^。！？!?]+[。！？!?]*\s*|[。！？!?]+\s*/g)||[text], lines=[];
+    for(const raw of sens){ const sen=raw.trim(); if(sen)lines.push(wrapSentence(sen,maxW,fs)) }
+    return lines;   // 文ごとの行の並び [[行,行],[行]...]
+  }
+  // 吹き出しに分ける：1つに per 行まで。次の文がこの吹き出しに入りきらないときは、次の吹き出しから始める（文の途中で吹き出しをまたがない）
+  function bubChunks(sens,per){
+    const out=[]; let cur=[];
+    for(const L of sens){
+      if(cur.length&&cur.length+L.length>per){out.push(cur);cur=[]}
+      for(const l of L){ if(cur.length>=per){out.push(cur);cur=[]} cur.push(l) }
+    }
+    if(cur.length)out.push(cur); return out;
+  }
+  // 話す子・場所に合わせて、文字の大きさと1つの吹き出しの行数を決め、吹き出しに分ける（13px より小さくしない）
+  function bubSpeaker(who){ const f=who==='fav'?favHere():null; return {f,sp:f?(SPR[f.form]||SPR_Q):(SPR[ckey()]||SPR.baby),px:f?favX():x} }
+  function bubRoom(who){   // 頭の上に使える高さ（px）と、吹き出しの最大の幅
+    const cw=cv.clientWidth,ch=cv.clientHeight; if(!cw)return {h:999,w:240,cw:240};
+    const scy=ch/cv.height, {sp}=bubSpeaker(who), other=favHere()?(who==='fav'?(SPR[ckey()]||SPR.baby):(SPR[favHere().form]||SPR_Q)):null;
+    const top=s2=>(47-s2.h+(cv.height-48)-(s2.face&&s2.face.quirk==='hair'?3:0))*scy;
+    const headTop=Math.min(top(sp),other?top(other):Infinity);
+    return {h:headTop-12-2-4, w:Math.min(cw*0.86,cw-8)-BUB_PAD-4, cw};
+  }
+  function bubPlan(text,who){
+    const R=bubRoom(who);
+    for(const [fs,per] of [[BUB_MAX,2],[BUB_MIN,2],[BUB_MAX,1],[BUB_MIN,1]]){
+      if(Math.ceil(fs*BUB_LH)*per+BUB_PAD<=R.h) return {fs,chunks:bubChunks(bubLayout(text,R.w,fs),per),mode:'above'};   // 個数の上限なし（全文を出す）
+    }
+    return {fs:BUB_MIN,chunks:bubChunks(bubLayout(text,Math.max(80,R.w*0.55),BUB_MIN),2),mode:'side'};
+  }
+  // ===== v2.1 WD3：聞いたセリフの記録（別の保存場所 pokohouse_v1_words。セーブ本体・発見記録 dex には足さない）=====
+  // wl：プレイヤー全体の発見（セリフID → [初めて聞いた日, 最初の子]）。w：子ごとに聞いたセリフ（子ID → {セリフID: 初めての日}）。
+  // 増えるだけ。書く前に保存場所を読み直して合わせる（和集合）ので、2タブでも片方の記録が消えない。「最初から」・アルバムから外す・やり直しでも消さない。
+  // 記録するのは、実際に吹き出し（または会話の枠）に表示されたときだけ。v1.9・修正4 はこのキーを読まない・書かない・消さない
+  const WORDSK=KEY+'_words';
+  let WORDS=null, wordsDirty=false, wordNoteAt=0;
+  const wordsNew=()=>({v:1,wl:{},w:{}});
+  function wordsClean(o){
+    const d=wordsNew(); if(!isO(o))return d;
+    for(const [k,v] of Object.entries(o))if(!(k in d)&&/^[A-Za-z_][A-Za-z0-9_]{0,30}$/.test(k))d[k]=v;   // 知らない項目（新しい版）は残す
+    if(isO(o.wl))for(const [k,v] of Object.entries(o.wl))if(KEY_RE.test(k)&&Array.isArray(v)&&typeof v[0]==='number'&&isFinite(v[0]))d.wl[k]=[v[0],typeof v[1]==='string'&&ID_RE.test(v[1])?v[1]:null];
+    if(isO(o.w))for(const [p,m] of Object.entries(o.w))if(ID_RE.test(p)&&isO(m)){const e={};for(const [k,t] of Object.entries(m))if(KEY_RE.test(k)&&typeof t==='number'&&isFinite(t))e[k]=t;d.w[p]=e}
+    return d;
+  }
+  function wordsMerge(a,b){
+    const d=wordsClean(a), e=wordsClean(b);
+    for(const [k,v] of Object.entries(e))if(!(k in d))d[k]=v;
+    for(const [k,v] of Object.entries(e.wl)){const o=d.wl[k]; if(!o||v[0]<o[0])d.wl[k]=[v[0],v[1]||(o&&o[1])||null]}
+    for(const [p,m] of Object.entries(e.w)){const o=d.w[p]||(d.w[p]={}); for(const [k,t] of Object.entries(m))o[k]=o[k]===undefined?t:Math.min(o[k],t)}
+    return d;
+  }
+  function wordsRead(){
+    let raw=null; try{raw=localStorage.getItem(WORDSK)}catch(e){return null}
+    if(raw===null)return wordsNew();
+    let o=null; try{o=JSON.parse(raw)}catch(e){}
+    if(!isO(o)){try{localStorage.setItem(WORDSK+'_broken_'+Date.now(),raw)}catch(e){} return wordsNew()}   // 読めない記録は別名で残す
+    return wordsClean(o);
+  }
+  function wordsFlush(){
+    if(LOCK||!WORDS||!wordsDirty)return !wordsDirty;
+    const cur=wordsRead(); if(cur===null)return false;
+    const m=wordsMerge(cur,WORDS), txt=JSON.stringify(m);
+    try{localStorage.setItem(WORDSK,txt); if(localStorage.getItem(WORDSK)!==txt)throw 0}catch(e){return false}   // 書けなければメモリに残して次に再挑戦
+    WORDS=m; wordsDirty=false; return true;
+  }
+  const wordsNow=()=>{if(!WORDS)WORDS=wordsRead()||wordsNew(); return WORDS};
+  const wordsSaved=()=>{const w=wordsRead(); return w?wordsMerge(w,WORDS||wordsNew()):(WORDS||wordsNew())};   // 画面用
+  function heard(lid,pid){
+    if(LOCK||typeof lid!=='string'||!KEY_RE.test(lid))return;
+    const W=wordsNow(), t=Date.now(); let ch=false, nw=false;
+    if(!W.wl[lid]){W.wl[lid]=[t,typeof pid==='string'&&ID_RE.test(pid)?pid:null];ch=nw=true}
+    if(typeof pid==='string'&&ID_RE.test(pid)){const m=W.w[pid]||(W.w[pid]={}); if(m[lid]===undefined){m[lid]=t;ch=true}}
+    if(ch){wordsDirty=true; wordsFlush()}
+    if(nw)setTimeout(()=>{try{findPop(lid)}catch(e){}},1200);   // v2.1：新しいことばの発見演出（記録・判定は上のまま）
+  }
+  window.addEventListener('pagehide',()=>{try{wordsFlush()}catch(e){}});
+  // 新しいことばの発見演出：画面の真ん中に小さなカード。右上の × を押すまで出しておく（自動では消えない）。同じことばは二度出さない。
+  // 後ろの画面は押せるまま（カードの外は押せる）。表示中に次の発見が来たら、中身を新しいほうに入れ替える（重ならない）
+  let findT=0; const findShown=new Set();
+  function findPop(lid){
+    if(LOCK||!lid||findShown.has(lid))return; findShown.add(lid);
+    const x=ALL_LINES.find(l=>l.id===lid); if(!x)return;
+    const el=$('kfind'); clearTimeout(findT);
+    el.innerHTML=`<span class="kfd d1">${PCD('heart')}</span><span class="kfd d2">${PCD('star')}</span><span class="kfd d3">${PCD('sparkle')}</span><span class="kfd d4">${PCD('sparkle')}</span>
+      <button class="kfx" id="kfindx" aria-label="とじる">×</button><b class="kft">新しいことばを発見！</b><p class="kfl">${esc(lineText(x))}</p><small class="kfs">ことば図鑑に記録されたよ ${PCD('heart')}</small>`;
+    el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
+    $('kfindx').onclick=e=>{e.stopPropagation();findClose()};
+  }
+  function findClose(){clearTimeout(findT);$('kfind').classList.remove('on')}
+  // ===== 吹き出しの順番（修正4）=====
+  // ・表示を始めたセリフ（bubCur）は、分けた吹き出しを最後まで全部出す（文字を消さない）
+  // ・途中に来たセリフは待つ：操作のセリフ（なでる・タップ・ごはん 等＝'op'）は bubOps、自動のひとりごと（'auto'）は bubAutos
+  // ・今のセリフが終わったら、bubOps を先に、なければ bubAutos を出す。bubOps は捨てない。bubAutos は新しい1つだけ残す
+  // ・終わらせる場面（仕様）：ぽこが入れ替わった（次の子・やり直し・復旧・おひっこし・最初から＝S.id が変わる）／種にもどった／
+  //   お気に入りのセリフで、そのお気に入りがもういない・別の子に変わった・その場にいない（探検中など）。このときは、そのセリフの残りを出さない
+  let bubCur=null, bubOps=[], bubAutos=[], bubWho='pet', bubFs=BUB_MAX, bubMode='above';
+  const BUB_STEP=2600;   // 1つの吹き出しを出しておく最低の時間
+  function bubValid(m){ if(!S||S.stage==='seed'||m.pid!==S.id)return false; if(m.who==='fav'){const f=favHere();return !!f&&f.id===m.fid} return true }
+  function showBub(m){
+    const el=$('kbub'), lines=m.chunks[m.i]; bubWho=m.who; bubFs=m.fs; bubMode=m.mode;
+    if(m.i===0&&m.lid&&!m.rec){m.rec=1; heard(m.lid,m.who==='fav'?m.fid:m.pid)}   // v2.1：表示を始めたセリフだけ記録
+    el.innerHTML=lines.map(l=>`<span class="ln">${pixify(esc(l))}</span>`).join(''); el.classList.add('on');
+    const n=lines.join('').length; bubShown=Date.now(); bubUntil=bubShown+Math.max(3000,1500+n*130);
     placeBub();
   }
-  // 最低3秒は次のセリフで上書きしない（新しいセリフは待たせる）
-  function speak(text,expr){
+  function bubNext(){   // 次のセリフを始める（操作のセリフが先）
+    bubCur=null;
+    while(bubOps.length||bubAutos.length){ const m=(bubOps.length?bubOps:bubAutos).shift(); if(bubValid(m)){bubCur=m;m.i=0;showBub(m);return} }
+  }
+  function bubClear(){bubCur=null;bubOps=[];bubAutos=[];bubUntil=0;$('kbub').classList.remove('on')}
+  const bubLeft=()=>(bubCur?bubCur.chunks.length-bubCur.i-1:0)+bubOps.length+bubAutos.length;
+  // kind：'op'（プレイヤーの操作で出るセリフ。省略時）／'auto'（ひとりごと）
+  function speak(text,expr,who,kind,lid){
     if(!text||!S||S.stage==='seed')return;
-    if(Date.now()-bubShown<3000&&Date.now()<bubUntil){bubPending={text,expr};return}
-    showBub(text,expr);
+    who=who||'pet'; kind=kind||'op';
+    if(who==='pet'&&expr&&!busy&&!S.sleep){busy=expr;setTimeout(()=>{if(busy===expr)busy=null},1400)}   // 表情・動きはすぐ（セリフの順番を待たない）
+    const fv=who==='fav'?favHere():null; if(who==='fav'&&!fv)return;
+    const P=bubPlan(String(text),who), m={chunks:P.chunks,fs:P.fs,mode:P.mode,who,kind,pid:S.id,fid:fv?fv.id:null,i:0,lid:lid||LID_TEXT.get(String(text))||null};
+    if(!m.chunks.length)return;
+    if(!bubCur){bubCur=m;showBub(m);return}
+    if(kind==='op')bubOps.push(m); else {bubAutos.push(m); if(bubAutos.length>1)bubAutos.splice(0,bubAutos.length-1)}   // ひとりごとは新しい1つだけ待たせる
   }
   function placeBub(){
     const el=$('kbub'); if(!el.classList.contains('on'))return;
-    const sp=SPR[ckey()]||SPR.baby, cw=cv.clientWidth, ch=cv.clientHeight; if(!cw)return;
-    const sc=cw/cv.width, scy=ch/cv.height, sx=(x-Math.round(camX))*sc, M=4, T=12;
-    const headTop=(47-sp.h+(cv.height-48)-(sp.face&&sp.face.quirk==='hair'?3:0))*scy;
-    const above=()=>{ // 頭の上（入らなければ画面の上端に寄せる）
-      el.classList.remove('sl','sr'); el.style.maxWidth='';
-      const w=el.offsetWidth,h=el.offsetHeight,lx=Math.max(w/2+M,Math.min(cw-w/2-M,sx));
-      el.style.left=lx+'px'; el.style.top=Math.max(h+M,Math.min(ch-M,headTop-T-2))+'px';
-      el.style.setProperty('--tail',Math.max(14,Math.min(w-14,sx-lx+w/2))+'px');
-      return h<=ch-2*M;
-    };
-    const side=()=>{ // 頭の上に入らないときだけ、広い方の横に出す
-      const half=sp.w/2*sc, lr=sx-half, rr=cw-(sx+half), right=rr>=lr, room=Math.max(lr,rr)-T-M;
-      if(room<72) return above(); // 横もせまいときは画面内の上に出す
-      el.classList.remove('sl','sr'); el.classList.add(right?'sr':'sl'); el.style.maxWidth=Math.floor(room)+'px';
+    const {f,sp,px}=bubSpeaker(bubWho); if(bubWho==='fav'&&!f){el.classList.remove('on');return}
+    const cw=cv.clientWidth, ch=cv.clientHeight; if(!cw)return;
+    const sc=cw/cv.width, scy=ch/cv.height, sx=(px-Math.round(camX))*sc, M=4, T=12;
+    const top=s2=>(47-s2.h+(cv.height-48)-(s2.face&&s2.face.quirk==='hair'?3:0))*scy;
+    const two=!!favHere(), other=two?(f?(SPR[ckey()]||SPR.baby):(SPR[favHere().form]||SPR_Q)):null;
+    const headTop=Math.min(top(sp),other?top(other):Infinity);
+    el.style.fontSize=bubFs+'px'; el.style.maxWidth='none';
+    if(bubMode==='above'){
+      el.classList.remove('sl','sr');
       const w=el.offsetWidth,h=el.offsetHeight;
-      let left=right?sx+half+T:sx-half-T-w; left=Math.max(M,Math.min(cw-w-M,left));
-      const cy=Math.max(h/2+M,Math.min(ch-h/2-M,headTop+h/2+2));
-      el.style.left=left+'px'; el.style.top=cy+'px';
-      el.style.setProperty('--tailY',Math.max(10,Math.min(h-10,headTop+4*scy-(cy-h/2)))+'px');
-      return h<=ch-2*M;
-    };
-    // 長いセリフで画面に入りきらないときは、文字を少しずつ小さくする
-    for(const fs of ['','13px','11px']){
-      el.style.fontSize=fs; el.classList.remove('sl','sr'); el.style.maxWidth='';
-      const fitsAbove=headTop-T-2-el.offsetHeight>=M;
-      if(fitsAbove?above():side()) return;
+      // 2匹のときは、吹き出しを話している子の外側に寄せる（しっぽが話している子を指す）
+      const lean=two?(f?1:-1):0, want=sx+lean*w*0.28;
+      const lx=Math.max(w/2+M,Math.min(cw-w/2-M,want));
+      el.style.left=lx+'px'; el.style.top=Math.max(h+M,headTop-T-2)+'px';
+      el.style.setProperty('--tail',Math.max(14,Math.min(w-14,sx-lx+w/2))+'px');
+      return;
     }
+    // 横：もう1匹がいない側に出す
+    const half=sp.w/2*sc, right=two?!!f:(cw-(sx+half))>=(sx-half);
+    el.classList.remove('sl','sr'); el.classList.add(right?'sr':'sl');
+    const w=el.offsetWidth,h=el.offsetHeight;
+    let left=right?sx+half+T:sx-half-T-w; left=Math.max(M,Math.min(cw-w-M,left));
+    const cy=Math.max(h/2+M,Math.min(ch-h/2-M,top(sp)+h/2+2));
+    el.style.left=left+'px'; el.style.top=cy+'px';
+    el.style.setProperty('--tailY',Math.max(10,Math.min(h-10,top(sp)+4*scy-(cy-h/2)))+'px');
   }
   function bubTick(){
     const t=Date.now();
-    if(bubPending&&t-bubShown>=3000){const p=bubPending;bubPending=null;showBub(p.text,p.expr)}
-    if(t>bubUntil)$('kbub').classList.remove('on');
+    if(bubCur&&!bubValid(bubCur)){bubCur=null;$('kbub').classList.remove('on')}   // 話している子が入れ替わった・いなくなった
+    if(bubCur){
+      const more=bubCur.i<bubCur.chunks.length-1;
+      if(more&&t-bubShown>=BUB_STEP&&t>=bubUntil-400){bubCur.i++;showBub(bubCur)}       // 同じセリフの続き
+      else if(!more&&t>bubUntil)bubNext();                                              // 終わったら次のセリフ
+    } else if(bubOps.length||bubAutos.length)bubNext();
+    if(!bubCur||t>bubUntil)$('kbub').classList.remove('on');
     if(S&&S.stage==='seed')$('kbub').classList.remove('on');
     placeBub();
   }
@@ -1047,14 +1580,17 @@ const K=(()=>{
     const t=Date.now();
     if(t<nextIdle) return;
     nextIdle=t+idleGap();
-    if(!S||S.stage==='seed'||busy||modalOpen()||t<bubUntil) return;
-    let cat='idle';
+    if(!S||S.stage==='seed'||busy||modalOpen()||t<bubUntil||bubCur||bubOps.length) return;
+    let cat='idle', tv=null;
     if(S.explore) cat=PL(S.explore.p).walk?'sanpo':PL(S.explore.p).unknown?'idle':S.explore.p;
     else if(S.sleep) cat='zzz';
+    else if((tv=triviaPick())) cat=null;   // v2.1：豆知識（候補がないときは乱数を使わない＝今と同じ）
     else if(S.genki<1.5&&Math.random()<.6) cat='tired';
     else if(S.aff>=40&&Math.random()<.25) cat='love';
     else if(Math.random()<.25) cat=per();
-    speak(lineOf(cat),S.sleep?null:pick(['happy','normal','happy']));
+    if(tv){talkDone(tv.fact);speak(tv.t,pick(['happy','normal','happy']),'pet','auto',tv.id);return}
+    talkDone(null);
+    speak(lineOf(cat),S.sleep?null:pick(['happy','normal','happy']),'pet','auto');
   }
 
 
@@ -1075,11 +1611,11 @@ const K=(()=>{
     if(k==='feed')return feedUI();
     if(k==='pet'){
       if(S.justBack){const bf=S.backFrom;S.justBack=false;delete S.backFrom;
-        const c2=['kinomi','ringo','kinoko','komugi'].filter(canGet),k2=c2.length?pick(c2):null;if(k2)add(S.inv,k2);ANA.track('pet',{bonus:true});addAff(2);busy='happy';kfx($('kov'),'💗',2);SND.cry(ckey());
+        const c2=['kinomi','ringo','kinoko','komugi'].filter(canGet),k2=c2.length?pick(c2):null;if(k2)add(S.inv,k2);ANA.track('pet',{bonus:true});prRec('pet');addAff(2);busy='happy';kfx($('kov'),'💗',2);SND.cry(ckey());
         const bm=bf==='walk'?'お散歩たのしかったね！':bf==='explore'?'探検おつかれさま！':'おかえりなさい！';   // 種類が分からない古いセーブは、どちらとも決めない
         speak(lineOf('pet'));say(k2?`{n}が${IT[k2].e}${IT[k2].n}をくれた！ ${bm}`:`{n}がうれしそうにすりよってきた！ ${bm}`)}
       else{const t=now();if(t-(S.petAt||0)>10*MIN){S.petAt=t;S.petN=0}S.petN++;
-        if(S.petN<=3){ANA.track('pet');addAff(1);busy='happy';kfx($('kov'),'💗');SND.cry(ckey());speak(lineOf('pet'));say('なでた！ なかよし +1')}else{busy='normal';say('{n}はもう満足そう。少し時間をおいてね')}}
+        if(S.petN<=3){ANA.track('pet');prRec('pet');addAff(1);busy='happy';kfx($('kov'),'💗');SND.cry(ckey());speak(lineOf('pet'));say('なでた！ なかよし +1')}else{busy='normal';say('{n}はもう満足そう。少し時間をおいてね')}}
       setTimeout(()=>busy=null,1200);save();ui();
     }
   }
@@ -1103,7 +1639,7 @@ const K=(()=>{
       $('kclr').onclick=()=>{if(sel.length){sel=[];render()}else close()};
       $('kcook').onclick=()=>{
         const key=[...sel].sort().join('+'), d=(R[key]&&!isRetired('dish',R[key].k)?R[key]:null)||FUSHIGI, isNew=!S.recipes.includes(d.k);
-        sel.forEach(k=>add(S.inv,k,-1)); ANA.track('cook',{recipe:d.k,is_new:isNew}); if(S.tut===1)setTut(2); SND.sfx.ding(); if(S.stage!=='seed'&&!S.explore) speak(lineOf('cook')); add(S.dishes,d.k); if(isNew)S.recipes.push(d.k); save();
+        sel.forEach(k=>add(S.inv,k,-1)); ANA.track('cook',{recipe:d.k,is_new:isNew}); if(S.tut===1)setTut(2); SND.sfx.ding(); if(S.stage!=='seed'&&!S.explore) speak(lineOf('cook')); add(S.dishes,d.k); if(isNew)S.recipes.push(d.k); prFood('c',d.k); prRec('cook',d===FUSHIGI?['n_odd']:[]); save();
         modal(`<h2>${isNew?'🎉 新しいレシピ！':'できた！'}</h2><div class="got"><img class="pix" src="${dishPix(d.k)}"></div><p><b>${d.n}</b><br>元気 +${d.g}　なかよし +${d.a}</p>
           <button class="pbtn" onclick="K.close()">OK</button>`);
         if(isNew)kfx($('kmbody'),'✨',3,20);
@@ -1118,7 +1654,7 @@ const K=(()=>{
     $('kmbody').querySelectorAll('.item').forEach(b=>b.onclick=()=>{
       const d=DISH[b.dataset.d];
       if(S.genki>=5){close();say('「おなかいっぱい！」 探検に行って、おなかをすかせよう');return}
-      add(S.dishes,d.k,-1);S.genki=clamp(S.genki+d.g,0,5);if(d.tag)S.tags[d.tag]=(S.tags[d.tag]||0)+1;
+      add(S.dishes,d.k,-1);S.genki=clamp(S.genki+d.g,0,5);if(d.tag)S.tags[d.tag]=(S.tags[d.tag]||0)+1;prFood('e',d.k);prRec('feed');
       ANA.track('feed',{dish:d.k});close();busy='eat';kfx($('kov'),'dish:'+d.k);SND.sfx.eat();setTimeout(()=>SND.cry(ckey()),500);say(`${d.n}を食べた！ 元気 +${d.g}　なかよし +${d.a}`);setTimeout(()=>speak(lineOf('feed'),'happy'),1300);
       setTimeout(()=>{busy='happy';setTimeout(()=>busy=null,900)},1200);addAff(d.a);if(S.tut===2)setTut(3);save();ui();
     });
@@ -1142,7 +1678,7 @@ const K=(()=>{
     };
     const done=(ok,m)=>{ANA.track('fish',{result:ok?'catch':'miss'});
       F.ph='done'; S.fishN=(S.fishN||0)+1; let txt=m;
-      const fk=ok?wpick([['sakana',60],['oosakana',15],['kutsu',15],['takara',10]]):null; if(ok&&!fk){ok=false;txt='…何もかからなかった';}
+      const fk=ok?wpick([['sakana',60],['oosakana',15],['kutsu',15],['takara',10]]):null; if(ok&&!fk){ok=false;txt='…何もかからなかった';} prRec('fish',ok?['n_fishok']:[]);
       if(ok){const k=fk;
         if(k==='takara'){add(S.decor,'takara');if(canGet('hoshi'))add(S.inv,'hoshi');txt='🎁 宝箱！ 中に⭐星のかけらが入っていた！'}
         else{IT[k].d?add(S.decor,k):add(S.inv,k);txt=k==='kutsu'?'👢 長ぐつ… 飾りにしちゃおう':`${IT[k].e} ${IT[k].n}が釣れた！`}
@@ -1167,7 +1703,8 @@ const K=(()=>{
   const sqIcon=q=>q.t==='item'?IT[q.k].e:(SQ[q.t]||{e:'❓'}).e;
   let charImg=null;
   function charPic(e='happy'){const sp=SPR[ckey()]||SPR.baby,c=document.createElement('canvas');c.width=sp.w+2;c.height=sp.h+2;drawSprite(c.getContext('2d'),sp,1,1,e);return c.toDataURL()}
-  const talkRow=(text,e)=>`<div class="talk"><img class="pix face" src="${charPic(e)}"><div class="tb">${esc(text)}</div></div>`;
+  const talkRow=(text,e)=>{const lid=LID_TEXT.get(String(text)); if(lid&&S)heard(lid,S.id); return talkRow0(text,e)};   // v2.1：会話の枠に出たセリフも記録
+  const talkRow0=(text,e)=>`<div class="talk"><img class="pix face" src="${charPic(e)}"><div class="tb">${esc(text)}</div></div>`;
   function mapUI(){
     const E=S.explore; if(PL(E.p).unknown){close();say('この場所のすごろくは、このバージョンでは遊べません');return} if(!E.map||!E.map.sq) E.map=makeMap(PLACES[E.p]);
     const M=E.map, order=[0,1,2,3,7,6,5,4,8,9,10,11,15,14,13,12];
@@ -1347,6 +1884,9 @@ const K=(()=>{
     if(typeof d.traitVer!=='number')d.traitVer=TRAIT_VER;
     if(!isO(d.log))d.log={};
     if(d.logFixed===undefined)d.logFixed=null;
+    // v2.1：持ち主と違う px（修正4で次の子に前の子の px が残った：Issue #27）は、持ち主のアルバムの記録へ戻す。戻せなければ別の場所に退避してから外す
+    if(isO(d.px)&&typeof d.px.of==='string'&&d.px.of!==d.id){const r=d.album.find(r=>r&&!r.live&&r.id===d.px.of);
+      if(r&&r.px===undefined){r.px=d.px;delete d.px} else {try{const k=KEY+'_px_'+Date.now(),v=JSON.stringify(d.px);localStorage.setItem(k,v);if(localStorage.getItem(k)===v)delete d.px}catch(e){}}}
     // 行けるようになった場所（プレイヤー全体）
     Object.entries(PLACES).forEach(([k,p])=>{if(p.need>0&&d.aff>=p.need&&!d.unlocked.includes(k))d.unlocked.push(k)});
     // 大人：アルバムに目印を1つだけ。種は1匹につき1回だけ
@@ -1359,6 +1899,96 @@ const K=(()=>{
     d.album.forEach(r=>{if(r&&r.live&&(r.id!==d.id||d.stage!=='adult'))INTEG_WARN.push('live:'+r.id)});
     if(d.fav!==null&&!d.album.some(r=>r&&r.id===d.fav))d.fav=null;
     return d;
+  }
+  // ===== 次の子を育てる（AL3）：今の大人をアルバムへ → 新しいたね。おうちのもの（持ち物・料理・飾り・レシピ・行ける場所）は引き継ぐ =====
+  const PET_KEEP=['id','name','form','aff','tags','taps','born','bornGuess','temper','traitVer','adultAt','seedGiven','log','logFixed','persRule','pers','hidden','memo','px'];   // アルバムに入れる、その子だけのもの
+  const PET_RESET=['backFrom','petN','petAt','fishN','fishRest','idle','born','bornGuess','adultAt','seedGiven','persRule','pers','hidden','memo','temper','traitVer','id','px'];  // 次の子では作り直す（消して、ensureIntegrity が新しく付ける）
+  const albumSaved=d=>(Array.isArray(d.album)?d.album:[]).filter(r=>r&&!r.live);
+  function canNext(d){
+    d=d||S; if(LOCK)return {ok:false,why:'lock'}; if(!d)return {ok:false,why:'none'};
+    if(d.stage!=='adult')return {ok:false,why:'notadult'};
+    if(d.explore)return {ok:false,why:'explore'};
+    if(!(d.seeds>=1))return {ok:false,why:'seed'};
+    if(albumSaved(d).length>=ALBUM_MAX)return {ok:false,why:'full'};
+    if(albumSaved(d).some(r=>r.id===d.id))return {ok:false,why:'dup'};
+    return {ok:true};
+  }
+  function petRecord(d){   // アルバムに入れる記録（v1.9 の検査に合う形。設計書 Q-4）
+    const r={stage:'adult'};
+    for(const k of PET_KEEP)if(d[k]!==undefined)r[k]=clone(d[k]);
+    r.archivedAt=Date.now(); r.gen=typeof d.gen==='number'?d.gen:0;
+    if(isO(r.log))Object.keys(r.log).forEach(k=>{if(/^[ct]_/.test(k))delete r.log[k]});   // v2.1：1日の上限のためだけの数（今日の回数・日番号）はアルバムでは消す（v21_pers 22-4）
+    return r;
+  }
+  // name：新しい子の名前。withFav：前の子と一緒に暮らすか（true のときだけお気に入りにする。false は今のお気に入りを変えない）
+  function nextPet(name,withFav){
+    const c=canNext(); if(!c.ok)return c;
+    if(conflict()){enterConflict();return {ok:false,why:'conflict'}}
+    const n=clone(S), rec=petRecord(S);
+    const i=n.album.findIndex(r=>r&&r.live&&r.id===S.id);
+    if(i>=0)n.album[i]=rec; else n.album.push(rec);
+    for(const k of PET_RESET)delete n[k];
+    Object.assign(n,{name:String(name||'').trim().slice(0,12)||'ぽこ',stage:'seed',taps:0,form:null,genki:3,aff:0,tags:{},log:{},logFixed:null,
+      explore:null,sleep:false,lucky:false,justBack:false,seeds:n.seeds-1});
+    n.id=newId(n);
+    if(withFav===true)n.fav=rec.id;
+    ensureIntegrity(n);
+    // 保存する前に、v1.9 と同じ厳しい検査に通す（通らなければ何も変えない）
+    try{ const chk=checkSave2(clone(n)); if(chk.album.filter(r=>!r.live).length!==albumSaved(n).length)throw 0; }catch(e){return {ok:false,why:'check'}}
+    if(new Set(allIds(n)).size!==allIds(n).length)return {ok:false,why:'dup'};
+    const r=commit(n,KEY+'_before_next_'+Date.now());   // 先に今のデータを退避（退避できなければ中止）→ 書いて確かめてから切り替え
+    if(!r.ok)return r;
+    dexAddPet(rec,false); dexFlush();
+    EX=null; x=34; busy=null;
+    return {ok:true,id:n.id,saved:rec.id};
+  }
+  // 今の子だけやり直す（AL7）：その子の記録だけ新しくする。アルバム・お気に入り・おうちのもの・たね・図鑑は残す。たねは使わない
+  function restartPet(name){
+    if(LOCK||!S)return {ok:false,why:'lock'}; if(conflict()){enterConflict();return {ok:false,why:'conflict'}}
+    if(S.explore)return {ok:false,why:'explore'};
+    const n=clone(S);
+    n.album=n.album.filter(r=>!(r&&r.live));   // 今の子の目印だけ外す（保存した子はそのまま）
+    for(const k of PET_RESET)delete n[k];
+    Object.assign(n,{name:String(name||'').trim().slice(0,12)||'ぽこ',stage:'seed',taps:0,form:null,genki:3,aff:0,tags:{},log:{},logFixed:null,explore:null,sleep:false,lucky:false,justBack:false});
+    n.id=newId(n); ensureIntegrity(n);
+    try{checkSave2(clone(n))}catch(e){return {ok:false,why:'check'}}
+    const r=commit(n,KEY+'_before_restart_'+Date.now()); if(r.ok){EX=null;x=34;busy=null} return r;
+  }
+  // アルバムの子を戻す（AL7）：退避の中にあって、今のアルバムにいない「保存した子」。本人が外した子・もう聞かないと決めた子は出さない
+  function lostPets(){
+    if(!S)return [];
+    const have=new Set(allIds(S)), D=dexNow(), skip=Object.assign({},isO(D.removed)?D.removed:{},isO(D.dismiss)?D.dismiss:{}), out=new Map();
+    try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k||!k.startsWith(KEY+'_')||k.startsWith(DEXK))continue;
+      let o=null;try{o=JSON.parse(localStorage.getItem(k))}catch(e){} if(isO(o)&&isO(o.data)&&o.app==='pokohouse')o=o.data; if(!isO(o)||!Array.isArray(o.album))continue;
+      for(const r of o.album){if(!isO(r)||r.live||typeof r.id!=='string'||!ID_RE.test(r.id)||have.has(r.id)||skip[r.id]||out.has(r.id))continue;
+        try{const t=clone(S);t.album=[r];t.fav=null;checkSave2(t)}catch(e){continue}   // v1.9 の検査に通る記録だけ
+        out.set(r.id,clone(r))}}}catch(e){}
+    return [...out.values()];
+  }
+  function albumRestore(recs){
+    if(LOCK||!S)return {ok:false,why:'lock'}; if(conflict()){enterConflict();return {ok:false,why:'conflict'}}
+    const n=clone(S), room=ALBUM_MAX-albumSaved(n).length, have=new Set(allIds(n)); if(room<=0)return {ok:false,why:'full'};
+    const add=recs.filter(r=>!have.has(r.id)).slice(0,room); if(!add.length)return {ok:false,why:'none'};
+    n.album.push(...add.map(clone));
+    try{checkSave2(clone(n))}catch(e){return {ok:false,why:'check'}}
+    {const ids=[n.id,...albumSaved(n).map(r=>r.id)]; if(new Set(ids).size!==ids.length)return {ok:false,why:'dup'};}   // 今の子の目印（live）は同じIDなので数えない
+    const r=commit(n,KEY+'_before_album_restore_'+Date.now()); if(r.ok){add.forEach(x=>dexAddPet(x,true));dexFlush()} return Object.assign(r,{n:add.length});
+  }
+  function dexMark(field,ids){ if(!DEXS)DEXS=dexRead()||dexNew(); if(!isO(DEXS[field]))DEXS[field]={}; const t=Date.now(); ids.forEach(id=>{if(!DEXS[field][id])DEXS[field][id]=t}); dexDirty=true; return dexFlush(); }
+  // アルバムから外す（AL4）：先に退避。外した子も図鑑の発見と思い出には残る。お気に入りだった場合だけ、お気に入りもなくなる（画面で先に伝える）
+  function albumRemove(id){
+    if(LOCK)return {ok:false,why:'lock'}; if(conflict()){enterConflict();return {ok:false,why:'conflict'}}
+    const n=clone(S), i=n.album.findIndex(r=>r&&!r.live&&r.id===id); if(i<0)return {ok:false,why:'none'};
+    dexAddPet(n.album[i],true);
+    n.album.splice(i,1); if(n.fav===id)n.fav=null;
+    try{checkSave2(clone(n))}catch(e){return {ok:false,why:'check'}}
+    const r=commit(n,KEY+'_before_album_remove_'+Date.now()); if(r.ok)dexMark('removed',[id]); return r;
+  }
+  // お気に入りを選ぶ・やめる（AL4・AL6）。本人が選んだときだけ呼ぶ
+  function setFav(id){
+    if(LOCK)return {ok:false,why:'lock'}; if(conflict()){enterConflict();return {ok:false,why:'conflict'}}
+    if(id!==null&&!albumSaved(S).some(r=>r.id===id))return {ok:false,why:'none'};
+    const n=clone(S); n.fav=id; return commit(n);
   }
   // 形式2の検査（引き継ぎコード・バックアップ用）。おかしければ例外。知らない項目は残す
   function keepExtra(src,dst){
@@ -1476,6 +2106,69 @@ const K=(()=>{
     try{localStorage.setItem(LATEST,txt);if(readKey(LATEST)!==txt)throw 0;latestFailed=false}catch(e){latestFailed=true}
     setSaveFail(saveFailed);
   }
+  // ===== 発見記録（プレイヤー全体・別キー pokohouse_v1_dex）=====
+  // 増えるだけの記録。書く前に保存場所を読み直して合わせる（和集合）ので、2タブでも片方の発見が消えない。
+  // v1.9・v1.8 はこのキーを読まない・書かない・消さない（古い版の「最初から」でも残る）。止まっているタブ（LOCK）は書かない
+  const DEXK=KEY+'_dex', DEX_PETS_MAX=1000;
+  let DEXS=null, dexDirty=false, dexFail=false;
+  const dexNew=()=>({v:1,sp:{},pets:{},achv:{}});
+  const earlier=(a,b)=>typeof a!=='number'?b:typeof b!=='number'?a:Math.min(a,b);
+  function dexClean(o){
+    const d=dexNew(); if(!isO(o))return d;
+    for(const [k,v] of Object.entries(o))if(!(k in d)&&/^[A-Za-z_][A-Za-z0-9_]{0,30}$/.test(k))d[k]=v;   // 知らない項目（新しい版）は残す
+    if(isO(o.sp))for(const [k,v] of Object.entries(o.sp))if(KEY_RE.test(k)&&isO(v))d.sp[k]={...v,at:typeof v.at==='number'?v.at:null,by:typeof v.by==='string'?v.by:null};
+    if(isO(o.pets))for(const [k,v] of Object.entries(o.pets))if(ID_RE.test(k)&&isO(v))d.pets[k]={...v};
+    if(isO(o.achv))for(const [k,v] of Object.entries(o.achv))if(typeof k==='string'&&k.length<=60&&typeof v==='number')d.achv[k]=v;
+    return d;
+  }
+  function dexMerge(a,b){   // 和集合：どちらにある記録も残す。同じものは早い日付を残し、足りない項目を補う
+    const d=dexClean(a), e=dexClean(b);
+    for(const [k,v] of Object.entries(e))if(!(k in d))d[k]=v;
+    for(const [k,v] of Object.entries(e.sp)){const o=d.sp[k];if(!o){d.sp[k]=v;continue}
+      const first=typeof v.at==='number'&&(typeof o.at!=='number'||v.at<o.at)?v:o;d.sp[k]={...v,...o,at:first.at,by:first.by||o.by||v.by}}
+    for(const [k,v] of Object.entries(e.pets)){const o=d.pets[k];d.pets[k]=o?{...v,...o,at:earlier(o.at,v.at)}:v}
+    for(const [k,v] of Object.entries(e.achv))d.achv[k]=earlier(d.achv[k],v);
+    for(const f of ['removed','dismiss'])if(isO(e[f])){if(!isO(d[f]))d[f]={};for(const [k,v] of Object.entries(e[f]))d[f][k]=earlier(d[f][k],v)}
+    const ids=Object.keys(d.pets);
+    if(ids.length>DEX_PETS_MAX){ids.sort((x,y)=>(d.pets[x].at||0)-(d.pets[y].at||0)).slice(0,ids.length-DEX_PETS_MAX).forEach(k=>{const v=d.pets[k];d.pets[k]={name:v.name,form:v.form,small:true}})}   // 消さずに名前と姿だけに縮める
+    return d;
+  }
+  function dexRead(){
+    let raw=null; try{raw=localStorage.getItem(DEXK)}catch(e){return null}
+    if(raw===null)return dexNew();
+    let o=null; try{o=JSON.parse(raw)}catch(e){}
+    if(!isO(o)){ try{const bk=DEXK+'_broken_'+Date.now();localStorage.setItem(bk,raw)}catch(e){} return dexNew(); }   // 読めない記録は別名で残し、ほかの場所から集め直す
+    return dexClean(o);
+  }
+  // 大人の子を1匹、記録に入れる（姿の発見と思い出）。pre=true は「この版より前に大人になっていた子」
+  function dexAddPet(p,pre){
+    if(!p||p.live||p.stage!=='adult'&&!p.archivedAt||typeof p.form!=='string'||!KEY_RE.test(p.form)||typeof p.id!=='string'||!ID_RE.test(p.id))return false;
+    if(!DEXS)DEXS=dexNew();
+    const at=typeof p.adultAt==='number'?p.adultAt:null; let ch=false;
+    if(!DEXS.pets[p.id]){DEXS.pets[p.id]={name:String(p.name||'ぽこ').slice(0,20),form:p.form,adultAt:at,at:pre?null:Date.now(),...(pre?{pre:true}:{})};ch=true}
+    if(!DEXS.sp[p.form]){DEXS.sp[p.form]={at,by:p.id,...(pre?{pre:true}:{})};ch=true}
+    if(ch)dexDirty=true; return ch;
+  }
+  function dexFromSave(d,pre){ if(!isO(d))return; dexAddPet(d,pre); (Array.isArray(d.album)?d.album:[]).forEach(r=>dexAddPet(r,pre)); }
+  function dexFlush(){
+    if(LOCK||!DEXS||!dexDirty)return !dexDirty;
+    const cur=dexRead(); if(cur===null){dexFail=true;return false}
+    const m=dexMerge(cur,DEXS), txt=JSON.stringify(m);
+    try{localStorage.setItem(DEXK,txt); if(localStorage.getItem(DEXK)!==txt)throw 0}catch(e){dexFail=true;return false}   // 保存できなければ、メモリに残して次の保存で再挑戦
+    DEXS=m; dexDirty=false; dexFail=false; return true;
+  }
+  // 開いたとき：保存場所の記録＋今のデータ＋（初回だけ）退避の中の子 を合わせる
+  function dexOpen(){
+    DEXS=dexMerge(dexRead()||dexNew(),DEXS||dexNew());
+    dexFromSave(S,true);
+    if(!DEXS.scan){
+      try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k||!k.startsWith(KEY+'_')||k.startsWith(DEXK))continue;
+        let o=null;try{o=JSON.parse(localStorage.getItem(k))}catch(e){} if(isO(o))dexFromSave(o.data&&isO(o.data)?o.data:o,true)}}catch(e){}
+      DEXS.scan=1; dexDirty=true;
+    }
+    dexFlush();
+  }
+  window.addEventListener('pagehide',()=>{try{dexFlush()}catch(e){}});
   function enterConflict(){
     if(LOCK==='conflict')return;
     let mem=null; try{mem=S?JSON.stringify(S):null}catch(e){}
@@ -1506,7 +2199,8 @@ const K=(()=>{
   // バックアップファイル（data の ver が形式になる。新しい版のデータは新しい版でしか読めない）
   function downloadBackup(data,suffix){
     const d=clone(data), ver=typeof d.ver==='number'?d.ver:1;
-    const body=JSON.stringify({app:'pokohouse',ver,at:Date.now(),crc:crc32(JSON.stringify(d)),data:d},null,1);
+    const dx=DEXS?clone(DEXS):null, wd=clone(wordsSaved());   // v2.1：ことば帳（聞いたセリフ）も入れる
+    const body=JSON.stringify({app:'pokohouse',ver,at:Date.now(),crc:crc32(JSON.stringify(d)),data:d,...(dx?{dex:dx,dexcrc:crc32(JSON.stringify(dx))}:{}),words:wd,wordscrc:crc32(JSON.stringify(wd))},null,1);
     downloadText(body,`pokohouse_backup_${ymd()}${suffix||''}.json`,'application/json');
   }
   function downloadRaw(raw){
@@ -1528,7 +2222,7 @@ const K=(()=>{
       ${kind==='conflict'?'':'<button class="pbtn gray" id="lkrs">救出用データをコピー</button>'}
       <div id="lkrsbox" style="display:none"><p class="tleft" style="font-size:12px"><b>これは通常の「おひっこしコード」ではありません。</b>そのまま復元できるとは限りません（壊れたデータが入っていることがあります）。困ったときに、ゲームを作った人に送ってください。</p>
       <textarea id="lkrsta" class="codeta" readonly></textarea></div>`:'');
-    $('klock').classList.add('on'); ['kmodal','ksetup','kconfirm'].forEach(id=>$(id).classList.remove('on'));
+    $('klock').classList.add('on'); ['kmodal','ksetup','kconfirm','kcol'].forEach(id=>$(id).classList.remove('on'));
     if($('lkretry'))$('lkretry').onclick=()=>location.reload();   // 再開は必ず読み直し（メモリ上の古いデータは保存しない）
     if($('lknext'))$('lknext').onclick=()=>{LOCK=null;$('klock').classList.remove('on');$('ksetup').classList.add('on')};
     if(raw!=null){
@@ -1547,7 +2241,7 @@ const K=(()=>{
       `<p class="tleft">古いバージョン（v1.8など）の画面が開いたままになっていて、保存データが上書きされたようです。<b>どちらのデータも消さずに保管しています。</b>続けるデータを選んでください。<br><b>先に、古いタブや画面を閉じてください。</b>閉じないと、また上書きされることがあります。</p>`+
       card('A','v1.9で最後に正しく保存したデータ',repairSave(clone(lat)))+card('B','古い画面で上書きされたデータ',legacy,'こちらを選ぶと新しい形式に移行し、個体の記録（個体IDなど）は新しく付け直されます')+
       `<p class="mmsg" id="chmsg"></p>`;
-    $('klock').classList.add('on'); ['kmodal','ksetup','kconfirm'].forEach(i=>$(i).classList.remove('on'));
+    $('klock').classList.add('on'); ['kmodal','ksetup','kconfirm','kcol'].forEach(i=>$(i).classList.remove('on'));
     const msg=t=>{$('chmsg').innerHTML=pixify(esc(t))};
     $('cbA').onclick=()=>{try{downloadBackup(lat,'_v19');ktoast(SAVED_NOTE)}catch(e){ktoast('保存を開始できませんでした')}};
     $('cbB').onclick=()=>{try{downloadRaw(raw);ktoast(SAVED_NOTE)}catch(e){ktoast('保存を開始できませんでした')}};
@@ -1612,7 +2306,7 @@ const K=(()=>{
   }
   // 引き継ぎコード： POKO-<形式>-<データ>-<確認用の数字>
   function makeCode(){
-    const json=JSON.stringify({app:'pokohouse',ver:SAVE_FORMAT,at:Date.now(),data:S});
+    const json=JSON.stringify({app:'pokohouse',ver:SAVE_FORMAT,at:Date.now(),data:S,...(DEXS?{dex:DEXS}:{})});
     return `POKO-${SAVE_FORMAT}-${b64e(json)}-${crc32(json)}`;
   }
   function readCode(code){
@@ -1626,20 +2320,26 @@ const K=(()=>{
     if(crc32(json)!==m[3])throw new Error('コードがこわれています（文字が欠けているかも）');
     let obj; try{obj=JSON.parse(json)}catch(e){throw new Error('コードがこわれています')}
     if(!obj||obj.app!=='pokohouse')throw new Error('ぽこのおひっこしコードではないみたい');
+    IMPORT_WORDS=null; IMPORT_DEX=isO(obj.dex)?obj.dex:null;   // 発見記録は、復元できたときに今の記録と合わせる（減らさない）
     return toCurrent({ver:+m[1],data:obj.data},true);
   }
+  let IMPORT_DEX=null, IMPORT_WORDS=null;
   function readBackup(text){
     if(text.length>MAX_IMPORT)throw new Error('ファイルが大きすぎます');
     let obj; try{obj=JSON.parse(text)}catch(e){throw new Error('バックアップファイルではないみたい')}
     if(!obj||obj.app!=='pokohouse'||typeof obj.data!=='object')throw new Error('ぽこのバックアップファイルではないみたい');
     if(+obj.ver>SAVE_FORMAT)throw new Error('新しいバージョンのファイルです。ゲームを最新にしてから試してね');
     if(obj.crc!==crc32(JSON.stringify(obj.data)))throw new Error('ファイルがこわれています');
+    IMPORT_DEX=isO(obj.dex)&&obj.dexcrc===crc32(JSON.stringify(obj.dex))?obj.dex:null;
+    IMPORT_WORDS=isO(obj.words)&&obj.wordscrc===crc32(JSON.stringify(obj.words))?obj.words:null;
     return toCurrent({ver:+obj.ver,data:obj.data},false);
   }
   // 復元：保存できたのを確かめてから画面に反映。失敗したら元に戻す
   function applySave(clean,backupKey){
     const r=commit(clean,backupKey||(KEY+'_before_restore_'+Date.now()));
     if(!r.ok)return false;
+    try{DEXS=dexMerge(DEXS||dexNew(),IMPORT_DEX||dexNew());IMPORT_DEX=null;dexFromSave(S,true);dexDirty=true;dexFlush()}catch(e){}
+    try{if(IMPORT_WORDS){WORDS=wordsMerge(wordsNow(),IMPORT_WORDS);wordsDirty=true;wordsFlush()}IMPORT_WORDS=null}catch(e){}   // v2.1：ことば帳は合わせる（減らさない）
     EX=null; x=34; busy=null; return true;
   }
   const stageName=d=>d.stage==='seed'?'種':fnm(d.stage==='adult'?d.form:d.stage);
@@ -1702,17 +2402,302 @@ const K=(()=>{
     modal(`<h2>⚙️ せってい</h2>
       <button class="place" id="stmove"><em>📦</em><span>ぽこのおひっこし<small>引き継ぎコード・バックアップ</small></span></button>
       <button class="place" id="strcv"><em>🛟</em><span>データの復旧<small>この端末に残っている前のデータに戻す</small></span></button>
+      <button class="place" id="ststo"><em>💾</em><span>保存の容量<small>使っている量・バックアップ・整理</small></span></button>
       <button class="place" id="stana"><em>📊</em><span>プレイ分析<small>${st}</small></span></button>
       <button class="place" id="stsnd"><em>${SND.on?'🔊':'🔇'}</em><span>音<small>${SND.on?'鳴らす':'鳴らさない'}</small></span></button>
       <button class="pbtn gray" onclick="K.close()">とじる</button>`);
     $('stmove').onclick=()=>moveUI();
     $('strcv').onclick=()=>recoverUI();
     $('stana').onclick=()=>analyticsUI();
+    $('ststo').onclick=()=>storageUI();
     $('stsnd').onclick=()=>{SND.toggle();sndLabel();settingsUI()};
   }
+  // ===== AL4：ぽこアルバム・次の子の流れ =====
+  const dstr=t=>{if(typeof t!=='number'||!isFinite(t))return '？';const d=new Date(t);return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`};
+  const formPic=(k,e='happy')=>{const sp=SPR[k]||SPR.child,c=document.createElement('canvas');c.width=sp.w+2;c.height=sp.h+2;drawSprite(c.getContext('2d'),sp,1,1,e);return c.toDataURL()};
+  const tnm=k=>(TEMPER[k]||{n:'？？？'}).n;
+  const NEXT_WHY={notadult:'大人になったら、アルバムに入れて次の子を育てられます',explore:'探検・お散歩から帰ってきてから、次の子を育てられます',
+    seed:'たねがありません（たねは、子が大人になると1つもらえます）。今の子とこのまま暮らせます。データは消えません。<br>もし大人になったのにたねがないときは、せっていの「ぽこのおひっこし」でバックアップファイルを保存しておいてね',full:`アルバムがいっぱいです（${ALBUM_MAX}匹）。外す子を選ぶと、次の子を育てられます`,dup:'この子はもうアルバムに入っています'};
+  const FAIL_MSG=r=>r.why==='conflict'||r.why==='lock'?'別のタブで開かれているため、何も変えていません':r.why==='backup'?'今のデータを退避できなかったので、何も変えていません（保存がいっぱいかもしれません）':'保存できなかったので、何も変えていません';
+  const favRec=()=>S&&S.fav?albumSaved(S).find(r=>r.id===S.fav):null;
+  // ===== ぽこコレクション（v2.1 UI改修：docs/v21_collection_ui.md）=====
+  // アルバム・進化図鑑・ことば図鑑を1つのノート型の画面に。上（← タイトル × タブ）と下（見つけた数）は固定、中だけスクロール。
+  // 画面を作るだけ：記録・保存・判定は今までの関数（nextPet・setFav・albumRemove・dex・words）をそのまま使う。開いて見るだけでは保存しない
+  const PC={stack:[],more:20};
+  const pcOn=()=>$('kcol').classList.contains('on');
+  function pcOpen(view,arg){
+    if(LOCK)return; if(view==='album'&&!S)return;
+    $('kmodal').classList.remove('on'); clearInterval(fishTimer); fishTimer=null;
+    PC.stack=[{view,arg,sc:0}]; PC.more=20; $('kcol').classList.add('on'); pcRender(0);
+  }
+  function pcGo(view,arg){ const b=$('pcbody'); if(PC.stack.length)PC.stack[PC.stack.length-1].sc=b.scrollTop; PC.stack.push({view,arg,sc:0}); pcRender(0) }
+  function pcBack(){ if(PC.stack.length<2)return pcClose(); PC.stack.pop(); const c=PC.stack[PC.stack.length-1]; pcRender(c.sc||0) }   // 直前の画面へ。一覧のスクロール位置も戻す
+  function pcTab(view){ PC.stack=[{view,sc:0}]; PC.more=20; pcRender(0) }
+  function pcClose(){ PC.stack=[]; close() }
+  function pcRender(sc){
+    if(!PC.stack.length)return; const cur=PC.stack[PC.stack.length-1], r=PCV[cur.view](cur.arg)||{};
+    if(r.redirect){PC.stack.pop();return r.redirect()}
+    const top=PC.stack.length===1, tab=r.tab||'album';
+    $('kcolnote').className='pcn zk pc-'+tab;
+    $('pcback').style.visibility=top?'hidden':'visible';
+    $('pctitle').innerHTML=pixify(r.title||'');
+    $('pctabs').style.display=top?'':'none';
+    $('pctabs').querySelectorAll('[data-pt]').forEach(b=>b.classList.toggle('on',b.dataset.pt===tab));
+    const body=$('pcbody'); body.innerHTML=pixify(r.html||''); $('pcfoot').innerHTML=pixify(r.foot||''); $('pcfoot').style.display=r.foot?'':'none';
+    if(r.after)r.after(); body.scrollTop=sc||0;
+  }
+  // 確認の画面（次の子・外す・お気に入りを変える）も同じ固定の上を使う。「やめる」は直前の画面へ
+  const pcPage=(title,tab,html,after)=>pcGo('page',{title,tab,html,after});
+  // 今までの入口の名前は残す（ほかの画面から呼ばれる）
+  const albumUI=note=>pcOpen('album',{note});
+  const albumDetail=id=>pcOpen('album')||pcGo('profile',{id});
+  const zukanUI=()=>pcOpen('zukan');
+  const kotobaUI=c=>pcOpen('kotoba',{c});
+  const memoryUI=()=>{pcOpen('album');setTimeout(()=>{const m=$('pcmem');if(m)m.scrollIntoView()},0)};
+  function profileUI(id,back){ if(!pcOn())pcOpen('album'); pcGo('profile',{id}) }
+  function doFav(id){const r=setFav(id); if(!r.ok){pcTab('album');PC.stack[0].arg={note:'⚠ '+FAIL_MSG(r)};pcRender(0);return} ui();draw();
+    PC.stack=[{view:'album',arg:{note:id?'⭐ お気に入りにしました。おうちで一緒に暮らします。':'お気に入りをやめました。'},sc:0}]; pcRender(0)}
+  const pcNote=t=>{PC.stack=[{view:'album',arg:{note:t},sc:0}]; pcRender(0)};
+  function favUI(id){
+    const r=albumSaved(S).find(x=>x.id===id); if(!r)return pcBack(); const isFav=S.fav===id, cur=favRec();
+    if(!isFav&&cur&&cur.id!==id){pcPage('お気に入りを変える','album',`<div class="pcbox"><p class="tleft fm">いま一緒に暮らしている「${esc(cur.name)}」はアルバムで休み、「${esc(r.name)}」が一緒に暮らします。</p>
+      <button class="pcbtn pink" id="fvok">変える</button><button class="pcbtn" id="fvno">やめる</button></div>`,()=>{$('fvno').onclick=pcBack;$('fvok').onclick=()=>doFav(id)});return}
+    doFav(isFav?null:id);
+  }
+  function removeUI(id){
+    const r=albumSaved(S).find(x=>x.id===id); if(!r)return pcBack(); const isFav=S.fav===id;
+    pcPage('アルバムから外す','album',`<div class="pcbox"><img class="pix apic" src="${pcFormPic(r.form)}"><p class="tleft fm">「${esc(r.name)}」をアルバムから外しますか？<br>進化図鑑の発見と、思い出（名前・姿）は残ります。${isFav?'<br><b>この子はお気に入りです。外すと、お気に入りもなくなります。</b>':''}</p>
+      <button class="pcbtn red" id="rm1">外す</button><button class="pcbtn" id="rmno">やめる</button></div>`,()=>{$('rmno').onclick=pcBack;
+      $('rm1').onclick=()=>pcPage('本当に外しますか？','album',`<div class="pcbox"><p class="tleft fm">「${esc(r.name)}」はアルバムからいなくなります。<br>まちがえたときは、せっていの「データの復旧」で「アルバムから外す前のデータ」に戻せます。</p>
+        <button class="pcbtn red" id="rm2">本当に外す</button><button class="pcbtn" id="rmno2">やめる</button></div>`,()=>{$('rmno2').onclick=()=>{PC.stack.pop();pcBack()};
+        $('rm2').onclick=()=>{const res=albumRemove(id); pcNote(res.ok?`「${esc(r.name)}」をアルバムから外しました。`:'⚠ '+FAIL_MSG(res)); if(res.ok){ui();draw()}}})});
+  }
+  function nextUI1(){
+    const c=canNext(); if(!c.ok)return pcNote(NEXT_WHY[c.why]);
+    pcPage('次の子を育てる','album',`<div class="pcbox"><img class="pix apic" src="${charPic()}"><p class="tleft fm">「${esc(S.name)}」をアルバムに入れて、新しい子を育てます。<b>たねを1つ</b>使います（いま ${S.seeds}こ）。</p>
+      <table class="atbl fm"><tr><td>そのまま</td><td>持ち物・料理・飾り・レシピ・行ける場所・進化図鑑</td></tr><tr><td>新しく</td><td>名前・なかよし・元気・食べた記録・気質</td></tr></table>
+      <button class="pcbtn pink" id="nx1">次へ</button><button class="pcbtn" id="nxno">やめる</button></div>`,()=>{$('nxno').onclick=pcBack; $('nx1').onclick=()=>nextUI2()});
+  }
+  function nextUI2(){
+    pcPage('新しい子の名前','album',`<div class="pcbox"><p class="fm">生まれてくる子に名前をつけてください（12文字まで）</p><input id="nxname" class="pcin" maxlength="12" placeholder="ぽこ">
+      <button class="pcbtn pink" id="nx2">次へ</button><button class="pcbtn" id="nxno">やめる</button></div>`,()=>{$('nxno').onclick=pcBack; $('nx2').onclick=()=>nextUI3(($('nxname').value||'').trim()||'ぽこ')});
+  }
+  function nextUI3(name){
+    const cur=favRec();
+    pcPage('一緒に暮らす？','album',`<div class="pcbox"><img class="pix apic" src="${charPic()}"><p class="tleft fm">「${esc(S.name)}」をお気に入りにして、新しい子と一緒におうちで暮らしますか？${cur?`<br>（いま一緒に暮らしている「${esc(cur.name)}」は、アルバムで休みます）`:''}<br>あとからアルバムで変えることもできます。</p>
+      <button class="pcbtn pink" id="nxy">一緒に暮らす</button><button class="pcbtn" id="nxn">${cur?`今のまま（「${esc(cur.name)}」と暮らす）`:'暮らさない'}</button><button class="pcbtn" id="nxno">やめる</button></div>`,()=>{
+      $('nxno').onclick=pcBack;
+      const go=fav=>{const prev=S.name, r=nextPet(name,fav); if(!r.ok){pcNote('⚠ '+(NEXT_WHY[r.why]||FAIL_MSG(r)));return}
+        pcClose(); close(); ui(); draw(); say(`「${prev}」はアルバムに入りました。新しいたねを植えたよ！ 種をタップして、芽を出させよう`)};
+      $('nxy').onclick=()=>go(true); $('nxn').onclick=()=>go(false)});
+  }
+  // ===== AL5：進化図鑑・発見記録 =====
+  // はじめての姿のお祝い（保存できた記録にあるときだけ。保存がまだなら少し待つ）
+  function newFormUI(fm,tries=0){
+    if(LOCK||!S)return;
+    const D=dexSaved(); if(!D.sp[fm]){ if(tries<10)setTimeout(()=>newFormUI(fm,tries+1),1500); return; }
+    const found=ZUKAN.filter(([k])=>D.sp[k]).length, left=ZUKAN.length-found;
+    if($('kmodal').classList.contains('on'))close();
+    modal(`<h2>✨ 新しい子が<br>進化図鑑に登録されたよ！</h2><img class="pix apicl" src="${formPic(fm)}"><p><b>${fnm(fm)}</b></p>
+      <p>見つけた姿 ${found} / ${ZUKAN.length}</p>
+      <p class="tleft">${left?`あと${left}種類！ どんな姿がいるかな？<br>いろんなごはんを食べさせて、集めてみてね`:'全部の姿を見つけたよ！ すごい！'}</p>
+      <button class="pbtn" id="nfback">戻る</button>`);
+    $('nfback').onclick=()=>{close();say('📖 進化図鑑で、また見られるよ！');setTimeout(()=>speak('図鑑にのったよ、うれしいな','happy'),400)};
+  }
+  const ZUKAN=[['hana','くだものが大好きな子は、どんな姿になるのかな…'],['umi','海の幸をたくさん食べた子は…？'],['mori','森のめぐみ（きのこ）をよく食べた子は…？'],['okashi','あまいものばかり食べていると…？']];   // 今の版で見つけられる姿（隠し・特殊は、その版まで出さない）
+  const shadowPic=k=>{const sp=SPR[k]||SPR.child,c=document.createElement('canvas');c.width=sp.w+2;c.height=sp.h+2;const g=c.getContext('2d');drawSprite(g,sp,1,1,'normal',false);g.globalCompositeOperation='source-in';g.fillStyle='#3a2f45';g.fillRect(0,0,c.width,c.height);return c.toDataURL()};
+  const dexNow=()=>DEXS||dexRead()||dexNew();             // 判断用（メモリの未保存分も含む：戻す質問で外した子を出さないため）
+  const dexSaved=()=>dexRead()||dexNew();                  // 画面用：保存場所に実際に保存された記録だけ
+  // ===== v2.1 プロフィール帳（その子への愛着）=====
+  // 項目は表 PROF_Q（上から並べるだけ。項目を足すときは1行足す）。sec：置き場所（tbl 写真の横の表・box きしつ/せいかく・memo メモ。aff・kosei は専用の枠）。
+  // show：出す子だけ、v：中身（HTMLにして返す）。記録にないことは書かない。性格・個性は確定した子だけ（子どもの仮の性格は出さない）
+  const PROF_Q=[
+    {id:'pq_name',n:'なまえ',sec:'tbl',v:d=>esc(d.name||'ぽこ')},
+    {id:'pq_form',n:'タイプ',sec:'tbl',v:d=>d.stage==='adult'?esc(fnm(d.form)):d.stage==='seed'?'種':`${esc(fnm(d.stage))}<small>（進化はこれから）</small>`},
+    {id:'pq_born',n:'たんじょうび',sec:'tbl',show:d=>d.stage!=='seed',v:d=>dstr(d.born)+(d.bornGuess?'ごろ':'')},
+    {id:'pq_adult',n:'おとなになった日',sec:'tbl',v:d=>d.stage==='adult'&&typeof d.adultAt==='number'?dstr(d.adultAt):'―'},
+    {id:'pq_album',n:'アルバムに入った日',sec:'tbl',show:d=>typeof d.archivedAt==='number',v:d=>dstr(d.archivedAt)},
+    {id:'pq_temper',n:'きしつ',sec:'box',v:d=>esc(tnm(d.temper))},
+    {id:'pq_pers',n:'せいかく',sec:'box',v:d=>d.pers&&PERS[d.pers]?esc(PERS[d.pers].n):'<small>まだ見つかっていない</small>'},
+    {id:'pq_kosei',n:'こんな子',sec:'kosei',v:d=>{const c=voiceCell(d);return c?esc(c.d):'まだ見つかっていません'}},
+    {id:'pq_aff',n:'なかよし',sec:'aff',v:d=>String(d.aff||0)},
+    {id:'pq_memo',n:'メモ',sec:'memo',show:d=>!!d.memo,v:d=>esc(d.memo)},
+  ];
+  const lineText=x=>x.t.replaceAll('{n}','〇〇');
+  const C6=['日常','性格','気分','成長','特別','秘密','豆知識'];
+  // ---- ぽこコレクションの飾り（ドット絵。見た目だけ）----
+  const PCD_ART={
+    heart:['.KK...KK.','KPPK.KPPK','KPLPKPPPK','KPPPPPPPK','.KPPPPPK.','..KPPPK..','...KPK...','....K....'],
+    star:['....K....','...KYK...','KKKKYKKKK','KYYYWYYYK','.KYYYYYK.','..KYYYK..','.KYYKYYK.','.KYK.KYK.','.KK...KK.'],
+    sparkle:['..Y..','..Y..','YYWYY','..Y..','..Y..'],
+    ribbon:['.KK.....KK.','KPPK.K.KPPK','KPLPKPKPLPK','KPPPKPKPPPK','KPPK.K.KPPK','.KK.KPK.KK.','...KP.PK...','...KK.KK...'],
+    paw:['.B.B.','B.B.B','.....','.BBB.','BBBBB','.BBB.'],
+    cat:['K.......K','KK.....KK','KCKKKKKCK','KCCCCCCCK','KCKCCCKCK','KCCCPCCCK','.KCCCCCK.','..KKKKK..'],
+    book:['KKKKKKKKKKK','KGGGGKGGGGK','KGWWGKGWWGK','KGGGGKGGGGK','KGWWGKGWWGK','KGGGGKGGGGK','KKKKKKKKKKK'],
+    chat:['.KKKKKKK.','KWWWWWWWK','KWKWKWKWK','KWWWWWWWK','.KKKWKKK.','...KWK...','...KK....'],
+    cloud:['...KKK...','..KWWWK..','.KWWWWWKK','KWWWWWWWK','KWWKWKWWK','.KKKKKKK.'],
+  };
+  const PCD_COL={K:'#4B345A',P:'#f58bb0',L:'#ffd6e4',Y:'#ffd84d',W:'#ffffff',B:'#a87048',C:'#ffe8b0',G:'#8fd3a5'};
+  const _pcd={};
+  function PCD(n){
+    if(!_pcd[n]){const a=PCD_ART[n]||PCD_ART.star, c=document.createElement('canvas'); c.width=a[0].length; c.height=a.length; const g2=c.getContext('2d');
+      a.forEach((row,y)=>[...row].forEach((ch,x)=>{if(PCD_COL[ch]){g2.fillStyle=PCD_COL[ch];g2.fillRect(x,y,1,1)}})); _pcd[n]=c.toDataURL()}
+    return `<img class="pix pcd" alt="" aria-hidden="true" src="${_pcd[n]}">`;
+  }
+  // ---- ぽこコレクションの画面（見るだけ。データは書かない）----
+  const _pcPic=new Map();
+  const pcFormPic=k=>{if(!_pcPic.has(k))_pcPic.set(k,formPic(k));return _pcPic.get(k)};      // 同じ姿の絵は1回だけ作る（思い出が多くても重くしない）
+  const pcShadow=k=>{const q='sh:'+k;if(!_pcPic.has(q))_pcPic.set(q,shadowPic(k));return _pcPic.get(q)};
+  const pcSec=(icon,title,right,cls)=>`<div class="pcsec ${cls||''}"><span class="fd">${PCD(icon)} ${title}</span>${right?`<span class="fd pccnt">${right}</span>`:`<span class="pcspk">${PCD('sparkle')}${PCD('ribbon')}</span>`}</div>`;
+  const pcStrip=()=>`<div class="pcstrip" aria-hidden="true"><i class="tp pk"></i>${PCD('heart')}${PCD('star')}${PCD('paw')}${PCD('cat')}${PCD('star')}${PCD('heart')}<i class="tp bl"></i></div>`;
+  const pcStage=d=>d.stage==='adult'?fnm(d.form):d.stage==='seed'?'種':fnm(d.stage);
+  const pcDate=t=>typeof t==='number'&&isFinite(t)?(d=>`${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`)(new Date(t)):'？';
+  const PCV={
+    page:a=>({title:a.title,tab:a.tab,html:a.html,after:a.after}),
+    album(a){
+      if(!S)return {redirect:()=>pcClose()};
+      const L=albumSaved(S).slice().reverse(), c=canNext(), D=dexSaved(), inAlbum=new Set(L.map(r=>r.id));
+      const M=Object.entries(D.pets).sort((x,y)=>(y[1].adultAt||0)-(x[1].adultAt||0)), shown=M.slice(0,PC.more);
+      const where=id=>S&&id===S.id?['now','🌱 いま育てている子']:S&&id===S.fav?['fav','⭐ 一緒に暮らしている']:inAlbum.has(id)?['keep','📒 保管中']:['mem','💭 思い出だけ'];
+      const note=a&&a.note?`<div class="pcnote fm">${a.note}</div>`:'';
+      return {title:'ぽこコレクション',tab:'album',html:`<div class="pcban" aria-hidden="true">${PCD('star')}<span>POKO COLLECTION</span>${PCD('cat')}${PCD('heart')}</div>${note}
+        ${pcSec('star','いま育てている子','')}
+        <button class="pccard" id="alprof" ${S.stage==='seed'?'disabled':''}><span class="pcph"><img class="pix" src="${charPic()}"></span>
+          <span class="pcci"><b class="fm">${esc(S.name)}</b><small class="fm">${esc(pcStage(S))}</small><small class="fm">${PCD('heart')} なかよし ${S.aff}</small></span>${S.stage==='seed'?'':'<span class="pcgo">›</span>'}</button>
+        ${c.ok?`<button class="pcbtn pink" id="alnext">🌱 アルバムに入れて、次の子を育てる</button>`:`<p class="pcwhy fm">${NEXT_WHY[c.why]||''}</p>`}
+        ${pcSec('heart','保管中のぽこ',`${L.length} / ${ALBUM_MAX}匹`,'keep')}
+        <p class="pcsub fm">🌱たね ${S.seeds||0}こ</p>
+        ${L.length?L.map(r=>`<button class="pccard" data-al="${esc(r.id)}"><span class="pcph"><img class="pix" src="${pcFormPic(r.form)}"></span>
+          <span class="pcci"><b class="fm">${esc(r.name)}</b><small class="fm">${esc(fnm(r.form))}・${esc(tnm(r.temper))}</small>${r.pers&&PERS[r.pers]?`<small class="fm">せいかく：${esc(PERS[r.pers].n)}</small>`:''}<small class="fm">${pcDate(r.born)} 〜 ${pcDate(r.adultAt)}</small></span>
+          ${r.id===S.fav?`<span class="pcfav">${PCD('star')}</span>`:''}<span class="pcgo">›</span></button>`).join(''):'<p class="pcempty fm">まだいないよ。大人になった子をアルバムに入れると、ここに並ぶよ</p>'}
+        <div id="pcmem">${pcSec('cloud','思い出のぽこ',`${M.length}匹`,'mem')}</div>
+        <p class="pcsub fm">大人になった子の思い出です。アルバムから外した子も、ここに残ります。</p>
+        ${shown.length?shown.map(([id,v])=>{const w=where(id);return `<div class="pccard ro"><span class="pcph"><img class="pix" src="${pcFormPic(v.form)}"></span>
+          <span class="pcci"><b class="fm">${esc(v.name||'ぽこ')}</b><small class="fm">${esc(fnm(v.form))}</small><small class="fm">${v.adultAt?pcDate(v.adultAt):'？'}</small></span><span class="pctag ${w[0]} fm">${w[1]}</span></div>`}).join(''):'<p class="pcempty fm">まだいないよ</p>'}
+        ${M.length>shown.length?`<button class="pcbtn pink" id="pcmore">もっと見る（+${Math.min(20,M.length-shown.length)}匹）</button>`:''}${pcStrip()}`,
+        after(){
+          if($('alnext'))$('alnext').onclick=()=>nextUI1();
+          if(S.stage!=='seed')$('alprof').onclick=()=>pcGo('profile',{id:S.id});
+          $('pcbody').querySelectorAll('[data-al]').forEach(b=>b.onclick=()=>pcGo('profile',{id:b.dataset.al}));
+          if($('pcmore'))$('pcmore').onclick=()=>{const sc=$('pcbody').scrollTop;PC.more+=20;pcRender(sc)};
+        }};
+    },
+    profile(a){
+      const id=a.id, cur=S&&id===S.id, d=cur?S:albumSaved(S).find(r=>r.id===id); if(!d)return {redirect:()=>pcBack()};
+      const W=wordsSaved(), mine=W.w[id]||{}, byId=new Map(ALL_LINES.map(x=>[x.id,x]));
+      const heardL=Object.entries(mine).filter(([k])=>byId.has(k)).sort((x,y)=>x[1]-y[1]);
+      const Q=PROF_Q.filter(q=>!q.show||q.show(d)), sec=s=>Q.filter(q=>(q.sec||'tbl')===s);
+      const cell=voiceCell(d), isFav=S.fav===id, aff=Math.max(0,d.aff||0);
+      return {title:'プロフィール帳',tab:'album',html:`
+        <div class="pcprof"><div class="pcphoto"><i class="tape t1"></i><i class="tape t2"></i><img class="pix" src="${cur?charPic():pcFormPic(d.form)}"></div>
+          <div class="pcinfo">${sec('tbl').map(q=>`<div class="pcir"><span class="fd">${q.n}</span><b class="fm">${q.v(d)}</b></div>`).join('')}</div></div>
+        <div class="pcbox2">${sec('box').map(q=>`<div class="pcmini"><span class="pch">${PCD('heart')}<span class="fd">${q.n}</span></span><b class="fm">${q.v(d)}</b></div>`).join('')}</div>
+        <div class="pckosei"><span class="pclab"><span class="fd">こんな子</span>${PCD('heart')}</span><p class="fm">${cell?esc(cell.d):'まだ見つかっていません'}</p></div>
+        <div class="pcaff"><span class="pclab">${PCD('star')}<span class="fd">なかよし</span></span><b class="fm">${PCD('heart')} ${aff}</b><i class="pcbar"><i style="width:${Math.min(100,aff/80*100)}%"></i></i></div>
+        <div class="pcwords"><span class="pclab">${PCD('star')}<span class="fd">きいてくれたことば（${heardL.length}）</span></span>
+          ${heardL.length?heardL.map(([k,t])=>`<div class="pcw fm">${PCD('heart')}<span>${esc(lineText(byId.get(k)))}<small>${dstr(t)}</small></span></div>`).join(''):'<p class="pcempty fm">まだありません。話しかけたり、一緒に過ごしたりすると増えていくよ</p>'}</div>
+        ${sec('memo').map(q=>`<div class="pckosei"><span class="pclab"><span class="fd">${q.n}</span></span><p class="fm">${q.v(d)}</p></div>`).join('')}
+        ${cur?'':`<div class="pcacts"><button class="pcbtn yel" id="alfav">${isFav?'お気に入りをやめる':'⭐ 一緒に暮らす'}</button><button class="pcbtn red" id="alrm">アルバムから外す</button></div>`}`,
+        after(){ if(!cur){$('alfav').onclick=()=>favUI(id); $('alrm').onclick=()=>removeUI(id)} }};
+    },
+    zukan(a){
+      const D=dexSaved(), pets=Object.entries(D.pets), found=ZUKAN.filter(([k])=>D.sp[k]).length, P=9, pages=Math.max(1,Math.ceil(ZUKAN.length/P)), pg=Math.min(pages-1,Math.max(0,(a&&a.pg)||0));
+      const cells=ZUKAN.slice(pg*P,pg*P+P);
+      return {title:'進化図鑑',tab:'zukan',html:`<div class="pcpill fd"><i class="tp pk tl"></i>見つけたすがた ${found} / ${ZUKAN.length}（${Math.floor(found/ZUKAN.length*100)}%）</div>
+        <div class="pcgrid">${cells.map(([k],i)=>{const f=D.sp[k], no=String(pg*P+i+1).padStart(3,'0');
+          return `<button class="pcz ${f?'':'un'}" data-z="${k}">${f&&i%2===0?`<i class="pcz-st">${PCD('star')}</i>`:''}<img class="pix" src="${f?pcFormPic(k):pcShadow(k)}"><span class="fd">No.${no}</span><span class="fd">${f?esc(fnm(k)):'？？？'}</span></button>`}).join('')}</div>
+        <p class="pcsub fm">見つけたぽこの姿は、ここにずっと残るよ。「最初から」にしても、発見の記録は消えないよ。</p>${pcStrip()}`,
+        foot:pages>1?`<div class="pcpager"><button class="pcrb" id="pzprev" ${pg?'':'disabled'}>＜</button><span class="fd">${pg+1} / ${pages}</span><button class="pcrb" id="pznext" ${pg<pages-1?'':'disabled'}>＞</button></div>`:'',
+        after(){
+          $('pcbody').querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>pcGo('zdetail',{k:b.dataset.z}));
+          if($('pzprev'))$('pzprev').onclick=()=>{PC.stack[PC.stack.length-1].arg={pg:pg-1};pcRender(0)};
+          if($('pznext'))$('pznext').onclick=()=>{PC.stack[PC.stack.length-1].arg={pg:pg+1};pcRender(0)};
+        }};
+    },
+    zdetail(a){
+      const D=dexSaved(), k=a.k, i=ZUKAN.findIndex(z=>z[0]===k), f=D.sp[k]; if(i<0)return {redirect:()=>pcBack()};
+      const by=f&&f.by&&D.pets[f.by]?D.pets[f.by].name:null, n=Object.values(D.pets).filter(v=>v.form===k).length;
+      return {title:'進化図鑑',tab:'zukan',html:`<div class="pcbox"><div class="pcphoto big"><i class="tape t1"></i><img class="pix" src="${f?pcFormPic(k):pcShadow(k)}"></div>
+        <p class="fd pcbig">No.${String(i+1).padStart(3,'0')}　${f?esc(fnm(k)):'？？？'}</p>
+        ${f?`<table class="atbl fm"><tr><td>はじめて</td><td>${f.at?dstr(f.at):'？'}${by?`・${esc(by)}`:''}</td></tr><tr><td>この姿になった子</td><td>${n}匹</td></tr></table>`:`<p class="fm pcsub">${esc(ZUKAN[i][1])}</p>`}</div>`};
+    },
+    kotoba(a){
+      const tab=(a&&a.c)||'すべて', W=wordsSaved(), L=ALL_LINES.filter(lineUsable), has=x=>!!W.wl[x.id], found=L.filter(has).length, no=new Map(L.map((x,i)=>[x.id,i+1]));
+      const cnt=c=>{const s=c==='すべて'?L:L.filter(x=>x.c6===c);return [s.filter(has).length,s.length]};
+      const list=tab==='すべて'?L:L.filter(x=>x.c6===tab), pc=L.length?Math.floor(found/L.length*100):0;
+      return {title:'ことば図鑑',tab:'kotoba',html:`<div class="pckt">${['すべて',...C6].map(c=>{const [x,y]=cnt(c);return `<button class="pctb fd${c===tab?' on':''}" data-c="${c}">${c}<small>${y?`${x}/${y}`:'準備中'}</small></button>`}).join('')}</div>
+        <div class="pcwl">${list.length?list.map(x=>{const f=W.wl[x.id];return `<div class="pcwr"><span class="fd pcno">No.${String(no.get(x.id)).padStart(3,'0')}</span>
+          ${f?`<span class="fm pcwt">${esc(lineText(x))}<small>${dstr(f[0])}</small></span><span class="pchrt">${PCD('heart')}</span>`:'<span class="fd pcq">？？？</span>'}</div>`}).join(''):'<p class="pcempty fm">まだこの分類のことばはないみたい。これから増えるかも…</p>'}</div>
+        <p class="pcsub fm">ぽこが話したことばが、ここに集まります。ことば図鑑の記録は、ぽこのデータとは別に保存しています。「最初から」でも消えません。</p>`,
+        foot:`<div class="pcpill fd">${PCD('star')} 見つけたことば ${found}/${L.length}（${pc}%）<span class="pcrib">${PCD('ribbon')}</span></div>`,
+        after(){ $('pcbody').querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{PC.stack[PC.stack.length-1].arg={c:b.dataset.c};pcRender(0)}) }};
+    },
+  };
+  // ===== AL7：「最初から」の2択・アルバムの子を戻す・保存の容量 =====
+  function resetUI(){
+    if(LOCK)return; if(!S){$('kconfirm').classList.add('on');return}
+    modal(`<h2>最初から</h2><p class="tleft">どちらにしますか？ どちらも、始める前に今のデータを退避します（せってい → データの復旧 で戻せます）。</p>
+      <button class="place" id="rsone"><em>🌱</em><span>今の子だけやり直す<small>消える：今の子（${esc(S.name)}）の名前・なかよし・元気・食べた記録<br>残る：アルバム・お気に入り・持ち物・料理・飾り・レシピ・行ける場所・たね・進化図鑑</small></span></button>
+      <button class="place" id="rsall"><em>🧹</em><span>全部消して最初から<small>消える：今の子・アルバム・お気に入り・持ち物・料理・飾り・レシピ・行ける場所・たね<br>残る：進化図鑑（発見記録・思い出）</small></span></button>
+      <button class="pbtn gray" onclick="K.close()">やめる</button>`);
+    $('rsone').onclick=()=>restartUI();
+    $('rsall').onclick=()=>{close();$('kconfirm').classList.add('on')};
+  }
+  function restartUI(){
+    if(S.explore){modal(`<h2>今の子だけやり直す</h2><p>探検・お散歩から帰ってきてからにしてね</p><button class="pbtn gray" onclick="K.close()">とじる</button>`);return}
+    const lost=S.stage==='adult'?'<br><b>この子はアルバムに入っていません。やり直すと、この子とはお別れになります（進化図鑑の思い出には残ります）。アルバムに入れたいときは「アルバム」から「次の子を育てる」を選んでね。</b>':'<br><b>今の子とはお別れになります。</b>';
+    modal(`<h2>🌱 今の子だけやり直す</h2><img class="pix apic" src="${charPic()}"><p class="tleft">「${esc(S.name)}」の名前・なかよし・元気・食べた記録が消えて、新しいたねから育てます（たねは使いません）。${lost}</p>
+      <input id="rsname" maxlength="12" placeholder="新しい子の名前（12文字まで）" style="width:100%;font-size:17px;padding:8px;border:3px solid #3a2f45;border-radius:10px">
+      <button class="pbtn red" id="rsgo">やり直す</button><button class="pbtn gray" onclick="K.close()">やめる</button>`);
+    $('rsgo').onclick=()=>{const nm=($('rsname').value||'').trim()||'ぽこ';
+      modal(`<h2>本当にやり直しますか？</h2><p class="tleft">「${esc(S.name)}」とはお別れになります。<br>アルバム・持ち物・進化図鑑は残ります。</p><button class="pbtn red" id="rsok">やり直す</button><button class="pbtn gray" onclick="K.close()">やめる</button>`);
+      $('rsok').onclick=()=>{const prev=S.name,r=restartPet(nm);if(!r.ok){modal(`<p>⚠ ${FAIL_MSG(r)}</p><button class="pbtn gray" onclick="K.close()">とじる</button>`);return}
+        close();ui();draw();say(`新しいたねを植えたよ！ 種をタップして、芽を出させよう`)}};
+  }
+  function lostAsk(){
+    if(LOCK||!S||$('kmodal').classList.contains('on'))return;
+    const L=lostPets(); if(!L.length)return;
+    const room=ALBUM_MAX-albumSaved(S).length;
+    modal(`<h2>📒 アルバムの子を戻しますか？</h2><p class="tleft">前のデータ（退避）に、今のアルバムにいない子が${L.length}匹います。古い版で「最初から」を押したときなどに、アルバムから消えた可能性があります。</p>
+      ${L.slice(0,8).map(r=>`<div class="place"><img class="pix apic" src="${formPic(r.form)}"><span>${esc(r.name)}<small>${fnm(r.form)}・大人になった日 ${dstr(r.adultAt)}</small></span></div>`).join('')}${L.length>8?`<p>ほか${L.length-8}匹</p>`:''}
+      ${room<L.length?`<p class="tleft"><small>アルバムの空きは${Math.max(0,room)}匹分です。入るだけ戻します。</small></p>`:''}
+      <button class="pbtn" id="lsyes">アルバムに戻す</button><button class="pbtn gray" id="lslater">今は戻さない</button><button class="pbtn gray" id="lsnever">もう聞かない</button>`);
+    $('lsyes').onclick=()=>{const r=albumRestore(L);albumUI(r.ok?`${r.n}匹をアルバムに戻しました。`:'⚠ '+(r.why==='full'?'アルバムがいっぱいです':FAIL_MSG(r)))};
+    $('lslater').onclick=()=>close();
+    $('lsnever').onclick=()=>{dexMark('dismiss',L.map(r=>r.id));close()};
+  }
+  // 保存の容量（AL7）：この端末の保存場所に入っている量（UTF-16 換算）。Safari は1サイト約5MBなので、その70%・85%で知らせる
+  const STORE_CAP=5*1024*1024;
+  function storeUse(){let n=0,list=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i),v=localStorage.getItem(k)||'';const b=(k.length+v.length)*2;n+=b;list.push({k,b,v})}}catch(e){}return {n,list}}
+  const kb=b=>b<1024*1024?Math.ceil(b/1024)+'KB':(b/1024/1024).toFixed(1)+'MB';
+  // 整理してよいもの：v1.8 選び直しの古い予備・中身がまったく同じ重複の退避（新しい方を1つ残す）・読めなかった発見記録の写し。大事な退避は対象にしない
+  function tidyList(){
+    const {list}=storeUse(), out=[], seen=new Map();
+    const bk=list.filter(x=>x.k.startsWith(KEY+'_')&&x.k!==LATEST&&x.k!==DEXK).sort((a,b)=>(+(b.k.match(/_(\d{10,})$/)||[])[1]||0)-(+(a.k.match(/_(\d{10,})$/)||[])[1]||0));
+    for(const x of bk){ if(x.k.startsWith(KEY+'_latest2_prev_')||x.k.startsWith(DEXK+'_broken_')){out.push(x);continue}
+      if(seen.has(x.v))out.push(Object.assign({dup:seen.get(x.v)},x)); else seen.set(x.v,x.k) }
+    return out;
+  }
+  function storageUI(){
+    const {n}=storeUse(), T=tidyList(), pc=Math.round(n/STORE_CAP*100);
+    modal(`<h2>💾 保存の容量</h2><p>この端末で使っている量：${kb(n)}（目安 ${kb(STORE_CAP)} の ${pc}%）</p>
+      ${pc>=85?'<p class="tleft"><b>⚠ 保存がいっぱいに近づいています。先にバックアップファイルを保存してね。</b></p>':pc>=70?'<p class="tleft">保存が多くなってきました。バックアップファイルを保存しておくと安心です。</p>':''}
+      <button class="pbtn" id="stbk">📄 バックアップファイルを保存する</button>
+      <p class="tleft"><small>整理してよいもの（同じ中身の重複・古い予備）だけを選んで消せます。大事な退避（更新・復元・最初から・次の子などの前のデータ）はここでは消しません。</small></p>
+      ${T.length?T.map((x,i)=>`<label class="place"><input type="checkbox" data-td="${i}"><span>${esc(x.k.replace(KEY,''))}<small>${kb(x.b)}${x.dup?'・同じ中身が残ります':''}</small></span></label>`).join('')+'<button class="pbtn red" id="sttidy">選んだものを消す</button>':'<p>整理できるものはありません</p>'}
+      <button class="pbtn gray" onclick="K.close()">とじる</button>`);
+    $('stbk').onclick=()=>{try{downloadBackup(S);ktoast(SAVED_NOTE)}catch(e){ktoast('保存を開始できませんでした')}};
+    if($('sttidy'))$('sttidy').onclick=()=>{const pick=[...document.querySelectorAll('[data-td]')].filter(c=>c.checked).map(c=>T[+c.dataset.td]);
+      if(!pick.length){ktoast('消すものを選んでね');return}
+      modal(`<h2>本当に消しますか？</h2><p class="tleft">${pick.map(x=>esc(x.k.replace(KEY,''))).join('<br>')}</p><button class="pbtn red" id="tdok">消す</button><button class="pbtn gray" id="tdno">やめる</button>`);
+      $('tdno').onclick=()=>storageUI();
+      $('tdok').onclick=()=>{let c=0;for(const x of pick){try{if(localStorage.getItem(x.k)===x.v){localStorage.removeItem(x.k);c++}}catch(e){}}storageUI();ktoast(`${c}こ消しました`)}};
+  }
+  function storeWarn(){ if(LOCK||!S)return; const pc=storeUse().n/STORE_CAP*100;
+    if(pc>=85)setTimeout(()=>{if(!$('kmodal').classList.contains('on'))storageUI()},3000); else if(pc>=70)setTimeout(()=>ktoast('保存が多くなってきました。せってい →「保存の容量」でバックアップを保存してね'),3000) }
   // ---- データの復旧（この端末に残っている退避データ） ----
   function snapshots(){
-    const L=[]; const lab=k=>k===KEY+'_before_v2'?'更新（v1.9）の前のデータ':k.startsWith(KEY+'_before_restore')?'おひっこし（復元）の前のデータ':k.startsWith(KEY+'_before_reset')?'「最初から」の前のデータ':k.startsWith(KEY+'_before_recover')?'復旧する前のデータ':k.startsWith(KEY+'_broken')?'読めなかったデータ':k.startsWith(KEY+'_v18over')?'古い画面（v1.8など）で上書きされたデータ':k===LATEST?'v1.9で最後に正しく保存したデータ（予備）':k.startsWith(KEY+'_latest2_prev')?'選び直す前のv1.9のデータ':null;
+    const L=[]; const lab=k=>k===KEY+'_before_v2'?'更新（v1.9）の前のデータ':k.startsWith(KEY+'_before_restore')?'おひっこし（復元）の前のデータ':k.startsWith(KEY+'_before_reset')?'「最初から」の前のデータ':k.startsWith(KEY+'_before_recover')?'復旧する前のデータ':k.startsWith(KEY+'_before_next_')?'次の子を育てる前のデータ':k.startsWith(KEY+'_before_album_remove_')?'アルバムから外す前のデータ':k.startsWith(KEY+'_before_restart_')?'今の子をやり直す前のデータ':k.startsWith(KEY+'_broken')?'読めなかったデータ':k.startsWith(KEY+'_v18over')?'古い画面（v1.8など）で上書きされたデータ':k===LATEST?'v1.9で最後に正しく保存したデータ（予備）':k.startsWith(KEY+'_latest2_prev')?'選び直す前のv1.9のデータ':null;
     try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(!k||!k.startsWith(KEY+'_'))continue;const l=lab(k);if(!l)continue;
       const raw=localStorage.getItem(k);if(k===LATEST&&raw===readKey())continue;let d=null;try{d=JSON.parse(raw)}catch(e){}
       const t=+(k.match(/_(\d{10,})$/)||[])[1]||0; L.push({k,l,raw,d:isO(d)?d:null,t})}}catch(e){}
@@ -1735,11 +2720,12 @@ const K=(()=>{
     $('kmbody').querySelectorAll('[data-r]').forEach(b=>b.onclick=()=>{const s=L[+b.dataset.r];
       let next; try{const d=repairSave(clone(s.d)); next=(typeof d.ver==='number'&&d.ver>=2)?ensureIntegrity(d):ensureIntegrity(upgrade(d))}catch(e){recoverUI('⚠ このデータは戻せませんでした。今のデータはそのままです');return}
       modal(`<h2>🛟 このデータに戻す？</h2><p>戻すデータ<br><b>${summary(next)}</b></p><p>いまのデータ<br>${summary(S)}</p>
-        <p>いまのデータは「復旧する前のデータ」として、この端末に残ります。</p>
+        ${S&&next&&S.id!==next.id?`<p class="tleft"><b>いま育てている「${esc(S.name)}」（${stageName(S)}）は、このデータにはいません。</b></p>`:''}
+        <p>いまのデータは「復旧する前のデータ」として、この端末に残ります。あとで、また戻せます。</p>
         <button class="pbtn" id="rcok">戻す</button><button class="pbtn gray" id="rcng">やめる</button>`);
       $('rcng').onclick=()=>recoverUI('やめました。今のデータはそのままです');
       $('rcok').onclick=()=>{ if(!applySave(next,KEY+'_before_recover_'+Date.now())){if(LOCK)return;recoverUI('⚠ 戻せませんでした（保存に失敗）。今のデータはそのままです');return}
-        $('ksetup').classList.remove('on'); close(); tick(); save(); ui(); draw(); say('前のデータに戻しました'); };
+        $('ksetup').classList.remove('on'); close(); tick(); save(); ui(); draw(); say('前のデータに戻しました（戻す前のデータは「復旧する前のデータ」に残しています）'); };
     });
   }
   function analyticsUI(first){
@@ -1798,10 +2784,13 @@ const K=(()=>{
     if(S.explore){exTap(e);return}
     if(S.stage==='seed'){S.taps++;
       if(S.taps>=5){let n=0;const iv=setInterval(()=>{g.fillStyle=n%2?'#fff':'#bfe8a0';g.fillRect(0,0,64,48);if(++n>6){clearInterval(iv);
-        S.stage='baby';S.last=now();if(typeof S.born!=='number'){S.born=Date.now();S.bornGuess=false}ANA.track('hatch');S.inv={kinomi:2};save();ui();draw();kfx($('kov'),'🎉',3,30);SND.sfx.fanfare();
-        say('種から{n}が生まれた！');setTut(1)}},120)}
+        S.stage='baby';S.last=now();if(typeof S.born!=='number'){S.born=Date.now();S.bornGuess=false}ANA.track('hatch');
+        const fresh=!Object.keys(S.inv||{}).length; if(fresh)S.inv={kinomi:2};   // AL4：はじめての子だけ木の実2つと案内（次の子では持ち物を上書きしない）
+        save();ui();draw();kfx($('kov'),'🎉',3,30);SND.sfx.fanfare();
+        say('種から{n}が生まれた！');if(fresh)setTut(1)}},120)}
       else {SND.sfx.pop();} if(S.taps<5) say(['ぴくっ…','動いた！','芽が出た！','もう少し…！'][S.taps-1]);save();draw();return}
     if(!present()||S.sleep)return;
+    if(favTap(e))return;
     speak(lineOf('tap'),'happy');SND.cry(ckey());
   };
   $('kstart').onclick=()=>{if(LOCK)return; if(BROKEN_KEPT&&!startConfirm){startConfirm=true;$('ksnote').innerHTML=pixify('⚠ 保管した読めないデータは、新しく始めても消えません。<br>本当に新しく始めるなら、もう一度「育てる！」を押してください');$('ksnote').style.display='block';return}
@@ -1811,10 +2800,15 @@ const K=(()=>{
     ensureIntegrity(S);
     $('ksetup').classList.remove('on');save();ui();draw();say('種をタップして、芽を出させよう')};
   $('kff').onclick=()=>{if(LOCK)return;if(!S||S.stage==='seed'){ktoast('先に種を育ててね');return}const st=S.explore?3:30;S.skew+=st*MIN;tick();save();ui();draw();ktoast(st+'分たった！')};
-  $('kreset').onclick=()=>{if(!LOCK)$('kconfirm').classList.add('on')};
+  $('kcolbtn').onclick=()=>{if(!LOCK&&S)pcOpen('album')};   // v2.1：アルバム・進化図鑑・ことば図鑑は「ぽこコレクション」1つから
+  $('pcx').onclick=()=>pcClose(); $('pcback').onclick=()=>pcBack(); 
+  $('pctabs').querySelectorAll('[data-pt]').forEach(b=>b.onclick=()=>pcTab(b.dataset.pt));
+  {const T={album:'heart',zukan:'book',kotoba:'chat'};$('pctabs').querySelectorAll('[data-pt]').forEach(b=>{b.innerHTML=PCD(T[b.dataset.pt])+b.textContent.replace(/^[❤📖💬]/u,'')})}
+  $('kreset').onclick=()=>{if(!LOCK)resetUI()};
   $('kcn').onclick=()=>$('kconfirm').classList.remove('on');
   $('kcy').onclick=()=>{
     if(LOCK)return; if(conflict()){enterConflict();return}
+    try{if(S)dexMark('removed',albumSaved(S).map(r=>r.id))}catch(e){}   // AL7：全部消した子は「アルバムの子を戻す」に出さない（図鑑の思い出には残る）
     try{const r=localStorage.getItem(KEY);if(r&&r!=='null'){const bk=KEY+'_before_reset_'+Date.now();localStorage.setItem(bk,r);if(localStorage.getItem(bk)!==r)throw 0}}
     catch(e){$('kconfirm').classList.remove('on');ktoast('今のデータを退避できなかったので、やめました');setSaveFail(true);return}
     const wr=writeMain('null'); if(!wr.ok){$('kconfirm').classList.remove('on');if(wr.why!=='conflict'){ktoast('保存できなかったので、やめました');setSaveFail(true)}return}
@@ -1844,12 +2838,13 @@ const K=(()=>{
       if(!r.ok){ lockScreen(r.why==='backup'?'backup':r.why==='restorefail'?'storage':'migrate',raw); draw(); return; }
       S=r.data;
     } else if(S){ ensureIntegrity(S); }
-    if(S){ANA.track('game_start',{stage:S.stage}); setTimeout(maybeAskConsent,2500);}
+    if(S){try{dexOpen()}catch(e){} ANA.track('game_start',{stage:S.stage}); setTimeout(maybeAskConsent,2500); setTimeout(()=>{try{lostAsk()}catch(e){}},1200); try{storeWarn()}catch(e){}}
     if(!S){$('ksetup').classList.add('on')}
     else{tick();save();ui();if(!$('kmodal').classList.contains('on'))say(S.stage==='seed'?'種をタップして、芽を出させよう':S.explore?'{n}は探検中…':'おかえり！');if(S.stage!=='seed')setTimeout(()=>S&&!LOCK&&speak(lineOf(S.explore?(PL(S.explore.p).walk?'sanpo':S.explore.p):per())),1200)}
     draw()}
   setInterval(()=>{if(!$('kid').classList.contains('on'))return;frame++;
-    if(S&&present()&&!S.sleep&&!busy&&Math.random()<.18){const nx=x+(Math.random()<.5?-1:1);if(nx>=24&&nx<=44){face=nx>x?1:-1;x=nx}}
+    if(S&&favHere()){const [lo,hi]=walkRange();if(x>hi)x=hi;if(x<lo)x=lo}
+    if(S&&present()&&!S.sleep&&!busy&&Math.random()<.18){const nx=x+(Math.random()<.5?-1:1),[lo,hi]=walkRange();if(nx>=lo&&nx<=hi){face=nx>x?1:-1;x=nx}}
     if(S&&S.explore&&!$('kmodal').classList.contains('on'))exStep();
     if(S){idleTalk();bubTick();}
     SND.bgm(!S||S.stage==='seed'?'home':S.explore?(PLACES[S.explore.p]?S.explore.p:'mori'):(S.sleep||per()==='night')?'night':'home');
