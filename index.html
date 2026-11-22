@@ -323,7 +323,8 @@ img.pcd{image-rendering:pixelated}
 .kbar em img.pcd{width:18px;height:16px}
 #kaffn{flex:none;font-family:'DotGothic16','Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;font-weight:400;font-size:16px;line-height:18px;min-width:26px;text-align:right}
 .kpr3{grid-column:1/-1;display:flex;gap:8px;align-items:stretch;margin-top:6px}
-.knext{flex:1;min-width:0;display:flex;align-items:center;gap:6px;background:#fffbe6;border:2px dashed #c9b8d6;border-radius:8px;padding:3px 8px;font-size:13px;line-height:1.45;color:#2f5a35;overflow-wrap:anywhere}
+.knext{flex:1;min-width:0;display:flex;align-items:center;gap:6px;background:#fffbe6;border:2px dashed #c9b8d6;border-radius:8px;padding:3px 8px;font-size:13px;line-height:1.45;color:#2f5a35;overflow-wrap:anywhere;height:calc(2.9em + 10px)}
+#knextt{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-width:0}   /* いつも2行ぶんの高さ（文が変わってもカードの高さが動かない）。3行になる長い文は2行で切る */
 .knext .kml{flex:none;font-size:11px;font-weight:900;color:#fff;background:#6cc08a;border:2px solid #3a2f45;border-radius:6px;padding:0 4px;line-height:15px}
 .knext img.ii{width:1.2em;height:1.2em}
 #klbbtn{position:relative;flex:none;display:flex;align-items:center;gap:5px;min-height:44px;border:3px solid #3a2f45;border-radius:12px;background:#ffe3ee;color:#3a2f45;box-shadow:0 2px 0 #3a2f45;padding:2px 12px 2px 6px}
@@ -1151,7 +1152,7 @@ const K=(()=>{
   function draw(){
     fit(); g.setTransform(1,0,0,1,0,0); g.clearRect(0,0,cv.width,cv.height);
     const VW=cv.width, want=VW<64&&S&&S.stage!=='seed'&&!favHere()?Math.max(0,Math.min(64-VW,x-VW/2)):(64-VW)/2;   // お気に入りがいるときは真ん中に固定（2匹とも入る範囲だけを歩く）
-    camX+=(want-camX)*0.08; const cx=Math.round(camX);
+    camX+=(want-camX)*0.08; camX=Math.max(0,Math.min(Math.max(0,64-VW),camX)); const cx=Math.round(camX);   // v2.2b：画面の幅が変わった直後でも、背景（64ドット）の外を見せない（右に空いた帯が出ない）
     skyTop(); g.setTransform(1,0,0,1,-cx,cv.height-48);
     drawMain(); g.setTransform(1,0,0,1,0,0);
   }
@@ -1199,7 +1200,7 @@ const K=(()=>{
   const cnt=(o,k)=>o[k]||0;
   const add=(o,k,n=1)=>{o[k]=(o[k]||0)+n;if(o[k]<=0)delete o[k]};
   const present=()=>S.stage!=='seed'&&!S.explore;
-  let profGk=null, profFace=null;
+  let profGk=null, profFace=null, profNext=null;
   function ui(){
     if(!S)return;
     $('kname2').textContent=S.name;
@@ -1209,8 +1210,8 @@ const K=(()=>{
     const nx=GOALS.find(g=>S.aff<g[0]), pct=nx?Math.min(100,S.aff/nx[0]*100):100;
     $('kaff').style.width=pct+'%'; $('kaffk').style.left=`clamp(9px,${pct}%,calc(100% - 9px))`; if(!$('kaffk').firstChild)$('kaffk').innerHTML=PCD('heart'); $('kaffn').textContent=S.aff;
     if(S.explore){const E=S.explore,m=Math.max(0,Math.ceil((E.end-now())/MIN)),got=(E.ev||[]).filter(v=>v.got).map(v=>IT[v.k].e).concat((E.bonus||[]).map(k=>IT[k].e)).join('');
-      $('knextl').textContent='おでかけ'; $('knextt').innerHTML=pixify(`${PL(E.p).walk?'お散歩中':'探検中：'+PL(E.p).n} あと${m}分　拾った物 ${got||'まだなし'}`)}
-    else {$('knextl').textContent='つぎ'; $('knextt').textContent=nx?`なかよし${nx[0]}で${nx[1]}`:'すべて解放しました！'}
+      const h=pixify(`${PL(E.p).walk?'お散歩中':'探検中：'+PL(E.p).n} あと${m}分　拾った物 ${got||'まだなし'}`); if(profNext!==h){profNext=h; $('knextl').textContent='おでかけ'; $('knextt').innerHTML=h}}   // v2.2b：中身が変わったときだけ作り直す（毎回作り直すとiPhoneで高さがゆれて画面がガタつく）
+    else {const h=nx?`なかよし${nx[0]}で${nx[1]}`:'すべて解放しました！'; if(profNext!==h){profNext=h; $('knextl').textContent='つぎ'; $('knextt').textContent=h}}
     const ds=Object.keys(S.decor), pos=[[24,70],[50,62],[6,90],[72,90],[40,92],[66,72]];
     $('kdecor').innerHTML='';
     document.querySelectorAll('#kbtns button').forEach(b=>b.classList.toggle('hint',!!b.dataset.k&&b.dataset.k===({1:'cook',2:'feed',3:'explore'})[S.tut]));
