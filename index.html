@@ -424,6 +424,16 @@ img.pcd{image-rendering:pixelated}
 .cpast b{float:right}.cpast .tot{border-top:2px dashed #E9CAD8;margin-top:4px;padding-top:4px;color:#e0457b;font-weight:900}
 .cpast img.pcd,.kcard h2 img.pcd{width:18px;height:18px;vertical-align:-3px}
 @media (prefers-reduced-motion:reduce){.lbc.today,.lbkr,.kcoin.bump,.lbmsg.pop{animation:none}.lbs .stk.peta{animation:none}.lbpt{animation:none;opacity:1}}
+.pcbond{margin-top:10px;background:#fff;border:3px solid var(--ink);border-radius:14px;padding:6px 8px 8px;box-shadow:0 3px 0 var(--mint)}
+.pcbh{display:flex;justify-content:space-between;align-items:center;font-size:16px;border-bottom:2px dashed var(--lpink);padding-bottom:4px}
+.pcbr{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin-top:6px}
+.pcbi{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 1px;border-radius:10px;background:#faf6fc;border:2px dashed #d7c6e2;min-width:0}
+.pcbi.ok{background:#fff0f6;border:2px solid #f58bb0}
+.pcbi img.pix{width:36px;height:36px;image-rendering:pixelated}
+.pcbi i{position:absolute;right:2px;top:2px;line-height:0}.pcbi i img.pcd{width:18px;height:16px}
+.pcbi span.fm{font-size:12px;font-weight:900;line-height:1.2;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pcbond p{font-size:13px;color:#6a5478;text-align:center;margin-top:6px;line-height:1.5;text-wrap:balance}
+.atbl td img.pcd{width:16px;height:14px;vertical-align:-2px}
 @media (prefers-reduced-motion:reduce){.kfind{transition:opacity .2s;transform:none}.kfind.on{transform:none}}
 </style>
 </head>
@@ -1298,6 +1308,7 @@ const K=(()=>{
     if(S.stage==='baby'&&S.aff>=15)grow('child');
     else if(S.stage==='child'&&S.aff>=60){
       S.form=baseForm(S.tags);S.adultAt=now();prOnAdult();ensureIntegrity(S);grow('adult')}
+    if(S.stage==='adult')try{bondLive()}catch(e){}   // v2.3：初期4種類の大人がなかよし100になったら、きずなのしるしを記録
     if(S.stage==='adult'&&!(S.album||[]).some(r=>r&&r.id===S.id)){ensureIntegrity(S);const nw=!(DEXS&&DEXS.sp[S.form]);dexAddPet(S,false);if(nw){const fm=S.form;setTimeout(()=>newFormUI(fm),2400)}}   // AL3：大人になった直後に、アルバムの目印・たね（1匹1回：seedGiven）・図鑑の記録を付ける
   }
   function grow(st){
@@ -1643,6 +1654,8 @@ const K=(()=>{
     if(LOCK||!lid||findShown.has(lid))return; findShown.add(lid);
     const x=ALL_LINES.find(l=>l.id===lid); if(!x)return;
     const el=$('kfind'); clearTimeout(findT);
+    if(el.classList.contains('on')&&el.dataset.kind==='bond'){findWait.push(lid);findShown.delete(lid);return}   // v2.3：きずなのお知らせが出ているあいだは、閉じてから出す
+    el.dataset.kind='word';
     el.innerHTML=`<span class="kfd d1">${PCD('heart')}</span><span class="kfd d2">${PCD('star')}</span><span class="kfd d3">${PCD('sparkle')}</span><span class="kfd d4">${PCD('sparkle')}</span>
       <button class="kfx" id="kfindx" aria-label="とじる">×</button><b class="kft">新しいことばを発見！</b><p class="kfl">${findWrap(lineText(x))}</p><small class="kfs">ことば図鑑に記録されたよ ${PCD('heart')}</small>${COIN_WNEW.has(lid)?`<small class="kfc">${PCD('coin')} コイン +${COIN_WORD}</small>`:''}`;
     findPlace(); el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
@@ -1667,11 +1680,61 @@ const K=(()=>{
       return out.map(c=>`<span class="kfw">${esc(c)}</span>`).join('');
     }catch(e){return esc(t)}
   }
-  function findClose(){clearTimeout(findT);$('kfind').classList.remove('on')}
+  let findWait=[];
+  function findClose(){clearTimeout(findT);$('kfind').classList.remove('on'); if(findWait.length){const l=findWait.shift();findWait=[];setTimeout(()=>{try{findPop(l)}catch(e){}},350)}}
   // v2.2b：真ん中に置く位置を整数の px で決める（translate(-50%) の0.5pxずれで、iPhoneの文字・絵がぼやけるのを防ぐ）
   function findPlace(){const el=$('kfind'),P=$('kid'),W=P.clientWidth,H=P.clientHeight; if(!W)return; const w=Math.floor(Math.min(300,W*.84)); el.style.width=w+'px'; const h=el.offsetHeight; el.style.left=Math.round((W-w)/2)+'px'; el.style.top=Math.max(4,Math.round((H-h)/2))+'px'}
   window.addEventListener('resize',()=>{try{if($('kfind').classList.contains('on'))findPlace()}catch(e){}});
 
+
+  // ===== v2.3 きずなのしるし（docs/v23_bond.md）=====
+  // 初期4種類の大人が「なかよし100」になったことを、進化図鑑の保存場所の achv に記録する（日時の数）。
+  // achv は v2.1 以降の本番も消さずに残す欄。「最初から」でも消えない・2タブでも合わさる・引っ越しコード/バックアップにも入る。
+  //   bond100_<姿>：達成した日時 / bondseen_<姿>：お知らせを出した日時 / bond4：4種類そろった日時 / bondscan：退避データを一度見た日時
+  // 進化・なかよし・セーブ本体は変えない。ひみつの種は配らない（bond4 は印だけ）
+  const BOND_FORMS=['umi','mori','hana','okashi'], BOND_AFF=100, bondK=f=>'bond100_'+f;
+  const bondOk=(D,f)=>!!(D&&isO(D.achv)&&typeof D.achv[bondK(f)]==='number');
+  // データ1つ（セーブ・退避）の中で、確かな証拠がある姿：大人で、初期4種類で、なかよしが100以上（なかよしは下がらないので、その時点で達成していた）
+  function bondEv(d,out){
+    if(!isO(d))return out; const one=r=>{if(isO(r)&&!r.live&&(r.stage==='adult'||r.archivedAt)&&BOND_FORMS.includes(r.form)&&Number.isInteger(r.aff)&&r.aff>=BOND_AFF&&r.aff<=1e7)out.add(r.form)};
+    one(d); if(Array.isArray(d.album))d.album.forEach(one); return out;
+  }
+  function bondMark(forms){
+    if(LOCK)return 0; if(!DEXS)DEXS=dexRead()||dexNew(); if(!isO(DEXS.achv))DEXS.achv={};
+    const t=Date.now(); let n=0;
+    for(const f of forms)if(BOND_FORMS.includes(f)&&!bondOk(DEXS,f)){DEXS.achv[bondK(f)]=t;n++}
+    if(BOND_FORMS.every(f=>bondOk(DEXS,f))&&typeof DEXS.achv.bond4!=='number'){DEXS.achv.bond4=t;n++}   // 4種類そろった印だけ（報酬は将来の更新で、この印を見て1回だけ）
+    if(n){dexDirty=true;dexFlush()} return n;
+  }
+  // 開いたとき・復元したとき：今のデータ（今の子・アルバム）＋（1回だけ）この端末の退避データから、証拠がある分を記録
+  function bondScan(){
+    if(LOCK||!S)return; const set=bondEv(S,new Set()); if(!DEXS)DEXS=dexRead()||dexNew(); if(!isO(DEXS.achv))DEXS.achv={};
+    if(typeof DEXS.achv.bondscan!=='number'){
+      try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i); if(!k||!k.startsWith(KEY+'_')||k.startsWith(DEXK)||k===WORDSK||k===COINKEEP)continue;
+        const raw=localStorage.getItem(k); if(!raw||raw.length>MAX_IMPORT)continue; let o=null; try{o=JSON.parse(raw)}catch(e){continue}
+        if(isO(o))bondEv(isO(o.data)?o.data:o,set)}}catch(e){}
+      DEXS.achv.bondscan=Date.now(); dexDirty=true;
+    }
+    bondMark([...set]); dexFlush();
+  }
+  function bondLive(){ if(S&&S.stage==='adult'&&S.aff>=BOND_AFF&&BOND_FORMS.includes(S.form)&&!bondOk(DEXS,S.form))bondMark([S.form]) }
+  // お知らせ：まだ出していない達成を、発見カードと同じ小さなカードでまとめて1回だけ（出した時点で bondseen を記録。再読み込みで繰り返さない）
+  function bondTick(){
+    if(LOCK||!S||!DEXS||Date.now()<coinWait||modalOpen()||$('klock').classList.contains('on')||$('kfind').classList.contains('on'))return;
+    const A=isO(DEXS.achv)?DEXS.achv:{}, nw=BOND_FORMS.filter(f=>typeof A[bondK(f)]==='number'&&typeof A['bondseen_'+f]!=='number');
+    if(!nw.length)return;
+    const t=Date.now(); nw.forEach(f=>A['bondseen_'+f]=t); dexDirty=true; dexFlush(); bondPop(nw);
+  }
+  function bondPop(forms){
+    const el=$('kfind'), have=BOND_FORMS.filter(f=>bondOk(DEXS,f)).length;
+    el.dataset.kind='bond';
+    el.innerHTML=`<span class="kfd d1">${PCD('heart')}</span><span class="kfd d2">${PCD('heart')}</span><span class="kfd d3">${PCD('sparkle')}</span><span class="kfd d4">${PCD('sparkle')}</span>
+      <button class="kfx" id="kfindx" aria-label="とじる">×</button><b class="kft">きずなのしるし</b><p class="kfl">${findWrap(forms.map(f=>fnm(f)).join('・')+'と絆が結ばれた！')}</p>
+      <small class="kfs">${PCD('heart')} きずなのしるし ${have}/4</small>${have>=4?'<small class="kfc">4つの絆が、すべて結ばれた……</small>':''}`;
+    findPlace(); el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
+    $('kfindx').onclick=e=>{e.stopPropagation();findClose()};
+    try{SND.sfx.fanfare()}catch(e){}
+  }
   // ===== v2.2 コイン（docs/v22_coins.md）=====
   // 保存はセーブ本体の S.coin（引っ越しコード・バックアップ・復元にそのまま入る。v2.1/v1.9 は知らない項目として残す）。
   // {v:1, n:残高, past:過去分を精算したら1, day:回数を数えている日番号, c:{walk,fish,go}:その日に実際に払った回数,
@@ -2605,6 +2668,7 @@ const K=(()=>{
     if(!r.ok)return false;
     try{DEXS=dexMerge(DEXS||dexNew(),IMPORT_DEX||dexNew());IMPORT_DEX=null;dexFromSave(S,true);dexDirty=true;dexFlush()}catch(e){}
     try{if(IMPORT_WORDS){WORDS=wordsMerge(wordsNow(),IMPORT_WORDS);wordsDirty=true;wordsFlush()}IMPORT_WORDS=null}catch(e){}   // v2.1：ことば帳は合わせる（減らさない）
+    try{bondScan()}catch(e){}   // v2.3：復元したデータの今の子・アルバムからも、きずなのしるしを記録
     EX=null; x=34; busy=null; return true;
   }
   const stageName=d=>d.stage==='seed'?'種':fnm(d.stage==='adult'?d.form:d.stage);
@@ -2874,7 +2938,11 @@ const K=(()=>{
     zukan(a){
       const D=dexSaved(), pets=Object.entries(D.pets), found=ZUKAN.filter(([k])=>D.sp[k]).length, P=9, pages=Math.max(1,Math.ceil(ZUKAN.length/P)), pg=Math.min(pages-1,Math.max(0,(a&&a.pg)||0));
       const cells=ZUKAN.slice(pg*P,pg*P+P);
+      const bh=BOND_FORMS.filter(f=>bondOk(D,f)).length;
       return {title:'進化図鑑',tab:'zukan',html:`<div class="pcpill fd"><i class="tp pk tl"></i>見つけたすがた ${found} / ${ZUKAN.length}（${Math.floor(found/ZUKAN.length*100)}%）</div>
+        <div class="pcbond"><div class="pcbh"><span class="fd">${PCD('heart')} きずなのしるし</span><span class="fd">${bh} / 4</span></div>
+          <div class="pcbr">${BOND_FORMS.map(f=>{const ok=bondOk(D,f),sp=!!D.sp[f];return `<div class="pcbi${ok?' ok':''}"><img class="pix" alt="" src="${sp?pcFormPic(f):pcShadow(f)}"><i>${PCD(ok?'heart':'heartE')}</i><span class="fm">${sp?esc(fnm(f)):'？？？'}</span><span class="lbsr">${ok?'なかよし100 達成':'まだ'}</span></div>`}).join('')}</div>
+          <p class="fm">4つの絆が結ばれたとき、何かが起こるらしい……</p></div>
         <div class="pcgrid">${cells.map(([k],i)=>{const f=D.sp[k], no=String(pg*P+i+1).padStart(3,'0');
           return `<button class="pcz ${f?'':'un'}" data-z="${k}">${f&&i%2===0?`<i class="pcz-st">${PCD('star')}</i>`:''}<img class="pix" src="${f?pcFormPic(k):pcShadow(k)}"><span class="fd">No.${no}</span><span class="fd">${f?esc(fnm(k)):'？？？'}</span></button>`}).join('')}</div>
         <p class="pcsub fm">見つけたぽこの姿は、ここにずっと残るよ。「最初から」にしても、発見の記録は消えないよ。</p>${pcStrip()}`,
@@ -2890,7 +2958,7 @@ const K=(()=>{
       const by=f&&f.by&&D.pets[f.by]?D.pets[f.by].name:null, n=Object.values(D.pets).filter(v=>v.form===k).length;
       return {title:'進化図鑑',tab:'zukan',html:`<div class="pcbox"><div class="pcphoto big"><i class="tape t1"></i><img class="pix" src="${f?pcFormPic(k):pcShadow(k)}"></div>
         <p class="fd pcbig">No.${String(i+1).padStart(3,'0')}　${f?esc(fnm(k)):'？？？'}</p>
-        ${f?`<table class="atbl fm"><tr><td>はじめて</td><td>${f.at?dstr(f.at):'？'}${by?`・${esc(by)}`:''}</td></tr><tr><td>この姿になった子</td><td>${n}匹</td></tr></table>`:`<p class="fm pcsub">${esc(ZUKAN[i][1])}</p>`}</div>`};
+        ${f?`<table class="atbl fm"><tr><td>はじめて</td><td>${f.at?dstr(f.at):'？'}${by?`・${esc(by)}`:''}</td></tr><tr><td>この姿になった子</td><td>${n}匹</td></tr>${BOND_FORMS.includes(k)?`<tr><td>きずな</td><td>${bondOk(D,k)?`${PCD('heart')} なかよし100 達成！（${dstr(D.achv[bondK(k)])}）`:'なかよし100をめざそう'}</td></tr>`:''}</table>`:`<p class="fm pcsub">${esc(ZUKAN[i][1])}</p>`}</div>`};
     },
     kotoba(a){
       const tab=(a&&a.c)||'すべて', W=wordsSaved(), L=ALL_LINES.filter(lineUsable), has=x=>!!W.wl[x.id], found=L.filter(has).length, no=new Map(L.map((x,i)=>[x.id,i+1]));
@@ -3113,7 +3181,7 @@ const K=(()=>{
       if(!r.ok){ lockScreen(r.why==='backup'?'backup':r.why==='restorefail'?'storage':'migrate',raw); draw(); return; }
       S=r.data;
     } else if(S){ ensureIntegrity(S); }
-    if(S){try{dexOpen()}catch(e){} ANA.track('game_start',{stage:S.stage}); setTimeout(maybeAskConsent,2500); setTimeout(()=>{try{lostAsk()}catch(e){}},1200); try{storeWarn()}catch(e){}}
+    if(S){try{dexOpen()}catch(e){} try{bondScan()}catch(e){} ANA.track('game_start',{stage:S.stage}); setTimeout(maybeAskConsent,2500); setTimeout(()=>{try{lostAsk()}catch(e){}},1200); try{storeWarn()}catch(e){}}
     if(!S){$('ksetup').classList.add('on')}
     else{tick();save();ui();if(!$('kmodal').classList.contains('on'))say(S.stage==='seed'?'種をタップして、芽を出させよう':S.explore?'{n}は探検中…':'おかえり！');if(S.stage!=='seed')setTimeout(()=>S&&!LOCK&&speak(lineOf(S.explore?(PL(S.explore.p).walk?'sanpo':S.explore.p):per())),1200)}
     draw()}
@@ -3122,7 +3190,7 @@ const K=(()=>{
     if(S&&present()&&!S.sleep&&!busy&&Math.random()<.18){const nx=x+(Math.random()<.5?-1:1),[lo,hi]=walkRange();if(nx>=lo&&nx<=hi){face=nx>x?1:-1;x=nx}}
     if(S&&S.explore&&!$('kmodal').classList.contains('on'))exStep();
     if(S){idleTalk();bubTick();}
-    if(S&&frame%5===0){try{coinTick()}catch(e){}}
+    if(S&&frame%5===0){try{bondTick()}catch(e){} try{coinTick()}catch(e){}}
     SND.bgm(!S||S.stage==='seed'?'home':S.explore?(PLACES[S.explore.p]?S.explore.p:'mori'):(S.sleep||per()==='night')?'night':'home');
     if(S&&frame%25===0){tick();save()}
     if(frame%2===0)ui();draw()},200);
@@ -3142,7 +3210,7 @@ try{const ua=navigator.userAgent,ios=/iP(hone|od|ad)/.test(ua)||(/Macintosh/.tes
 // 決めた大きさより大きくはしない。パソコンなど（devicePixelRatio が2より小さい）では何もしない（今までどおり）
 (function(){
   const dpr=window.devicePixelRatio||1; if(dpr<2)return;
-  const SEL='img.pcd,img.bi,img.ii,#kpfimg';
+  const SEL='img.pcd,img.bi,img.ii,#kpfimg,.pcbi img.pix';
   const snap=img=>{ if(img.dataset.cs===img.src)return;
     const go=()=>{ const nw=img.naturalWidth,nh=img.naturalHeight; if(!nw||!nh)return; img.style.width=''; img.style.height='';
       const cs=getComputedStyle(img), w=parseFloat(cs.width), h=parseFloat(cs.height); if(!(w>0&&h>0))return;
