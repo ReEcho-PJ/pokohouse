@@ -289,6 +289,7 @@ label.fl input{display:none}
 .kfind .kfx:active{transform:translateY(2px);box-shadow:0 1px 0 #4B345A}
 .kfind .kft{display:block;font-family:'DotGothic16','Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;font-weight:400;font-size:16px;line-height:1.3;color:#fff;background:#f58bb0;border:3px solid #4B345A;border-radius:14px;padding:4px 8px;margin:0 auto 10px;width:fit-content;max-width:100%;text-shadow:1px 1px 0 #4B345A}
 .kfind .kfl{font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;font-weight:900;font-size:17px;line-height:1.55;background:#fff;border:3px solid #4B345A;border-radius:12px;padding:10px 8px;overflow-wrap:anywhere;word-break:break-word}
+.kfind .kfl{text-wrap:balance}.kfind .kfw{display:inline-block;max-width:100%}
 .kfind .kfs{display:block;margin-top:8px;font-size:13px;font-weight:900;color:#7a5a88}
 .kfind img.pcd{width:16px;height:16px;vertical-align:-3px;image-rendering:pixelated}
 .kfind .kfd{position:absolute}.kfind .kfd img.pcd{width:20px;height:20px}.kfd.d1{left:8px;top:8px}.kfd.d2{right:34px;top:8px}.kfd.d3{left:10px;bottom:10px}.kfd.d4{right:12px;bottom:12px}
@@ -1498,9 +1499,28 @@ const K=(()=>{
     const x=ALL_LINES.find(l=>l.id===lid); if(!x)return;
     const el=$('kfind'); clearTimeout(findT);
     el.innerHTML=`<span class="kfd d1">${PCD('heart')}</span><span class="kfd d2">${PCD('star')}</span><span class="kfd d3">${PCD('sparkle')}</span><span class="kfd d4">${PCD('sparkle')}</span>
-      <button class="kfx" id="kfindx" aria-label="とじる">×</button><b class="kft">新しいことばを発見！</b><p class="kfl">${esc(lineText(x))}</p><small class="kfs">ことば図鑑に記録されたよ ${PCD('heart')}</small>`;
+      <button class="kfx" id="kfindx" aria-label="とじる">×</button><b class="kft">新しいことばを発見！</b><p class="kfl">${findWrap(lineText(x))}</p><small class="kfs">ことば図鑑に記録されたよ ${PCD('heart')}</small>`;
     el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
     $('kfindx').onclick=e=>{e.stopPropagation();findClose()};
+  }
+  // 発見カードの文だけ：文節のまとまりで改行する（「ぽかぽかす／る。」のような1〜2文字だけの折り返しを防ぐ）。
+  // Intl.Segmenter がない端末では今まで通りの表示。文章そのものは変えない
+  function findWrap(t){
+    t=String(t);
+    try{
+      if(typeof Intl==='undefined'||!Intl.Segmenter)return esc(t);
+      const segs=[...new Intl.Segmenter('ja',{granularity:'word'}).segment(t)], out=[]; let pre='';
+      for(const g of segs){
+        const w=g.segment;
+        if(/^[「『（(【〈《"']+$/.test(w)){pre+=w;continue}
+        const hira=/^[ぁ-ゖー]{1,2}$/.test(w), last=out.length?out[out.length-1]:'';
+        if(out.length&&!pre&&(!g.isWordLike||hira||/^\s+$/.test(w))&&!/[。！？!?]$/.test(last))out[out.length-1]+=w;
+        else if(out.length&&!pre&&!g.isWordLike)out[out.length-1]+=w;
+        else{out.push(pre+w);pre=''}
+      }
+      if(pre)out.push(pre);
+      return out.map(c=>`<span class="kfw">${esc(c)}</span>`).join('');
+    }catch(e){return esc(t)}
   }
   function findClose(){clearTimeout(findT);$('kfind').classList.remove('on')}
   // ===== 吹き出しの順番（修正4）=====
