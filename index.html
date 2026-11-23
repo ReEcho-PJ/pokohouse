@@ -651,17 +651,26 @@ const dishPix=(()=>{const cache={};return k=>{
 const SND=(()=>{
   let ac=null, master=null, on=true, cur=null, timer=null, step=0;
   try{ on=localStorage.getItem('poko_snd')!=='0' }catch(e){}
-  function ctx(){
-    if(!ac){ const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return null;
-      ac=new AC(); master=ac.createGain(); master.gain.value=0.22; master.connect(ac.destination); }
-    if(ac.state!=='running'&&ac.state!=='closed') tryResume();
+  // 音の部品を作る。iPhone(Safari)はタップの中で作らないと鳴らないことがあるので、作るのはタップの中だけ（make=true のとき）
+  let gestureMade=false, tries=0;
+  function make(){
+    const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return null;
+    try{ if(ac&&ac.close) ac.close().catch(()=>{}); }catch(e){}
+    try{ ac=new AC(); }catch(e){ ac=null; return null; }
+    master=ac.createGain(); master.gain.value=0.22; master.connect(ac.destination);
+    try{ ac.onstatechange=()=>{ if(ac&&ac.state!=='running'&&ac.state!=='closed') unlocked=false; }; }catch(e){}
+    return ac;
+  }
+  function ctx(mk){
+    if(!ac||ac.state==='closed'){ if(!mk) return null; make(); gestureMade=true; tries=0; }
+    if(ac&&ac.state!=='running') tryResume();
     return ac;
   }
   // 再開を試す（ブラウザが断っても例外を出さない。断られたら次のタップで unlock がもう一度試す）
   function tryResume(){ try{ const r=ac&&ac.resume&&ac.resume(); if(r&&r.catch) r.catch(()=>{}); }catch(e){} }
   const hz=n=>261.63*Math.pow(2,n/12); // 0 = ド(C4)
   function tone(f,d,type='square',v=0.12,t0=0,slide=0){
-    if(!on) return; const a=ctx(); if(!a||a.state!=='running') return;
+    if(!on) return; const a=ac; if(!a||a.state!=='running') return;
     const o=a.createOscillator(), gn=a.createGain(), t=a.currentTime+t0;
     o.type=type; o.frequency.setValueAtTime(f,t); if(slide) o.frequency.linearRampToValueAtTime(Math.max(40,f+slide),t+d);
     gn.gain.setValueAtTime(v,t); gn.gain.exponentialRampToValueAtTime(0.001,t+d);
@@ -727,18 +736,27 @@ const SND=(()=>{
   // 最初のタップで音を有効にする（ブラウザの決まり）
   // スマホは「指を離した時」「クリック」でないと音の許可が出ないので、そこで鳴らせる状態にする
   let unlocked=false;
+  // 無音を1回鳴らして、音の出口を開ける（iPhone の決まり）
+  function blip(a){ try{ const b=a.createBuffer(1,1,22050), src=a.createBufferSource(); src.buffer=b; src.connect(a.destination); src.start(0); }catch(e){} }
   const unlock=()=>{
-    const a=ctx(); if(!a) return;
-    if(a.state!=='running') tryResume();
-    if(!unlocked){ try{ const b=a.createBuffer(1,1,22050), src=a.createBufferSource(); src.buffer=b; src.connect(a.destination); src.start(0); unlocked=true; }catch(e){} }
+    if(unlocked&&ac&&ac.state==='running') return;
+    if(!on&&!ac) return;                       // 音OFFのときは部品を作らない（ONにしたタップで作る）
+    let a=ctx(true); if(!a) return;
+    // タップの外で作られた／何度試しても動かない部品は、このタップの中で作り直す
+    if(a.state!=='running'&&(!gestureMade||tries>=2)){ a=make(); gestureMade=true; tries=0; if(!a) return; }
+    tries++;
+    blip(a); tryResume();
+    if(a.state==='running') unlocked=true;
+    else{ try{ const r=a.resume&&a.resume(); if(r&&r.then) r.then(()=>{ if(a.state==='running'){ unlocked=true; tries=0; } }).catch(()=>{}); }catch(e){} }
   };
-  ['touchend','click','pointerup','keydown'].forEach(ev=>document.addEventListener(ev,unlock,{passive:true}));
+  // 「指を離した時」「クリック」「キー」だけで試す（pointerup は iPhone で許可にならないので使わない）。他の処理に止められないよう先に受け取る
+  ['touchend','click','keydown'].forEach(ev=>window.addEventListener(ev,unlock,{passive:true,capture:true}));
   // 画面に戻ったとき：音がONで、すでに音の部品があるときだけ再開を試す（iPhoneは断ることがある→次のタップで再開）
-  const wake=()=>{ if(!on||!ac||document.visibilityState==='hidden') return; if(ac.state!=='running'&&ac.state!=='closed') tryResume(); };
+  const wake=()=>{ if(!on||!ac||document.visibilityState==='hidden') return; if(ac.state!=='running'&&ac.state!=='closed'){ unlocked=false; tryResume(); } };
   document.addEventListener('visibilitychange',wake); window.addEventListener('pageshow',wake); window.addEventListener('focus',wake);
   return { bgm, cry, sfx,
     get on(){return on},
-    toggle(){ on=!on; try{localStorage.setItem('poko_snd',on?'1':'0')}catch(e){} if(on) ctx(); return on; } };
+    toggle(){ on=!on; try{localStorage.setItem('poko_snd',on?'1':'0')}catch(e){} if(on){ unlocked=false; unlock(); } return on; } };
 })();
 
 // ===== ボタン用ドット絵アイコン（12x12） =====
